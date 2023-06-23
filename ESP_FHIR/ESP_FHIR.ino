@@ -1,6 +1,7 @@
 #include <ArduinoJson.h>
 #include <SPIFFS.h>
 #include "FS.h"
+#include "SPIFFS.h"
 #include "EEPROM.h"
 #include "HTML.h"
 #include <WebServer.h>
@@ -37,12 +38,13 @@ const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 19800;
 const int daylightOffset_sec = 0;
 String split_arr[100];
+String p_deets[10];
 String output;
 //Resource IDs Temp
-String device_resource_id = "dummy";
-String patient_resource_id = "dummy";
-String observation_resource_id = "dummy";
-String communication_resource_id = "dummy";
+String device_resource_id;
+String patient_resource_id;
+String observation_resource_id;
+String communication_resource_id;
 
 
 
@@ -52,10 +54,11 @@ void wipeEEPROM() {
     EEPROM.writeByte(i, 0);
   }
   EEPROM.commit();
+  deleteFile(SPIFFS, "/config.json");
 }
 
 void new_user_c(String* patient_deets) {
-  DynamicJsonDocument nuc(400);
+  DynamicJsonDocument nuc(2000);
 
   nuc["resourceType"] = "Patient";
 
@@ -75,6 +78,7 @@ void new_user_c(String* patient_deets) {
   http.addHeader("Accept", "*/*");
   http.addHeader("Accept-Encoding", "gzip, deflate, br");
   http.addHeader("Connection", "keep-alive");
+  output = "";
   serializeJson(nuc, output);
   Serial.println(output);
   http.addHeader("Content-Length", String(output.length()));
@@ -85,8 +89,19 @@ void new_user_c(String* patient_deets) {
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
   httpCode = http.GET();
   nuc.clear();
-  deserializeJson(nuc, http.getString());
-  // patient_resource_id = nuc["entry"][0]["resource"]["id"];
+  DeserializationError error = deserializeJson(nuc, http.getString());
+  if (error) {
+    Serial.println("New User Creating:");
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  patient_resource_id = "";
+  const char* temp = nuc["entry"][0]["resource"]["id"];
+  patient_resource_id = String(temp);
+  // serializeJson(nuc["entry"][0]["resource"]["id"], patient_resource_id);
+  // patient_resource_id = patient_resource_id.substring(1,patient_resource_id.length()-1);
+  Serial.println(patient_resource_id);
 
   //Write patient_resource_id to flash
 
@@ -103,10 +118,11 @@ void new_user_c(String* patient_deets) {
   identifier_0["system"] = "urn:ietf:rfc:3986";
   identifier_0["value"] = macd;
   doc["patient"]["reference"] = "Patient/" + patient_resource_id;
+  output = "";
   serializeJson(doc, output);
 
   // HTTPClient http;
-  http.begin("http://13.127.51.218:9444/fhir-server/api/v4/Device");
+  http.begin("http://13.127.51.218:9444/fhir-server/api/v4/Device/" + device_resource_id);
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
   http.addHeader("Content-Type", "application/json");
   http.addHeader("Accept", "*/*");
@@ -163,10 +179,21 @@ void new_obs_c(String dev) {
   http.begin("http://13.127.51.218:9444/fhir-server/api/v4/Observation?patient=" + patient_resource_id);
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
   httpCode = http.GET();
-  deserializeJson(doc, http.getString());
+  DeserializationError error = deserializeJson(doc, http.getString());
+  if (error) {
+    Serial.println("New Observation Creating:");
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  observation_resource_id = "";
+  const char* temp = doc["entry"][0]["resource"]["id"];
+  observation_resource_id = String(temp);
+  // serializeJson(doc["entry"][0]["resource"]["id"], observation_resource_id);
+  // serializeJson(doc["entry"][0]["resource"]["id"], Serial);
+  // observation_resource_id = observation_resource_id.substring(1,observation_resource_id.length()-1);
+  // Serial.println(observation_resource_id);
   // observation_resource_id = doc["entry"][0]["resource"]["id"];
-
-  //Write observation_resource_id to flash
 
   http.end();
 }
@@ -199,7 +226,19 @@ void new_com_c(String dev) {
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
   httpCode = http.GET();
   doc.clear();
-  deserializeJson(doc, http.getString());
+  DeserializationError error = deserializeJson(doc, http.getString());
+  if (error) {
+    Serial.println("New Communication Creating:");
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  communication_resource_id = "";
+  const char* temp = doc["entry"][0]["resource"]["id"];
+  communication_resource_id = String(temp);
+  // serializeJson(doc["entry"][0]["resource"]["id"], patient_resource_id);
+  // communication_resource_id = communication_resource_id.substring(1,communication_resource_id.length()-1);
+  // Serial.println(communication_resource_id);
   // communication_resource_id = doc["entry"][0]["resource"]["id"];
 
   //Write observation_resource_id to flash
@@ -223,7 +262,6 @@ void device_reg() {
   JsonObject identifier_1 = identifier.createNestedObject();
   identifier_1["system"] = "urn:ietf:rfc:3986";
   identifier_1["value"] = "Comprehensive Infant Care Centre";
-  Serial.println("dummy");
   HTTPClient http;
   http.begin("http://13.127.51.218:9444/fhir-server/api/v4/Device");
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
@@ -231,8 +269,10 @@ void device_reg() {
   http.addHeader("Accept", "*/*");
   http.addHeader("Accept-Encoding", "gzip, deflate, br");
   http.addHeader("Connection", "keep-alive");
+  output = "";
   serializeJson(device_reg, output);
   Serial.println(output);
+  device_reg.clear();
   http.addHeader("Content-Length", String(output.length()));
   int httpCode = http.POST(output);
   // String payload = http.getString();
@@ -242,10 +282,29 @@ void device_reg() {
   http.begin("http://13.127.51.218:9444/fhir-server/api/v4/Device?identifier=" + macd);
   http.addHeader("Authorization", String("Basic " + base64::encode(fhir_creds)));
   httpCode = http.GET();
-  device_reg.clear();
-  // Serial.print(http.getString());
-  deserializeJson(device_reg, http.getString());
-  // device_resource_id = device_reg["entry"][0]["resource"]["id"];
+  String payload = http.getString();
+
+  DeserializationError error = deserializeJson(device_reg, payload);
+  if (error) {
+    Serial.println("Device Reg:");
+    Serial.print(F("deserializeJson() failed: "));
+    Serial.println(error.f_str());
+    return;
+  }
+  device_resource_id = "";
+  // serializeJson(device_reg["entry"][0]["resource"]["id"], device_resource_id);
+  // Serial.println(device_resource_id);
+  // device_resource_id = device_resource_id.substring(1,device_resource_id.length()-1);
+  // Serial.println(device_resource_id);
+
+  const char* temp = device_reg["entry"][0]["resource"]["id"];
+  device_resource_id = String(temp);
+
+  // device_resource_id.concat(String(device_reg["entry"]));
+  // serializeJson(device_reg, Serial);
+  writeFile(SPIFFS, "/config.json", "{\"device\":\"" + device_resource_id + "\",\"patient\":\"" + patient_resource_id + "\",\"communication\":\"" + communication_resource_id + "\",\"observation\":\"" + observation_resource_id + "\"}");
+
+  //
   // Save device resource_id to flash and some way to set device_reg_check to 0
   http.end();
   EEPROM.writeByte(0x01, 0x01);
@@ -261,7 +320,13 @@ void setup() {
   Serial.begin(115200);
   EEPROM.begin(300);
   Serial.println(WiFi.macAddress());
-
+  if (digitalRead(0) == LOW) {
+    Serial.println("Wiping WiFi credentials from memory...");
+    wipeEEPROM();
+    digitalWrite(2, HIGH);
+    // while (loadWIFICredsForm());
+    //    digitalWrite(2, LOW);
+  }
   // #if (static_ssid_pw)
   WiFi.mode(WIFI_STA);
   WiFi.begin(wifissid, pw);
@@ -309,14 +374,44 @@ void setup() {
   if (getLocalTime(&timeinfo)) {
     rtc.setTimeStruct(timeinfo);
   }
-
+  if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED)) {
+    Serial.println("SPIFFS Mount Failed");
+    return;
+  }
 
   uint8_t device_reg_check = EEPROM.readByte(0x01);
   if (device_reg_check != 0x01) {
     device_reg();
-  }
-  else{
+  } else {
     Serial.println("Skipping Device Reg");
+    String temp = readFile(SPIFFS, "/config.json");
+    DynamicJsonDocument dev_data(400);
+
+    DeserializationError error = deserializeJson(dev_data, temp);
+    if (error) {
+      Serial.println("Skipping Device Reg:");
+      Serial.print(F("deserializeJson() failed: "));
+      Serial.println(error.f_str());
+      return;
+    }
+    const char* buffer;
+    buffer = dev_data["device"];
+    device_resource_id = String(buffer);
+    buffer = dev_data["patient"];
+    patient_resource_id = String(buffer);
+    buffer = dev_data["communication"];
+    communication_resource_id = String(buffer);
+    buffer = dev_data["observation"];
+    observation_resource_id = String(buffer);
+    // serializeJsonPretty(dev_data);
+    // serializeJson(, );
+    // serializeJson(dev_data[""], );
+    // serializeJson(dev_data[""], );
+    // serializeJson(dev_data[""], );
+    Serial.println(device_resource_id);
+    Serial.println(patient_resource_id);
+    Serial.println(communication_resource_id);
+    Serial.println(observation_resource_id);
   }
 }
 
@@ -325,8 +420,8 @@ void loop() {
     Serial.println("Wiping WiFi credentials from memory...");
     wipeEEPROM();
     digitalWrite(2, HIGH);
-    while (loadWIFICredsForm());
-    digitalWrite(2, LOW);
+    // while (loadWIFICredsForm());
+    //    digitalWrite(2, LOW);
   }
 
   unsigned long currentMillis = millis();
@@ -345,11 +440,13 @@ void loop() {
     split_str(in_data, split_arr, "|");
     if (split_arr[0] == "CIC") {
       if (split_arr[1] == "NUC") {
-        String p_deets[2];
         split_str(split_arr[2], p_deets, ",");  //{"yo", "yo"};
+        //        Serial.println("p_deets1 = " + p_deets[0]);
+        //        Serial.println("p_deets2 = " + p_deets[1]);
         new_user_c(p_deets);
         new_obs_c(split_arr[0]);
         new_com_c(split_arr[0]);
+        writeFile(SPIFFS, "/config.json", "{\"device\":\"" + device_resource_id + "\",\"patient\":\"" + patient_resource_id + "\",\"communication\":\"" + communication_resource_id + "\",\"observation\":\"" + observation_resource_id + "\"}");
       }
     }
   }
