@@ -192,7 +192,7 @@ void deleteFile(fs::FS &fs, String path_s){
 }
 
 
-void split_str(String s, String split_arr[], String delimeter) {
+int split_str(String s, String split_arr[], String delimeter) {
   int i = 0;
   int a = s.indexOf(delimeter);
   while (a != -1) {
@@ -206,8 +206,6 @@ void split_str(String s, String split_arr[], String delimeter) {
     if (a == -1) {
       split_arr[i] = s.substring(0, s.length());
     }
-    // if (max_length != -1 and i >= max_length) {
-    //     break;
-    // }
   }
+  return i+1;
 }
