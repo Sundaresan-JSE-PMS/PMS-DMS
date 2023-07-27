@@ -113,11 +113,12 @@ void new_user_c(String* patient_deets) {
 
   serializeJson(nuc, output);
   Serial.println(output);
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Patient", httpPOST, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Patient", httpPOST, output);
   Serial.println(httpCode);
 
   String payload;
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Patient?identifier=" + patient_deets[0], httpGET, payload);
+  patient_deets[0].replace(" ","%20");
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Patient?identifier="+patient_deets[0], httpGET, payload);
   Serial.println(httpCode);
   nuc.clear();
 
@@ -147,7 +148,7 @@ void new_user_c(String* patient_deets) {
   serializeJson(nuc, output);
 
   // HTTPClient http;
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Device/" + device_resource_id, httpPUT, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Device/" + device_resource_id, httpPUT, output);
   Serial.println(httpCode);
   nuc.clear();
 }
@@ -180,11 +181,11 @@ void new_obs_c(String dev) {
   output = "";
   serializeJson(noc, output);
 
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Observation", httpPOST, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Observation", httpPOST, output);
   Serial.println(httpCode);
   noc.clear();
   output = "";
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Observation?patient=" + patient_resource_id, httpGET, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Observation?patient=" + patient_resource_id, httpGET, output);
   Serial.println(httpCode);
 
   DeserializationError error = deserializeJson(noc, output);
@@ -213,11 +214,11 @@ void new_com_c(String dev) {
   output = "";
   serializeJson(doc, output);
 
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Communication", httpPOST, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication", httpPOST, output);
   Serial.println(httpCode);
 
   output = "";
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Communication?_sort=-sent&_count=1&sender=" + device_resource_id, httpGET, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication?_sort=-sent&_count=1&sender=" + device_resource_id, httpGET, output);
   Serial.println(httpCode);
   doc.clear();
 
@@ -255,12 +256,12 @@ void device_reg() {
 
   output = "";
   serializeJson(device_reg, output);
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Device", httpPOST, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Device", httpPOST, output);
   Serial.println(httpCode);
   device_reg.clear();
 
   output = "";
-  httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Device?identifier=" + macd, httpGET, output);
+  httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Device?identifier=" + macd, httpGET, output);
   Serial.println(httpCode);
   Serial.println(output);
   DeserializationError error = deserializeJson(device_reg, output);
@@ -387,12 +388,12 @@ void loop() {
         output = "";
         cic_data(output, split_arr[2], device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
         Serial.println(output);
-        httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Observation/" + observation_resource_id, httpPUT, output);
+        httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Observation/" + observation_resource_id, httpPUT, output);
         Serial.println(httpCode);
         output = "";
         cic_alarm(output, split_arr[3], device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
         Serial.println(output);
-        httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
+        httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
         Serial.println(httpCode);
       }
     }
@@ -402,13 +403,13 @@ void loop() {
     //     output = "";
     //     inc_data(output, in_data, device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
     //     Serial.println(output);
-    //     httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Observation/" + observation_resource_id, httpPUT, output);
+    //     httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Observation/" + observation_resource_id, httpPUT, output);
     //     Serial.println(httpCode);
 
     //     output = "";
     //     inc_alarm(output, in_data, device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
     //     Serial.println(output);
-    //     httpCode = http_send("http://3.110.197.165:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
+    //     httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
     //     Serial.println(httpCode);
     // }
     
