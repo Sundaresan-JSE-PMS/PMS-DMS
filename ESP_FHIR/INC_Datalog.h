@@ -9,7 +9,6 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   inc_log["status"] = "final";
   inc_log["identifier"][0]["value"] = "PMSinc";
   inc_log["subject"]["reference"] = "Patient/" + p_id;
-  inc_log["device"]["reference"] = "Device/" + d_id;
 
   JsonObject code = inc_log.createNestedObject("code");
 
@@ -26,9 +25,8 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
 
   JsonArray component = inc_log.createNestedArray("component");
 
-    if (dlog_arr[1] == "BAB")
-   {
-  
+  if (dlog_arr[1] == "BAB") {
+
     JsonObject component_0 = component.createNestedObject();
 
     JsonObject component_0_code = component_0.createNestedObject("code");
@@ -51,38 +49,52 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
 
     JsonObject component_1_code_coding_0 = component_1_code["coding"].createNestedObject();
     component_1_code_coding_0["system"] = "http://loinc.org";
-    component_1_code_coding_0["code"] = "75951-4";
-    component_1_code_coding_0["display"] = "Measure Air temp ";
-    component_1_code["text"] = "Measure Air temp";
+    component_1_code_coding_0["code"] = "60839-8";
+    component_1_code_coding_0["display"] = "Set Skin Temp";
+    component_1_code["text"] = "Set Skin Temp";
 
     JsonObject component_1_valueQuantity = component_1.createNestedObject("valueQuantity");
-    component_1_valueQuantity["value"] = dlog_arr[2].toInt();
+    component_1_valueQuantity["value"] = dlog_arr[3].toFloat();
     component_1_valueQuantity["unit"] = "C";
     component_1_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_1_valueQuantity["code"] = "Cel";
 
-  JsonObject component_2 = component.createNestedObject();
+    JsonObject component_2 = component.createNestedObject();
 
-  JsonObject component_2_code = component_2.createNestedObject("code");
+    JsonObject component_2_code = component_2.createNestedObject("code");
 
-  JsonObject component_2_code_coding_0 = component_2_code["coding"].createNestedObject();
-  component_2_code_coding_0["system"] = "http://loinc.org";
-  component_2_code_coding_0["code"] = "60839-8";
-  component_2_code_coding_0["display"] = "EEP Skin Set Temp";
-  component_2_code["text"] = "EEP Skin Set Temp";
+    JsonObject component_2_code_coding_0 = component_2_code["coding"].createNestedObject();
+    component_2_code_coding_0["system"] = "http://loinc.org";
+    component_2_code_coding_0["code"] = "60839-8";
+    component_2_code_coding_0["display"] = "Measured Skin Temp 1";
+    component_2_code["text"] = "Measured Skin Temp 1";
 
-  JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
-  component_2_valueQuantity["value"] = dlog_arr[3].toFloat();
-  component_2_valueQuantity["unit"] = "C";
-  component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_2_valueQuantity["code"] = "Cel";
+    JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
+    component_2_valueQuantity["value"] = dlog_arr[4].toFloat();
+    component_2_valueQuantity["unit"] = "C";
+    component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_2_valueQuantity["code"] = "Cel";
 
+    JsonObject component_4 = component.createNestedObject();
+
+    JsonObject component_4_code = component_4.createNestedObject("code");
+
+    JsonObject component_4_code_coding_0 = component_4_code["coding"].createNestedObject();
+    component_4_code_coding_0["system"] = "http://loinc.org";
+    component_4_code_coding_0["code"] = "75951-4";
+    component_4_code_coding_0["display"] = "Measure Air temp ";
+    component_4_code["text"] = "Measure Air temp";
+
+    JsonObject component_4_valueQuantity = component_4.createNestedObject("valueQuantity");
+    component_4_valueQuantity["value"] = dlog_arr[2].toInt();
+    component_4_valueQuantity["unit"] = "C";
+    component_4_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_4_valueQuantity["code"] = "Cel";
 
   }
 
-  else if (dlog_arr[1] == "AIR")
-   {
-  
+  else if (dlog_arr[1] == "AIR") {
+
     JsonObject component_0 = component.createNestedObject();
 
     JsonObject component_0_code = component_0.createNestedObject("code");
@@ -106,8 +118,8 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     JsonObject component_1_code_coding_0 = component_1_code["coding"].createNestedObject();
     component_1_code_coding_0["system"] = "http://loinc.org";
     component_1_code_coding_0["code"] = "75951-4";
-    component_1_code_coding_0["display"] = "EEP Skin Set Temp";
-    component_1_code["text"] = "EEP Skin Set Temp";
+    component_1_code_coding_0["display"] = "Set Air Temp";
+    component_1_code["text"] = "Set Air Temp";
 
     JsonObject component_1_valueQuantity = component_1.createNestedObject("valueQuantity");
     component_1_valueQuantity["value"] = dlog_arr[2].toInt();
@@ -115,24 +127,39 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_1_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_1_valueQuantity["code"] = "Cel";
 
-   JsonObject component_2 = component.createNestedObject();
+    JsonObject component_2 = component.createNestedObject();
 
-  JsonObject component_2_code = component_2.createNestedObject("code");
+    JsonObject component_2_code = component_2.createNestedObject("code");
 
-  JsonObject component_2_code_coding_0 = component_2_code["coding"].createNestedObject();
-  component_2_code_coding_0["system"] = "http://loinc.org";
-  component_2_code_coding_0["code"] = "60839-8";
-  component_2_code_coding_0["display"] = "Measure Air temp";
-  component_2_code["text"] = "Measure Air temp";
+    JsonObject component_2_code_coding_0 = component_2_code["coding"].createNestedObject();
+    component_2_code_coding_0["system"] = "http://loinc.org";
+    component_2_code_coding_0["code"] = "60839-8";
+    component_2_code_coding_0["display"] = "Measure Air temp";
+    component_2_code["text"] = "Measure Air temp";
 
-  JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
-  component_2_valueQuantity["value"] = dlog_arr[3].toFloat();
-  component_2_valueQuantity["unit"] = "C";
-  component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_2_valueQuantity["code"] = "Cel";
+    JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
+    component_2_valueQuantity["value"] = dlog_arr[3].toFloat();
+    component_2_valueQuantity["unit"] = "C";
+    component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_2_valueQuantity["code"] = "Cel";
 
-  } 
- 
+    JsonObject component_4 = component.createNestedObject();
+
+    JsonObject component_4_code = component_4.createNestedObject("code");
+
+    JsonObject component_4_code_coding_0 = component_4_code["coding"].createNestedObject();
+    component_4_code_coding_0["system"] = "http://loinc.org";
+    component_4_code_coding_0["code"] = "60839-8";
+    component_4_code_coding_0["display"] = "Measured Skin Temp 1";
+    component_4_code["text"] = "Measured Skin Temp 1";
+
+    JsonObject component_4_valueQuantity = component_4.createNestedObject("valueQuantity");
+    component_4_valueQuantity["value"] = dlog_arr[4].toFloat();
+    component_4_valueQuantity["unit"] = "C";
+    component_4_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_4_valueQuantity["code"] = "Cel";
+  }
+
 
   JsonObject component_3 = component.createNestedObject();
 
@@ -150,22 +177,6 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_3_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_3_valueQuantity["code"] = "%";
 
-  JsonObject component_4 = component.createNestedObject();
-
-  JsonObject component_4_code = component_4.createNestedObject("code");
-
-  JsonObject component_4_code_coding_0 = component_4_code["coding"].createNestedObject();
-  component_4_code_coding_0["system"] = "http://loinc.org";
-  component_4_code_coding_0["code"] = "60839-8";
-  component_4_code_coding_0["display"] = "Measured Skin Temp 1";
-  component_4_code["text"] = "Measured Skin Temp 1";
-
-  JsonObject component_4_valueQuantity = component_4.createNestedObject("valueQuantity");
-  component_4_valueQuantity["value"] = dlog_arr[4].toFloat();
-  component_4_valueQuantity["unit"] = "C";
-  component_4_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_4_valueQuantity["code"] = "Cel";
-
   JsonObject component_5 = component.createNestedObject();
 
   JsonObject component_5_code = component_5.createNestedObject("code");
@@ -182,7 +193,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_5_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_5_valueQuantity["code"] = "Cel";
 
-   JsonObject component_6 = component.createNestedObject();
+  JsonObject component_6 = component.createNestedObject();
 
   JsonObject component_6_code = component_6.createNestedObject("code");
 
@@ -358,166 +369,166 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_16_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_16_valueQuantity["code"] = "Cel";
 
-  JsonObject component_17 = component.createNestedObject();
+  // JsonObject component_17 = component.createNestedObject();
 
-  JsonObject component_17_code = component_17.createNestedObject("code");
+  // JsonObject component_17_code = component_17.createNestedObject("code");
 
-  JsonObject component_17_code_coding_0 = component_17_code["coding"].createNestedObject();
-  component_17_code_coding_0["system"] = "http://loinc.org";
-  component_17_code_coding_0["code"] = "73793-2";
-  component_17_code_coding_0["display"] = "check";
-  component_17_code["text"] = "check";
+  // JsonObject component_17_code_coding_0 = component_17_code["coding"].createNestedObject();
+  // component_17_code_coding_0["system"] = "http://loinc.org";
+  // component_17_code_coding_0["code"] = "73793-2";
+  // component_17_code_coding_0["display"] = "check";
+  // component_17_code["text"] = "check";
 
-  JsonObject component_17_valueQuantity = component_17.createNestedObject("valueQuantity");
-  component_17_valueQuantity["value"] = dlog_arr[18].toInt();
-  component_17_valueQuantity["unit"] = "xxx";
-  component_17_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_17_valueQuantity["code"] = "xxx";
+  // JsonObject component_17_valueQuantity = component_17.createNestedObject("valueQuantity");
+  // component_17_valueQuantity["value"] = dlog_arr[18].toInt();
+  // component_17_valueQuantity["unit"] = "xxx";
+  // component_17_valueQuantity["system"] = "http://unitsofmeasure.org";
+  // component_17_valueQuantity["code"] = "xxx";
 
- if (dlog_arr[19] != "0" && dlog_arr[20] != "0"  && dlog_arr[21] != "0" && dlog_arr[22] != "0")
- {
-  // JsonObject component_6 = component.createNestedObject();
+  if (dlog_arr[18] != "0" && dlog_arr[19] != "0" && dlog_arr[20] != "0" && dlog_arr[21] != "0" && dlog_arr[22] != "0") {
+    
+    JsonObject component_17 = component.createNestedObject();
 
-  // JsonObject component_6_code = component_6.createNestedObject("code");
+    JsonObject component_17_code = component_17.createNestedObject("code");
 
-  // JsonObject component_6_code_coding_0 = component_6_code["coding"].createNestedObject();
-  // component_6_code_coding_0["system"] = "http://loinc.org";
-  // component_6_code_coding_0["code"] = "20564-1";
-  // component_6_code_coding_0["display"] = "SpO2";
-  // component_6_code["text"] = "SpO2";
+    JsonObject component_17_code_coding_0 = component_17_code["coding"].createNestedObject();
+    component_17_code_coding_0["system"] = "http://loinc.org";
+    component_17_code_coding_0["code"] = "20564-1";
+    component_17_code_coding_0["display"] = "SpO2";
+    component_17_code["text"] = "SpO2";
 
-  // JsonObject component_6_valueQuantity = component_6.createNestedObject("valueQuantity");
-  // component_6_valueQuantity["value"] = dlog_arr[6].toInt();
-  // component_6_valueQuantity["unit"] = "%";
-  // component_6_valueQuantity["system"] = "http://unitsofmeasure.org";
-  // component_6_valueQuantity["code"] = "%";
+    JsonObject component_17_valueQuantity = component_17.createNestedObject("valueQuantity");
+    component_17_valueQuantity["value"] = dlog_arr[18].toInt();
+    component_17_valueQuantity["unit"] = "%";
+    component_17_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_17_valueQuantity["code"] = "%";
 
-  JsonObject component_18 = component.createNestedObject();
+    JsonObject component_18 = component.createNestedObject();
 
-  JsonObject component_18_code = component_18.createNestedObject("code");
+    JsonObject component_18_code = component_18.createNestedObject("code");
 
-  JsonObject component_18_code_coding_0 = component_18_code["coding"].createNestedObject();
-  component_18_code_coding_0["system"] = "http://loinc.org";
-  component_18_code_coding_0["code"] = "8867-4";
-  component_18_code_coding_0["display"] = "Pulse Rate";
-  component_18_code["text"] = "Pulse Rate";
+    JsonObject component_18_code_coding_0 = component_18_code["coding"].createNestedObject();
+    component_18_code_coding_0["system"] = "http://loinc.org";
+    component_18_code_coding_0["code"] = "8867-4";
+    component_18_code_coding_0["display"] = "Pulse Rate";
+    component_18_code["text"] = "Pulse Rate";
 
-  JsonObject component_18_valueQuantity = component_18.createNestedObject("valueQuantity");
-  component_18_valueQuantity["value"] = dlog_arr[19].toInt();
-  component_18_valueQuantity["unit"] = "%";
-  component_18_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_18_valueQuantity["code"] = "%";
+    JsonObject component_18_valueQuantity = component_18.createNestedObject("valueQuantity");
+    component_18_valueQuantity["value"] = dlog_arr[19].toInt();
+    component_18_valueQuantity["unit"] = "%";
+    component_18_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_18_valueQuantity["code"] = "%";
 
-  JsonObject component_19 = component.createNestedObject();
+    JsonObject component_19 = component.createNestedObject();
 
-  JsonObject component_19_code = component_19.createNestedObject("code");
+    JsonObject component_19_code = component_19.createNestedObject("code");
 
-  JsonObject component_19_code_coding_0 = component_19_code["coding"].createNestedObject();
-  component_19_code_coding_0["system"] = "http://loinc.org";
-  component_19_code_coding_0["code"] = "73794-0";
-  component_19_code_coding_0["display"] = "PI";
-  component_19_code["text"] = "PI";
+    JsonObject component_19_code_coding_0 = component_19_code["coding"].createNestedObject();
+    component_19_code_coding_0["system"] = "http://loinc.org";
+    component_19_code_coding_0["code"] = "73794-0";
+    component_19_code_coding_0["display"] = "PI";
+    component_19_code["text"] = "PI";
 
-  JsonObject component_19_valueQuantity = component_19.createNestedObject("valueQuantity");
-  component_19_valueQuantity["value"] = dlog_arr[20].toInt();
-  component_19_valueQuantity["unit"] = "%";
-  component_19_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_19_valueQuantity["code"] = "%";
+    JsonObject component_19_valueQuantity = component_19.createNestedObject("valueQuantity");
+    component_19_valueQuantity["value"] = dlog_arr[20].toInt();
+    component_19_valueQuantity["unit"] = "%";
+    component_19_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_19_valueQuantity["code"] = "%";
 
-  JsonObject component_20 = component.createNestedObject();
+    JsonObject component_20 = component.createNestedObject();
 
-  JsonObject component_20_code = component_20.createNestedObject("code");
+    JsonObject component_20_code = component_20.createNestedObject("code");
 
-  JsonObject component_20_code_coding_0 = component_20_code["coding"].createNestedObject();
-  component_20_code_coding_0["system"] = "http://loinc.org";
-  component_20_code_coding_0["code"] = "XXXXXXX";
-  component_20_code_coding_0["display"] = "PVI";
-  component_20_code["text"] = "PVI";
+    JsonObject component_20_code_coding_0 = component_20_code["coding"].createNestedObject();
+    component_20_code_coding_0["system"] = "http://loinc.org";
+    component_20_code_coding_0["code"] = "XXXXXXX";
+    component_20_code_coding_0["display"] = "PVI";
+    component_20_code["text"] = "PVI";
 
-  JsonObject component_20_valueQuantity = component_20.createNestedObject("valueQuantity");
-  component_20_valueQuantity["value"] = dlog_arr[21].toInt();
-  component_20_valueQuantity["unit"] = "m";
-  component_20_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_20_valueQuantity["code"] = "m";
+    JsonObject component_20_valueQuantity = component_20.createNestedObject("valueQuantity");
+    component_20_valueQuantity["value"] = dlog_arr[21].toInt();
+    component_20_valueQuantity["unit"] = "m";
+    component_20_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_20_valueQuantity["code"] = "m";
 
-  JsonObject component_21 = component.createNestedObject();
+    JsonObject component_21 = component.createNestedObject();
 
-  JsonObject component_21_code = component_21.createNestedObject("code");
+    JsonObject component_21_code = component_21.createNestedObject("code");
 
-  JsonObject component_21_code_coding_0 = component_21_code["coding"].createNestedObject();
-  component_21_code_coding_0["system"] = "http://loinc.org";
-  component_21_code_coding_0["code"] = "73793-2";
-  component_21_code_coding_0["display"] = "SIQ";
-  component_21_code["text"] = "SIQ";
+    JsonObject component_21_code_coding_0 = component_21_code["coding"].createNestedObject();
+    component_21_code_coding_0["system"] = "http://loinc.org";
+    component_21_code_coding_0["code"] = "73793-2";
+    component_21_code_coding_0["display"] = "SIQ";
+    component_21_code["text"] = "SIQ";
 
-  JsonObject component_21_valueQuantity = component_21.createNestedObject("valueQuantity");
-  component_21_valueQuantity["value"] = dlog_arr[22].toInt();
-  component_21_valueQuantity["unit"] = "m";
-  component_21_valueQuantity["system"] = "http://unitsofmeasure.org";
-  component_21  _valueQuantity["code"] = "m";
- }
+    JsonObject component_21_valueQuantity = component_21.createNestedObject("valueQuantity");
+    component_21_valueQuantity["value"] = dlog_arr[22].toInt();
+    component_21_valueQuantity["unit"] = "m";
+    component_21_valueQuantity["system"] = "http://unitsofmeasure.org";
+    component_21_valueQuantity["code"] = "m";
+  }
 
   serializeJson(inc_log, return_data);
 }
 
 
-void inc_alarm(String &return_data, String &in_data, String &d_id, String &p_id, String &c_id, String &o_id) { 
-const int total_alarms = 60;
-const int additional_element_size = 50;
+void inc_alarm(String &return_data, String &in_data, String &d_id, String &p_id, String &c_id, String &o_id) {
+  const int total_alarms = 60;
+  const int additional_element_size = 50;
 
-const char* Alarm_Data[total_alarms][2] = {
-  {"Skin1 Temperature High", "Medium Priority"},    // 0
-  {"Skin1 Temperature Low", "Medium Priority"},     // 1
-  {"Skin2 Temperature High", "Medium Priority"},    // 2
-  {"Skin2 Temperature Low", "Medium Priority"},     // 3
-  {"Air Temperature High", "Medium Priority"},      // 4
-  {"Air Temperature Low", "Medium Priority"},       // 5
-  {"Oxygen High", "Medium Priority"},               // 6
-  {"Oxygen Low", "Medium Priority"},                // 7
-  {"Humidity High", "Medium Priority"},             // 8
-  {"Humidity Low", "Medium Priority"},                 // 9
-  {"Air Heater Fail", "High Priority"},             // 10
-  {"Water Heater Fail", "High Priority"},           // 11
-  {"Blower Fail", "High Priority"},                 // 12
-  {"Power Fail", "High Priority"},                  // 13
-  {"Battery Low", "High Priority"},                 // 14
-  {"Sensor Board Failed", "High Priority"},         // 15
-  {"Left Door Open", "Medium Priority"},            // 16
-  {"Right Door Open", "Medium Priority"},           // 17
-  {"Oxygen Valve Fail", "High Priority"},           // 18
-  {"Water Probe Fail", "High Priority"},            // 19
-  {"Tilt Actuator Fail", "Low Priority"},          // 20
-  {"Air Filter Fail", "High Priority"},             // 21
-  {"Fill The Water Tank", "Medium Priority"},       // 22
-  {"Check Display Cable", "Medium Priority"},       // 23
-  {"Air Over Temperature", "High Priority"},        // 24
-  {"Air Probe1 Fail", "High Priority"},             // 25
-  {"Air Probe2 Fail", "High Priority"},             // 26
-  {"Skin Probe1 Fail", "Medium Priority"},            // 27
-  {"Skin Probe2 Fail", "Medium Priority"},            // 28
-  {"Humidity Sensor Fail", "Medium Priority"},        // 29
-  {"Oxygen Sensor1 Fail", "Medium Priority"},         // 30
-  {"Oxygen Sensor2 Fail", "Medium Priority"},         // 31
-  {"Sensor Box Displaced", "Medium Priority"},      // 32
-  {"Sensor Box Displaced", "Medium Priority"},      // 33
-  {"BWS OverLoad", "Low Priority"},                // 34
-  {"BWS Connection Fail", "Low Priority"},         // 35
-  {"BWS Sensor Fail", "Low Priority"},             // 36
-  {"BWS Sensor Fail", "Low Priority"},             // 37
-  {"BWS Sensor Fail", "Low Priority"},             // 38
-  {"BWS Sensor Fail", "Low Priority"},             // 39
-  {"Baby Over Temperature", "High Priority"},       // 40
-  {"Sensor Comm Failed", "High Priority"},          // 41
-  {"Air Probe Fail", "High Priority"},              // 42
-  {"Blower speed Low", "Medium Priority"},          // 43
-  {"Blower Control Fail", "High Priority"},         // 44
-  {"Sensor Memory Fail", "Low Priority"},          // 45
-  {"Control Memory Fail", "Low Priority"},         // 46
-  {"Sensor Fan Fail", "High Priority"},             // 47
-  {"Check Probe-Baby cold", "Medium Priority"},     // 48
-  {"Water Heater Dry", "High Priority"},            // 49 rtd alm  //Water heater hot to changed into water heater dry 28062023
-  {"Control Board Removed", "High Priority"},       // 50 //This message will be displayed from a separate group of flags
- 
+  const char *Alarm_Data[total_alarms][2] = {
+    { "Skin1 Temperature High", "Medium Priority" },  // 0
+    { "Skin1 Temperature Low", "Medium Priority" },   // 1
+    { "Skin2 Temperature High", "Medium Priority" },  // 2
+    { "Skin2 Temperature Low", "Medium Priority" },   // 3
+    { "Air Temperature High", "Medium Priority" },    // 4
+    { "Air Temperature Low", "Medium Priority" },     // 5
+    { "Oxygen High", "Medium Priority" },             // 6
+    { "Oxygen Low", "Medium Priority" },              // 7
+    { "Humidity High", "Medium Priority" },           // 8
+    { "Humidity Low", "Medium Priority" },            // 9
+    { "Air Heater Fail", "High Priority" },           // 10
+    { "Water Heater Fail", "High Priority" },         // 11
+    { "Blower Fail", "High Priority" },               // 12
+    { "Power Fail", "High Priority" },                // 13
+    { "Battery Low", "High Priority" },               // 14
+    { "Sensor Board Failed", "High Priority" },       // 15
+    { "Left Door Open", "Medium Priority" },          // 16
+    { "Right Door Open", "Medium Priority" },         // 17
+    { "Oxygen Valve Fail", "High Priority" },         // 18
+    { "Water Probe Fail", "High Priority" },          // 19
+    { "Tilt Actuator Fail", "Low Priority" },         // 20
+    { "Air Filter Fail", "High Priority" },           // 21
+    { "Fill The Water Tank", "Medium Priority" },     // 22
+    { "Check Display Cable", "Medium Priority" },     // 23
+    { "Air Over Temperature", "High Priority" },      // 24
+    { "Air Probe1 Fail", "High Priority" },           // 25
+    { "Air Probe2 Fail", "High Priority" },           // 26
+    { "Skin Probe1 Fail", "Medium Priority" },        // 27
+    { "Skin Probe2 Fail", "Medium Priority" },        // 28
+    { "Humidity Sensor Fail", "Medium Priority" },    // 29
+    { "Oxygen Sensor1 Fail", "Medium Priority" },     // 30
+    { "Oxygen Sensor2 Fail", "Medium Priority" },     // 31
+    { "Sensor Box Displaced", "Medium Priority" },    // 32
+    { "Sensor Box Displaced", "Medium Priority" },    // 33
+    { "BWS OverLoad", "Low Priority" },               // 34
+    { "BWS Connection Fail", "Low Priority" },        // 35
+    { "BWS Sensor Fail", "Low Priority" },            // 36
+    { "BWS Sensor Fail", "Low Priority" },            // 37
+    { "BWS Sensor Fail", "Low Priority" },            // 38
+    { "BWS Sensor Fail", "Low Priority" },            // 39
+    { "Baby Over Temperature", "High Priority" },     // 40
+    { "Sensor Comm Failed", "High Priority" },        // 41
+    { "Air Probe Fail", "High Priority" },            // 42
+    { "Blower speed Low", "Medium Priority" },        // 43
+    { "Blower Control Fail", "High Priority" },       // 44
+    { "Sensor Memory Fail", "Low Priority" },         // 45
+    { "Control Memory Fail", "Low Priority" },        // 46
+    { "Sensor Fan Fail", "High Priority" },           // 47
+    { "Check Probe-Baby cold", "Medium Priority" },   // 48
+    { "Water Heater Dry", "High Priority" },          // 49 rtd alm  //Water heater hot to changed into water heater dry 28062023
+    { "Control Board Removed", "High Priority" },     // 50 //This message will be displayed from a separate group of flags
+  };
 
   int index = 0;
   String Index;
@@ -555,11 +566,11 @@ const char* Alarm_Data[total_alarms][2] = {
 
 
   for (int i = 0; i < count; i++) {
-      String temp = dlog_arr[i].substring(1);
-      index = temp.toInt();
-      Index = String(index);
-     name = Alarm_Data[index][0];
-     
+    String temp = dlog_arr[i].substring(1);
+    index = temp.toInt();
+    Index = String(index);
+    name = Alarm_Data[index][0];
+
     JsonObject extension_0_coding_obj = extension_0_valueCodeableConcept_coding.createNestedObject();
     JsonArray extension_0_coding_arr = alarm["extension_0_coding"];
 
@@ -573,8 +584,10 @@ const char* Alarm_Data[total_alarms][2] = {
     JsonArray extension_1_coding_arr = alarm["extension_1_coding"];
 
     extension_1_coding_obj["system"] = "http://example.com/fhir/alarm-prioritiess";
-    extension_1_coding_obj["code"] =Alarm_Data[index][1];;
-    extension_1_coding_obj["display"] = Alarm_Data[index][1];;
+    extension_1_coding_obj["code"] = Alarm_Data[index][1];
+    ;
+    extension_1_coding_obj["display"] = Alarm_Data[index][1];
+    ;
 
     extension_1_coding_arr.add(extension_1_coding_obj);
   }
