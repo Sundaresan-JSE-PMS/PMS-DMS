@@ -1,7 +1,6 @@
 void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, String &c_id, String &o_id) {
-  String dlog_arr[500];
+  String dlog_arr[40];
   split_str(in_data, dlog_arr, ",");
-
   DynamicJsonDocument inc_log(4096);
 
   inc_log["id"] = o_id;
@@ -25,7 +24,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
 
   JsonArray component = inc_log.createNestedArray("component");
 
-  if (dlog_arr[1] == "BAB") {
+  if (dlog_arr[0] == "BAB") {
 
     JsonObject component_0 = component.createNestedObject();
 
@@ -54,7 +53,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_1_code["text"] = "Set Skin Temp";
 
     JsonObject component_1_valueQuantity = component_1.createNestedObject("valueQuantity");
-    component_1_valueQuantity["value"] = dlog_arr[3].toFloat();
+    component_1_valueQuantity["value"] = dlog_arr[2].toFloat();
     component_1_valueQuantity["unit"] = "C";
     component_1_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_1_valueQuantity["code"] = "Cel";
@@ -70,7 +69,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_2_code["text"] = "Measured Skin Temp 1";
 
     JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
-    component_2_valueQuantity["value"] = dlog_arr[4].toFloat();
+    component_2_valueQuantity["value"] = dlog_arr[3].toFloat();
     component_2_valueQuantity["unit"] = "C";
     component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_2_valueQuantity["code"] = "Cel";
@@ -86,14 +85,14 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_4_code["text"] = "Measure Air temp";
 
     JsonObject component_4_valueQuantity = component_4.createNestedObject("valueQuantity");
-    component_4_valueQuantity["value"] = dlog_arr[2].toInt();
+    component_4_valueQuantity["value"] = dlog_arr[1].toInt();
     component_4_valueQuantity["unit"] = "C";
     component_4_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_4_valueQuantity["code"] = "Cel";
 
   }
 
-  else if (dlog_arr[1] == "AIR") {
+  else if (dlog_arr[0] == "AIR") {
 
     JsonObject component_0 = component.createNestedObject();
 
@@ -122,7 +121,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_1_code["text"] = "Set Air Temp";
 
     JsonObject component_1_valueQuantity = component_1.createNestedObject("valueQuantity");
-    component_1_valueQuantity["value"] = dlog_arr[2].toInt();
+    component_1_valueQuantity["value"] = dlog_arr[1].toInt();
     component_1_valueQuantity["unit"] = "C";
     component_1_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_1_valueQuantity["code"] = "Cel";
@@ -138,7 +137,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_2_code["text"] = "Measure Air temp";
 
     JsonObject component_2_valueQuantity = component_2.createNestedObject("valueQuantity");
-    component_2_valueQuantity["value"] = dlog_arr[3].toFloat();
+    component_2_valueQuantity["value"] = dlog_arr[2].toFloat();
     component_2_valueQuantity["unit"] = "C";
     component_2_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_2_valueQuantity["code"] = "Cel";
@@ -154,7 +153,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_4_code["text"] = "Measured Skin Temp 1";
 
     JsonObject component_4_valueQuantity = component_4.createNestedObject("valueQuantity");
-    component_4_valueQuantity["value"] = dlog_arr[4].toFloat();
+    component_4_valueQuantity["value"] = dlog_arr[3].toFloat();
     component_4_valueQuantity["unit"] = "C";
     component_4_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_4_valueQuantity["code"] = "Cel";
@@ -172,7 +171,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_3_code["text"] = "Heater Level";
 
   JsonObject component_3_valueQuantity = component_3.createNestedObject("valueQuantity");
-  component_3_valueQuantity["value"] = dlog_arr[10].toInt();
+  component_3_valueQuantity["value"] = dlog_arr[9].toInt();
   component_3_valueQuantity["unit"] = "%";
   component_3_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_3_valueQuantity["code"] = "%";
@@ -188,7 +187,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_5_code["text"] = "Measured Skin Temp 2";
 
   JsonObject component_5_valueQuantity = component_5.createNestedObject("valueQuantity");
-  component_5_valueQuantity["value"] = dlog_arr[5].toInt();
+  component_5_valueQuantity["value"] = dlog_arr[4].toInt();
   component_5_valueQuantity["unit"] = "C";
   component_5_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_5_valueQuantity["code"] = "Cel";
@@ -204,7 +203,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_6_code["text"] = "Measure Weigh";
 
   JsonObject component_6_valueQuantity = component_6.createNestedObject("valueQuantity");
-  component_6_valueQuantity["value"] = dlog_arr[6].toInt();
+  component_6_valueQuantity["value"] = dlog_arr[5].toInt();
   component_6_valueQuantity["unit"] = "g";
   component_6_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_6_valueQuantity["code"] = "[g]";
@@ -220,7 +219,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_7_code["text"] = "Humidity set";
 
   JsonObject component_7_valueQuantity = component_7.createNestedObject("valueQuantity");
-  component_7_valueQuantity["value"] = dlog_arr[7].toInt();
+  component_7_valueQuantity["value"] = dlog_arr[6].toInt();
   component_7_valueQuantity["unit"] = "%";
   component_7_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_7_valueQuantity["code"] = "%";
@@ -236,7 +235,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_8_code["text"] = "Measure Humidity";
 
   JsonObject component_8_valueQuantity = component_8.createNestedObject("valueQuantity");
-  component_8_valueQuantity["value"] = dlog_arr[8].toInt();
+  component_8_valueQuantity["value"] = dlog_arr[7].toInt();
   component_8_valueQuantity["unit"] = "%";
   component_8_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_8_valueQuantity["code"] = "%";
@@ -252,7 +251,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_9_code["text"] = "BLDC RPM";
 
   JsonObject component_9_valueQuantity = component_9.createNestedObject("valueQuantity");
-  component_9_valueQuantity["value"] = dlog_arr[9].toInt();
+  component_9_valueQuantity["value"] = dlog_arr[8].toInt();
   component_9_valueQuantity["unit"] = "RPM";
   component_9_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_9_valueQuantity["code"] = "RPM";
@@ -268,7 +267,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_10_code["text"] = "Air Heater Temp";
 
   JsonObject component_10_valueQuantity = component_10.createNestedObject("valueQuantity");
-  component_10_valueQuantity["value"] = dlog_arr[11].toInt();
+  component_10_valueQuantity["value"] = dlog_arr[10].toInt();
   component_10_valueQuantity["unit"] = "C";
   component_10_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_10_valueQuantity["code"] = "Cel";
@@ -284,7 +283,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_11_code["text"] = "Humidity Heater Temp";
 
   JsonObject component_11_valueQuantity = component_11.createNestedObject("valueQuantity");
-  component_11_valueQuantity["value"] = dlog_arr[12].toInt();
+  component_11_valueQuantity["value"] = dlog_arr[11].toInt();
   component_11_valueQuantity["unit"] = "C";
   component_11_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_11_valueQuantity["code"] = "Cel";
@@ -300,7 +299,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_12_code["text"] = "Humidity Heater Power";
 
   JsonObject component_12_valueQuantity = component_12.createNestedObject("valueQuantity");
-  component_12_valueQuantity["value"] = dlog_arr[13].toInt();
+  component_12_valueQuantity["value"] = dlog_arr[12].toInt();
   component_12_valueQuantity["unit"] = "%";
   component_12_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_12_valueQuantity["code"] = "%";
@@ -316,7 +315,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_13_code["text"] = "Heater Integrator";
 
   JsonObject component_13_valueQuantity = component_13.createNestedObject("valueQuantity");
-  component_13_valueQuantity["value"] = dlog_arr[14].toInt();
+  component_13_valueQuantity["value"] = dlog_arr[13].toInt();
   component_13_valueQuantity["unit"] = "%";
   component_13_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_13_valueQuantity["code"] = "%";
@@ -332,7 +331,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_14_code["text"] = "Heater Proportional";
 
   JsonObject component_14_valueQuantity = component_14.createNestedObject("valueQuantity");
-  component_14_valueQuantity["value"] = dlog_arr[15].toInt();
+  component_14_valueQuantity["value"] = dlog_arr[14].toInt();
   component_14_valueQuantity["unit"] = "%";
   component_14_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_14_valueQuantity["code"] = "%";
@@ -348,7 +347,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_15_code["text"] = "Heater Derivative";
 
   JsonObject component_15_valueQuantity = component_15.createNestedObject("valueQuantity");
-  component_15_valueQuantity["value"] = dlog_arr[16].toInt();
+  component_15_valueQuantity["value"] = dlog_arr[15].toInt();
   component_15_valueQuantity["unit"] = "%";
   component_15_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_15_valueQuantity["code"] = "%";
@@ -364,7 +363,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   component_16_code["text"] = "Humidity Temp";
 
   JsonObject component_16_valueQuantity = component_16.createNestedObject("valueQuantity");
-  component_16_valueQuantity["value"] = dlog_arr[17].toInt();
+  component_16_valueQuantity["value"] = dlog_arr[16].toInt();
   component_16_valueQuantity["unit"] = "C";
   component_16_valueQuantity["system"] = "http://unitsofmeasure.org";
   component_16_valueQuantity["code"] = "Cel";
@@ -385,7 +384,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
   // component_17_valueQuantity["system"] = "http://unitsofmeasure.org";
   // component_17_valueQuantity["code"] = "xxx";
 
-  if (dlog_arr[18] != "0" && dlog_arr[19] != "0" && dlog_arr[20] != "0" && dlog_arr[21] != "0" && dlog_arr[22] != "0") {
+  if (dlog_arr[17] != 0 && dlog_arr[18] != 0 && dlog_arr[19] != 0 && dlog_arr[20] != 0 && dlog_arr[21] != 0) {
     
     JsonObject component_17 = component.createNestedObject();
 
@@ -398,7 +397,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_17_code["text"] = "SpO2";
 
     JsonObject component_17_valueQuantity = component_17.createNestedObject("valueQuantity");
-    component_17_valueQuantity["value"] = dlog_arr[18].toInt();
+    component_17_valueQuantity["value"] = dlog_arr[17].toInt();
     component_17_valueQuantity["unit"] = "%";
     component_17_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_17_valueQuantity["code"] = "%";
@@ -414,7 +413,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_18_code["text"] = "Pulse Rate";
 
     JsonObject component_18_valueQuantity = component_18.createNestedObject("valueQuantity");
-    component_18_valueQuantity["value"] = dlog_arr[19].toInt();
+    component_18_valueQuantity["value"] = dlog_arr[18].toInt();
     component_18_valueQuantity["unit"] = "%";
     component_18_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_18_valueQuantity["code"] = "%";
@@ -430,7 +429,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_19_code["text"] = "PI";
 
     JsonObject component_19_valueQuantity = component_19.createNestedObject("valueQuantity");
-    component_19_valueQuantity["value"] = dlog_arr[20].toInt();
+    component_19_valueQuantity["value"] = dlog_arr[19].toInt();
     component_19_valueQuantity["unit"] = "%";
     component_19_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_19_valueQuantity["code"] = "%";
@@ -446,7 +445,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_20_code["text"] = "PVI";
 
     JsonObject component_20_valueQuantity = component_20.createNestedObject("valueQuantity");
-    component_20_valueQuantity["value"] = dlog_arr[21].toInt();
+    component_20_valueQuantity["value"] = dlog_arr[20].toInt();
     component_20_valueQuantity["unit"] = "m";
     component_20_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_20_valueQuantity["code"] = "m";
@@ -462,7 +461,7 @@ void inc_data(String &return_data, String &in_data, String &d_id, String &p_id, 
     component_21_code["text"] = "SIQ";
 
     JsonObject component_21_valueQuantity = component_21.createNestedObject("valueQuantity");
-    component_21_valueQuantity["value"] = dlog_arr[22].toInt();
+    component_21_valueQuantity["value"] = dlog_arr[21].toInt();
     component_21_valueQuantity["unit"] = "m";
     component_21_valueQuantity["system"] = "http://unitsofmeasure.org";
     component_21_valueQuantity["code"] = "m";
@@ -535,7 +534,7 @@ void inc_alarm(String &return_data, String &in_data, String &d_id, String &p_id,
   String priority;
   String display;
   String name;
-  String dlog_arr[20];
+  String dlog_arr[50];
   int count = split_str(in_data, dlog_arr, ":");
 
   DynamicJsonDocument alarm(4000);
@@ -566,7 +565,7 @@ void inc_alarm(String &return_data, String &in_data, String &d_id, String &p_id,
 
 
   for (int i = 0; i < count; i++) {
-    String temp = dlog_arr[i].substring(1);
+    String temp = dlog_arr[i];
     index = temp.toInt();
     Index = String(index);
     name = Alarm_Data[index][0];
@@ -585,9 +584,7 @@ void inc_alarm(String &return_data, String &in_data, String &d_id, String &p_id,
 
     extension_1_coding_obj["system"] = "http://example.com/fhir/alarm-prioritiess";
     extension_1_coding_obj["code"] = Alarm_Data[index][1];
-    ;
     extension_1_coding_obj["display"] = Alarm_Data[index][1];
-    ;
 
     extension_1_coding_arr.add(extension_1_coding_obj);
   }
