@@ -21,8 +21,8 @@ ESP32Time rtc;
 #define LED 2  //needed?
 #define FORMAT_SPIFFS_IF_FAILED true
 File root;  //needed?
-#define wifissid "mm"
-#define pw "manutd13"
+#define wifissid "Airtel-MyWiFi-AMF-311WW-FB32"
+#define pw "32bcc665"
 #define static_ssid_pw 1
 
 WiFiClientSecure client;  //needed?
@@ -475,10 +475,12 @@ void loop() {
         Serial.println(httpCode);
 
         output = "";
-        inc_alarm(output, split_arr[22], device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
-        Serial.println(output);
-        httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
-        Serial.println(httpCode);
+        int vvtemp = inc_alarm(output, split_arr[22], device_resource_id, patient_resource_id, communication_resource_id, observation_resource_id);
+        if(vvtemp!=1){
+          Serial.println(output);
+          httpCode = http_send("http://13.126.5.10:9444/fhir-server/api/v4/Communication/" + communication_resource_id, httpPUT, output);
+          Serial.println(httpCode);
+        }
       }
     }
   }
