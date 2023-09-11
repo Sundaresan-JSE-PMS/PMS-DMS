@@ -1,9 +1,11 @@
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,  List, ListItem, ListItemButton, Snackbar, Stack, Typography,} from '@mui/material'
+import { Alert, Button, Dialog, DialogActions,Menu, DialogContent, DialogContentText, DialogTitle,  List, ListItem, ListItemButton, Select, Snackbar, Stack, Typography, MenuItem,} from '@mui/material'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Paper from '@mui/material/Paper'
 import { FC, useEffect, useState } from 'react'
+import SettingsIcon from '@mui/icons-material/Settings';
+import IconButton from '@mui/material/IconButton';
 
 export interface roomData {
     roomName: string;
@@ -49,6 +51,7 @@ export const RoomCard: FC<roomData> = (props): JSX.Element => {
             }
         }
     }])
+
     const [open, setOpen] = useState(false);
     // const [deviceInRoom, setDeviceInRoom] = useState([{
     //     resource: {
@@ -102,7 +105,19 @@ export const RoomCard: FC<roomData> = (props): JSX.Element => {
     //         // </List>
     //     )
     // }
-    
+    // const [X, setX] = useState(false)
+    // SettingsIcon  onClick={() => {setX(true); setDeleteRoom(false)}}
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const handleClose1 = () => {
+        setAnchorEl(null);
+      };
+      const open1 = Boolean(anchorEl);
+      const handleClick1 = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+      };
+
+
+
     const addButton = (index: any) => {
         let data = {}
         let vvtemp = {"reference": `Location/${props.roomId}`}
@@ -326,14 +341,42 @@ export const RoomCard: FC<roomData> = (props): JSX.Element => {
              }}
           >
             <Stack width={'100%'} direction={'row'} justifyContent={'center'} textAlign={'center'}>
-            <CardContent sx={{marginTop:'5%', width:'100%', justifyContent:'center', textAlign:'center'}}>
-                    <Typography sx={{userSelect:"none"}}>{props.roomName}</Typography>
-                    <Stack spacing={"10%"} marginTop={'10%'}>
-                    <Button variant="contained" sx={{marginTop:'10%'}} onClick={()=> {setOpen(true)}}>Add/Move Devices</Button>
-                    <Stack direction={'row'} width={"100%"} justifyContent={'space-between'}>
-                        <Button variant="outlined" color='error' onClick={() => {setDeleteRoom(true)}}>Remove Room</Button>
-                        <Button variant="contained" color='error' onClick={() => {setDeleteDevice(true)}}>Remove Device</Button>
-                    </Stack>
+            <CardContent sx={{marginTop:'0%', width:'100%', justifyContent:'center', textAlign:'center'}}>
+                    <Stack marginTop={'0%'}>
+                   
+                    <IconButton sx={{width:'10%',marginLeft:'auto',marginRight:'3%'}} onClick={handleClick1}><SettingsIcon /></IconButton>
+                    <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={open1}
+        onClose={handleClose1}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+    
+        
+      >
+        <Stack >
+        <Button variant="contained" color='inherit' onClick={handleClose1}  >Rename</Button>
+        <Button variant="contained" color='warning' onClick={handleClose1}>Delete Room</Button>
+        </Stack>
+        
+        </Menu>
+
+
+                    <Typography sx={{userSelect:"none" ,marginTop:'5%'}}>{props.roomName}</Typography>
+                     </Stack>
+                    <Stack spacing={"10%"} marginTop={'10%'} width={'70%'} marginLeft={'auto'} marginRight={'auto'}>
+                        <Select sx={{fontSize:'10%'}  }><Button   onClick={()=> {setOpen(true)}}>Add/Move Devices</Button>
+                        </Select>
+                        <Button variant="outlined"  onClick={() => {setDeleteRoom(true)}} >Remove Room</Button>
+                        <Button variant="outlined" color='warning' onClick={() => {setDeleteDevice(true)}}>Remove Device</Button>
+                    
+                    {/* <Stack direction={'row'} width={"100%"} justifyContent={'space-between'}> */}
+                        
+                    {/* </Stack> */}
                     
                     </Stack>
             </CardContent>

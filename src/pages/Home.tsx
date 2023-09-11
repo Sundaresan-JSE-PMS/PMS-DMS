@@ -447,7 +447,7 @@ export const Home = (currentRoom: any) => {
                   <Typography>
                   <Box
                     sx={{
-                      // backgroundColor:'red',
+                      //backgroundColor:'red',
                       display: "flex",
                       flexWrap: "wrap",
                       gap: '2rem',
@@ -462,7 +462,7 @@ export const Home = (currentRoom: any) => {
                   </Typography>
                 </AccordionDetails>
               </Accordion >
-              <Accordion elevation={0} defaultExpanded={true} sx={{backgroundColor:"transparent", backgroundImage:'none' ,marginBottom:"10px", borderBottom:'2px solid #00B1FD', borderTop:'none'}}>
+              <Accordion elevation={0} defaultExpanded={true} sx={{backgroundColor:"transparent", backgroundImage:'none' ,marginBottom:"10px", borderBottom:'2px solid #00B1FD',}}>
                 <AccordionSummary
                   expandIcon={<ExpandMoreRounded sx={{color:"#00B1FD", fontSize:'300%'}}/>}
                   aria-controls="panel3a-content"

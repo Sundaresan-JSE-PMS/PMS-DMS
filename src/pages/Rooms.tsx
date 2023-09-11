@@ -4,6 +4,10 @@ import Box from '@mui/material/Box';
 import { RoomCard } from '../components/RoomCard';
 import { Alert, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, Paper, Snackbar, Stack, TextField, Typography, useMediaQuery, useTheme } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import { Settings } from '@mui/icons-material';
+import { faHospital } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import pmsLogo from "../assets/phx_logo.png";
 export const Rooms = () => {
     const {isAuthenticated} = useAuth0();
     const theme = useTheme();
@@ -21,7 +25,7 @@ export const Rooms = () => {
                     "value": String
                 }
             ],
-            "status": "",
+            "status": String,
             
         }
     }])
@@ -53,7 +57,6 @@ export const Rooms = () => {
         }
     
         setSnack(false);
-        console.log(event);
       };
       const addNewRoom = () => {
         const data = {
@@ -104,19 +107,18 @@ export const Rooms = () => {
             <Button onClick={() => {addNewRoom();setaddnewbutton(false)}} autoFocus>
                 Add
             </Button>
-            </DialogActions>
+             </DialogActions>
         </Dialog>
-    
         )
     }
     const roomBoxes = temproom.map((room) => {
         return(
-            <RoomCard roomName={String(room.resource.identifier[0].value)} roomId={String(room.resource.id)}></RoomCard>
+            <RoomCard roomName={room.resource.identifier[0].value} roomId={room.resource.id}></RoomCard>
         )
     })
   return (
-    <div>
-      
+    // <div style={{backgroundImage: `url(${pmsLogo})` }}>
+      <div>
       <Stack width={'100%'} direction={'row'} paddingTop={'2%'} justifyContent={'center'} textAlign={'center'}>
               <Typography variant='h5' color={'white'}>Rooms & Device Settings</Typography>
               {/* <Settings  sx={{marginLeft:'1%', fontSize:'200%', color:'white'}}/> */}
@@ -146,7 +148,7 @@ export const Rooms = () => {
             }}
           >
             
-            {temproom[0]?.resource.status!="" && roomBoxes}
+            {roomBoxes}
             <Box  width={"350px"} sx={{opacity:controlOpacity, backgroundColor:'transparent', border:`4px solid ${controlBorder}`, borderRadius:'30px'}} onMouseLeave={() => {setControlboarder("grey");setOpacity("0.8")}} onMouseEnter={() => {setControlboarder("#2BA0E0");setOpacity("1")}} onClick={() => {setaddnewbutton(true)}}>
               <Paper  elevation={2} sx={{ borderRadius: "25px",background:'transparent'}}>
                 <Card
@@ -162,13 +164,23 @@ export const Rooms = () => {
                 </Card>
               </Paper>
             </Box>
+
+            <Stack width={'50%'} justifyContent={'left'}  >
+              {/* below code is used to add background image to the webpage  */}
+            {/* <FontAwesomeIcon icon={faHospital} style={{ fontSize:'1000%',
+  textAlign:'left',
+  color:'white',
+  opacity:'0.1',
+} } />  */}
+
+            </Stack>
             </Box>
             <Snackbar open={snack} autoHideDuration={5000} onClose={handleClose}>
-              <Alert onClose={handleClose} variant="filled" severity={snackSucc ? 'success':'error'}>
-                  {snackSucc && "Operation Completed Successfully"}
-                  {!snackSucc && "Operation Failed"}
-              </Alert>
-            </Snackbar>
+                            <Alert onClose={handleClose} severity={snackSucc ? 'success':'error'}>
+                                {snackSucc && "Operation Completed Successfully"}
+                                {!snackSucc && "Operation Failed"}
+                            </Alert>
+                        </Snackbar>
             {addNewRoomButton()}
         </div>
     </div>

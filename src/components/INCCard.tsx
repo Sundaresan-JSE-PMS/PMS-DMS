@@ -128,7 +128,7 @@ export interface DeviceDetails {
 
 export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
 
-    const [alarmColor, setAlarmColor] = useState("transparent")
+    const [alarmColor, setAlarmColor] = useState("white")
     // const devicetimer = setInterval(timer, 10000)
 
 
@@ -188,12 +188,46 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
         let unit = props.observation_resource.component[index].valueQuantity.unit
         return ({data:data, unit:unit})
     }
+//     const [isBlinking, setIsBlinking] = useState(false);
+
+//   useEffect(() => {
+//     const intervalId = setInterval(() => {
+//       setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+//     }, 1000); // Adjust the blinking interval (in milliseconds) as needed
+
+//     return () => {
+//       clearInterval(intervalId);
+//     };
+//   }, []);
+   // Adjust the width and height as needed
+
+   const [isBlinking, setIsBlinking] = useState(false);
+
+   useEffect(() => {
+     let intervalId: number | undefined;
+ 
+     if (alarmColor) {
+       intervalId = setInterval(() => {
+         setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+       }, 1000); // Adjust the blinking interval (in milliseconds) as needed
+     } else {
+       clearInterval(intervalId);
+       setIsBlinking(false);
+     }
+ 
+     return () => {
+       clearInterval(intervalId);
+     };
+   }, [alarmColor]);
+
+
+
 
     useEffect(() => {
         let timer: number | undefined;
         
         if(newData){
-            timer = setInterval(() => {setNewData(false);setAlarmColor("transparent");clearInterval(timer)},15000)
+            timer = setInterval(() => {setNewData(false);setAlarmColor("white");clearInterval(timer)},15000)
 
         }
         return () => {
@@ -219,7 +253,7 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
         sm: "500px",
         md: "500px",
         lg: "500px"
-      }} sx={{backgroundColor:'#152634', borderRadius:'25px', border: `6px solid ${alarmColor}`, opacity:controlOpacity}} 
+      }} sx={{backgroundColor:'#152634', borderRadius:'25px', border: `6px solid ${isBlinking ? alarmColor : 'white'}`, opacity:controlOpacity}} 
       onMouseLeave={() => {setControlOpacity("0.8")}} onMouseEnter={() => {setControlOpacity("1")}}>
         
         <Link to="devicedata" style={{ textDecoration: 'none' }} state={{device_id: props.device_id, device_resource_id: props.device_resource_id, patient: props.patient, observation_resource: props.observation_resource, communication_resource: props.communication_resource, key: props.device_resource_id}}>
