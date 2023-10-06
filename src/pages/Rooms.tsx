@@ -36,7 +36,7 @@ export const Rooms:FC<roomdata> = (props) => {
     useEffect(() => {
         if(isAuthenticated){
         
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Location`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Location`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -78,7 +78,7 @@ export const Rooms:FC<roomdata> = (props) => {
             "name": newRoomName
         }
         // console.log
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Location`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Location`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "POST",
             body: JSON.stringify(data),

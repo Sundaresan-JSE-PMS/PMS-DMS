@@ -62,7 +62,7 @@ export const RoomCard: FC<roomData> = (props) => {
     const [deviceChanged, setDeviceChanged] = useState(false)
     const [renameRoom, setRenameRoom] = useState(false)
     useEffect(() => {
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Device?_count=20`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Device?_count=20`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -95,7 +95,7 @@ export const RoomCard: FC<roomData> = (props) => {
             "status": "suspended",
             "name": x
         }
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -144,7 +144,7 @@ export const RoomCard: FC<roomData> = (props) => {
             ...deviceList[Number(index)].resource,
             location: vvtemp
         }
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -170,7 +170,7 @@ export const RoomCard: FC<roomData> = (props) => {
         const { location, ...data } = device;
       
         // Define the URL and request options
-        const apiUrl = `http://13.126.5.10:9444/fhir-server/api/v4/Device/${device.id}`;
+        const apiUrl = `http://localhost:9444/fhir-server/api/v4/Device/${device.id}`;
         const requestOptions: RequestInit = {
           credentials: "omit",
           method: "PUT",
@@ -197,7 +197,7 @@ export const RoomCard: FC<roomData> = (props) => {
     const [deleteRoom, setDeleteRoom] = useState(false)
     const removeRoomButton = () => {
         console.log("Called")
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "DELETE",
             headers: {

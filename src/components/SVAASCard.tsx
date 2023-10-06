@@ -209,7 +209,7 @@ export const SVAASCard: FC<DeviceDetails> = (props): JSX.Element => {
         let timer: number | undefined;
         
         if(newData){
-            timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},7000)
+            timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},15000)
 
         }
         return () => {

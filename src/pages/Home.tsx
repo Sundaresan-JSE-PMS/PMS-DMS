@@ -144,7 +144,7 @@ console.log(loading)
   
   useEffect(() => {
     setLoading(true)
-    const socket = new WebSocket("ws://13.126.5.10:9444/fhir-server/api/v4/notification");
+    const socket = new WebSocket("ws://localhost:9444/fhir-server/api/v4/notification");
     socket.onopen = () => {
       console.log("Socket open successful");
     };
@@ -152,7 +152,7 @@ console.log(loading)
       var recieved_data = JSON.parse(data.data)
       if (recieved_data.location.split("/")[0] == "Observation"){
 
-          fetch(`http://13.126.5.10:9444/fhir-server/api/v4/${recieved_data.location}`, {
+          fetch(`http://localhost:9444/fhir-server/api/v4/${recieved_data.location}`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -169,7 +169,7 @@ console.log(loading)
         // }
       }
       else if (recieved_data.location.split("/")[0] == "Communication"){
-          fetch(`http://13.126.5.10:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
+          fetch(`http://localhost:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -205,7 +205,7 @@ console.log(loading)
       setLoading(true)
       
       // console.log(url)
-      fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Device?location=${currentRoom.currentRoom}`, {
+      fetch(`http://localhost:9444/fhir-server/api/v4/Device?location=${currentRoom.currentRoom}`, {
         credentials: "omit",
         headers: {
           Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -225,7 +225,7 @@ console.log(loading)
       // var correct = true;
       if(device.resource.patient){
         
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Patient/${device.resource.patient.reference.split("/")[1]}`,{
+        fetch(`http://localhost:9444/fhir-server/api/v4/Patient/${device.resource.patient.reference.split("/")[1]}`,{
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -236,7 +236,7 @@ console.log(loading)
           var temp = String(device.resource.id);
           setPatient((prevPatient) => ({...prevPatient, [temp]: data}))
         })
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
           Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -244,7 +244,7 @@ console.log(loading)
         })
         .then((response) => response.json())
         .then((data) => {
-          if(!data.entry){console.log(`http://13.126.5.10:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
+          if(!data.entry){console.log(`http://localhost:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
           else{
             var temp = String(device.resource.id);
             console.log("FUCK YOU MOTHERFUCKER!!!!!!!")
@@ -252,7 +252,7 @@ console.log(loading)
             setParentObs((prevParentobs) => ({...prevParentobs, [temp]: data.entry[0]["resource"]}))
           }})
       
-        fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
+        fetch(`http://localhost:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
           Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -260,7 +260,7 @@ console.log(loading)
         })
         .then((response) => response.json())
         .then((data) => {
-          if(!data.entry){console.log(`http://13.126.5.10:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
+          if(!data.entry){console.log(`http://localhost:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
           else{
             var temp = String(device.resource.id);
             
@@ -311,7 +311,7 @@ console.log(loading)
     }}
   })
   const incubator = devices.entry?.map((device) => {
-    if(String(device.resource.identifier[1]?.value)=="Intensive Neonatal Care Center"){
+    if(String(device.resource.identifier[1]?.value)=="Intensive Neonatal Care Center" || String(device.resource.identifier[1]?.value)=="Comprehensive Infant Care Centre"){
     var correct = false
     // var temp = String(device.resource.id)
     if(device.resource.patient && parentcomm[String(device.resource.id)] && parentobs[String(device.resource.id)]){
@@ -345,7 +345,7 @@ console.log(loading)
   })
   const cpap = devices.entry?.map((device) => {
     console.log(String(device.resource.id))
-    if(String(device.resource.identifier[1]?.value)=="SVAAS"){
+    if(String(device.resource.identifier[1]?.value)=="SVAAS" || String(device.resource.identifier[1]?.value)=="Comprehensive Infant Care Centre"){
       
     var correct = false
     // var temp = String(device.resource.id)

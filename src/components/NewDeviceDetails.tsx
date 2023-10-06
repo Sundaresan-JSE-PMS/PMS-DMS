@@ -939,7 +939,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
     const labels = times;
     useEffect(() => {
         if(props.communication_resource?.id!=null){
-            fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history`, {
+            fetch(`http://localhost:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history`, {
             credentials: "omit",
             headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -957,7 +957,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
                 
                 while(totaldata>=100){
                     
-                    fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
+                    fetch(`http://localhost:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
                         credentials: "omit",
                         headers: {
                             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -975,7 +975,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
                     page+=1
                 }
                 if(totaldata <100){
-                    fetch(`http://13.126.5.10:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
+                    fetch(`http://localhost:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
                         credentials: "omit",
                         headers: {
                             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -1094,7 +1094,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         let currentyear = currentNewDate.getFullYear()
         let currentDate = currentyear+"-"+currentmonth+"-"+currentdate
         if(timeFrame==0){
-            url.push(`http://13.126.5.10:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
+            url.push(`http://localhost:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
         }
         else if(timeFrame==1){
             for (let incrementDate = 0; incrementDate < 7 ; incrementDate++) {
@@ -1105,7 +1105,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
                 let weekDate = weekyear+"-"+weekmonth+"-"+weekdate
                 // url.push(`http://13.126.5.10:9444/fhir-server/api/v4/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
                 for (let index2 = 0; index2 < 24; index2++) {
-                    url.push(`http://13.126.5.10:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
+                    url.push(`http://localhost:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
                 }
                 
                                 
@@ -1129,7 +1129,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
             let monthyear = monthNewDate.getUTCFullYear()
             for (let index = 1; index < 30; index++) {
                 let monthDate = monthyear+"-"+monthmonth+"-"+index.toString().padStart(2,'0')
-                url.push(`http://13.126.5.10:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${monthDate}T00:00:00Z`)
+                url.push(`http://localhost:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${monthDate}T00:00:00Z`)
             }
         }
         // let temparr: any[] = []
