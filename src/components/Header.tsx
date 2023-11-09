@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import SettingsIcon from '@mui/icons-material/Settings';
 import Button from '@mui/material/Button';
-import { AccountCircle, ExpandLess, ExpandMore, Style } from '@mui/icons-material';
+import { AccountCircle, ExpandLess, ExpandMore } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import pmsLogo from '../assets/phx_logo.png';
 import { useAuth0 } from '@auth0/auth0-react';
@@ -283,7 +283,7 @@ export const Header: FC<HeaderProps> = (props) => {
   };
   useEffect(() => {
     if (isAuthenticated) {
-      fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location`, {
+      fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Location`, {
         credentials: 'omit',
         headers: {
           Authorization: 'Basic ' + btoa('fhiruser:change-password'),
@@ -298,16 +298,10 @@ export const Header: FC<HeaderProps> = (props) => {
     }
   }, [isAuthenticated]);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const handleListItemClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    index: number,
-  ) => {
-    setSelectedIndex(index);
-  };
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location`, {
+      fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Location`, {
         credentials: 'omit',
         headers: {
           Authorization: 'Basic ' + btoa('fhiruser:change-password'),

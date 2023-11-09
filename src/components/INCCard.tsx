@@ -1,7 +1,7 @@
 // import { AccountCircle } from '@mui/icons-material'
 import { Box, Card,Stack, Typography, ButtonBase, } from '@mui/material'
 // import { red } from '@mui/material/colors'
-import { FC, useEffect, useMemo, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 // import { Link } from 'react-router-dom'
 // import { Divider } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -227,7 +227,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     // const tick =setInterval(timer,1000)
 //   useEffect(() => {console.log(props.patient_id)},[props.patient_id])
 const [controlOpacity, setControlOpacity] = useState("0.8")
-
+    console.log(controlOpacity)
   return (
       <Box  width={{
         xs: "350px",

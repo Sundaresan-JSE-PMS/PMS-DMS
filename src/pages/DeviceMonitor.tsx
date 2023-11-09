@@ -85,7 +85,7 @@ export const DeviceMonitor = (currentRoom: any) => {
     });
     useEffect(() => {
         setLoading(true)
-        const socket = new WebSocket("ws://3.110.169.17:9444/fhir-server/api/v4/notification");
+        const socket = new WebSocket("ws://pmscloud.in:9444/fhir-server/api/v4/notification");
         socket.onopen = () => {
             console.log("Socket open successful");
         };
@@ -93,7 +93,7 @@ export const DeviceMonitor = (currentRoom: any) => {
             var recieved_data = JSON.parse(data.data)
             if (recieved_data.location.split("/")[0] == "Observation"){
 
-                fetch(`http://3.110.169.17:9444/fhir-server/api/v4/${recieved_data.location}`, {
+                fetch(`http://pmscloud.in:9444/fhir-server/api/v4/${recieved_data.location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -110,7 +110,7 @@ export const DeviceMonitor = (currentRoom: any) => {
             // }
             }
             else if (recieved_data.location.split("/")[0] == "Communication"){
-                fetch(`http://3.110.169.17:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
+                fetch(`http://pmscloud.in:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -127,7 +127,7 @@ export const DeviceMonitor = (currentRoom: any) => {
             }
             // else if (recieved_data.location.split("/")[0] == "Device"){
             //   // if (devArray.includes(recieved_data.resourceId)){
-            //     fetch(`http://3.110.169.17:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
+            //     fetch(`http://pmscloud.in:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
             //     credentials: "omit",
             //     headers: {
             //       Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -150,7 +150,7 @@ export const DeviceMonitor = (currentRoom: any) => {
         setLoading(true)
         
         // console.log(url)
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device?location=${currentRoom.currentRoom}`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Device?location=${currentRoom.currentRoom}`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -170,7 +170,7 @@ export const DeviceMonitor = (currentRoom: any) => {
         // var correct = true;
         if(device.resource.patient){
         
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Patient/${device.resource.patient.reference.split("/")[1]}`,{
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Patient/${device.resource.patient.reference.split("/")[1]}`,{
             credentials: "omit",
             headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -181,7 +181,7 @@ export const DeviceMonitor = (currentRoom: any) => {
             var temp = String(device.resource.id);
             setPatient((prevPatient) => ({...prevPatient, [temp]: data}))
         })
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -189,14 +189,14 @@ export const DeviceMonitor = (currentRoom: any) => {
         })
         .then((response) => response.json())
         .then((data) => {
-            if(!data.entry){console.log(`http://3.110.169.17:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
+            if(!data.entry){console.log(`http://pmscloud.in:9444/fhir-server/api/v4/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
             else{
             var temp = String(device.resource.id);
             console.log(temp)
             setParentObs((prevParentobs) => ({...prevParentobs, [temp]: data.entry[0]["resource"]}))
             }})
         
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -204,7 +204,7 @@ export const DeviceMonitor = (currentRoom: any) => {
         })
         .then((response) => response.json())
         .then((data) => {
-            if(!data.entry){console.log(`http://3.110.169.17:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
+            if(!data.entry){console.log(`http://pmscloud.in:9444/fhir-server/api/v4/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
             else{
             var temp = String(device.resource.id);
             

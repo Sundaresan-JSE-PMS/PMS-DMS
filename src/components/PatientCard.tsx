@@ -155,71 +155,77 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
             return ('Patient Discharged')
         }
     }
-
+    const [tt, settt] = useState(0)
     useEffect(() => {
-            
-            if(isArray(props.observation_resource)){
-                if(props.observation_resource.length>0){
-                    // console.log(props.observation_resource)
-                    var change = false
-                        props.observation_resource.map((val, index) => {
-                            if(val.meta.versionId!=obsmeta[index]){
-                                // console.log(props.patient_id)
+            if(tt>5){
+                if(isArray(props.observation_resource)){
+                    if(props.observation_resource.length>0){
+                        // console.log(props.observation_resource)
+                        var change = false
+                            props.observation_resource.map((val, index) => {
+                                if(val.meta.versionId!=obsmeta[index]){
+                                    // console.log(props.patient_id)
+                                    
+                                    var tempVar:any[] = obsmeta
+                                    tempVar[index] = String(val.meta.versionId)
+                                    setobsmeta(tempVar)
+                                    change = true
+                                    
+                                }
                                 
-                                var tempVar:any[] = obsmeta
-                                tempVar[index] = String(val.meta.versionId)
-                                setobsmeta(tempVar)
-                                change = true
                                 
+                            })
+                            if(change){
+                                setBorderRadiusForRerender(!borderRadiusForRerender)
+                                setObsResource(props.observation_resource.flat())
+                                setRequiredForTimer(!requiredForTimer)
+                                setNewData(true);
                             }
+                            // else{
+                                
+                            // }
                             
-                            
-                        })
-                        if(change){
-                            setBorderRadiusForRerender(!borderRadiusForRerender)
-                            setObsResource(props.observation_resource.flat())
-                            setRequiredForTimer(!requiredForTimer)
-                            setNewData(true);
-                        }
-                        // else{
-                            
-                        // }
-                        
-                            
+                                
+                    }
+        
                 }
-    
-            }
-            
-            if(isArray(props.communication_resource)){
-                if(props.communication_resource.length>0 ){
-                    var change = false
-                    props.communication_resource.map((val, index) => {
-                        if(val.meta.versionId!=commeta[index]){
-                            var tempVar2 = commeta
-                            tempVar2[index] = String(val.meta.versionId)
-                            setcommeta(tempVar2)
-                            change=true
-                            
-                            if(val && val.extension){
-                                for(var i=0;i<val.extension[1].valueCodeableConcept.coding.length;i++){
-                                    if(val.extension[1].valueCodeableConcept.coding[i].code=="High Priority"){
-                                        setDisplayAlarm(String(val.extension[0].valueCodeableConcept.coding[i].display))
-                                        setAlarmColor('red')
-                                        break
-                                    }
-                                    else {
-                                        setDisplayAlarm(String(val.extension[0].valueCodeableConcept.coding[i].display))
-                                        setAlarmColor('yellow')
+                
+                
+                if(isArray(props.communication_resource)){
+                    if(props.communication_resource.length>0 ){
+                        var change = false
+                        props.communication_resource.map((val, index) => {
+                            if(val.meta.versionId!=commeta[index]){
+                                var tempVar2 = commeta
+                                tempVar2[index] = String(val.meta.versionId)
+                                setcommeta(tempVar2)
+                                change=true
+                                
+                                if(val && val.extension){
+                                    for(var i=0;i<val.extension[1].valueCodeableConcept.coding.length;i++){
+                                        if(val.extension[1].valueCodeableConcept.coding[i].code=="High Priority"){
+                                            setDisplayAlarm(String(val.extension[0].valueCodeableConcept.coding[i].display))
+                                            setAlarmColor('red')
+                                            break
+                                        }
+                                        else {
+                                            setDisplayAlarm(String(val.extension[0].valueCodeableConcept.coding[i].display))
+                                            setAlarmColor('yellow')
+                                        }
                                     }
                                 }
+                                
                             }
                             
-                        }
+                        })
                         
-                    })
-                    
+                    }
                 }
             }
+            else{
+                settt
+            }
+
         
 
         

@@ -65,7 +65,7 @@ export const RoomCard: FC<roomData> = (props) => {
     useEffect(() => {setDeviceChanged(!deviceChanged)},[props.deviceChangeToggle])
     const [renameRoom, setRenameRoom] = useState(false)
     useEffect(() => {
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device?_count=20`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Device?_count=20`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -97,7 +97,7 @@ export const RoomCard: FC<roomData> = (props) => {
             "status": "suspended",
             "name": x
         }
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -145,7 +145,7 @@ export const RoomCard: FC<roomData> = (props) => {
             ...deviceList[Number(index)].resource,
             location: vvtemp
         }
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -171,7 +171,7 @@ export const RoomCard: FC<roomData> = (props) => {
         const { location, ...data } = device;
       
         // Define the URL and request options
-        const apiUrl = `http://3.110.169.17:9444/fhir-server/api/v4/Device/${device.id}`;
+        const apiUrl = `http://pmscloud.in:9444/fhir-server/api/v4/Device/${device.id}`;
         const requestOptions: RequestInit = {
           credentials: "omit",
           method: "PUT",
@@ -197,7 +197,7 @@ export const RoomCard: FC<roomData> = (props) => {
     const [deleteDevice, setDeleteDevice] = useState(false)
     const [deleteRoom, setDeleteRoom] = useState(false)
     const removeRoomButton = () => {
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "DELETE",
             headers: {

@@ -876,7 +876,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         scrollto.current?.scrollIntoView({behavior: 'smooth'});
     };
     const infscrollfunc = (page: Number) => {
-        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history/?_page=${page}`, {
+        fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history/?_page=${page}`, {
         credentials: "omit", // send cookies and HTTP authentication information
         method: "GET",
         headers: {
@@ -1152,7 +1152,7 @@ items.forEach((item) => {
     useEffect(() => {
         if(props.communication_resource?.id!=null){
              
-            fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history/`, {
+            fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history/`, {
             credentials: "omit",
             headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -1174,7 +1174,7 @@ items.forEach((item) => {
                 
                 // while(totaldata>=100){
                     
-                //     fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
+                //     fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
                 //         credentials: "omit",
                 //         headers: {
                 //             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -1192,7 +1192,7 @@ items.forEach((item) => {
                 //     page+=1
                 // }
                 // if(totaldata <100){
-                //     fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
+                //     fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication/${props.communication_resource.id}/_history?_page=${page}&_count=100`,{
                 //         credentials: "omit",
                 //         headers: {
                 //             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -1308,7 +1308,7 @@ items.forEach((item) => {
         const accumulatedData: any[] = []
         var meta = 0;
         function fetchData(when: string, times:number): Promise<void> {
-            return fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${page}`,{
+            return fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${page}`,{
                 credentials: "omit",
                 method: "GET",
                 headers: {
@@ -1321,7 +1321,7 @@ items.forEach((item) => {
                 if(data.total>0){
                     
                     var lastpage = Math.floor(data.total/10)+data.total%10
-                    return fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${lastpage}`,{
+                    return fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${lastpage}`,{
                         credentials: "omit",
                         method: "GET",
                         headers: {
@@ -1371,7 +1371,7 @@ items.forEach((item) => {
         if(timeFrame!=-1){
             if(timeFrame==0){
                 let prevdate = ""
-                url.push(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
+                url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
                 Promise.all(
                     url.map((query) => {
                         return fetch(query, {
@@ -1416,15 +1416,15 @@ items.forEach((item) => {
                 //     let weekmonth = (Number(weekNewDate.getMonth())+1).toString().padStart(2,'0')
                 //     let weekyear = weekNewDate.getUTCFullYear()
                 //     let weekDate = weekyear+"-"+weekmonth+"-"+weekdate
-                //     // url.push(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
+                //     // url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
                 //     for (let index2 = 0; index2 < 24; index2++) {
-                //         url.push(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
+                //         url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
                 //     }
                     
                                     
                 // }
-                // url.push(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`)
-                // fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`,{
+                // url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`)
+                // fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`,{
                 //     credentials:'omit',
                 //     method:'GET',
                 //     headers: {

@@ -37,7 +37,7 @@ export const PatientMonitor = (currentRoom: any) => {
   const { isAuthenticated,loginWithRedirect } = useAuth0(); 
 
   const fetchObservations = (patient: { id: any; }) => {
-    return fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Observation?patient=${patient.id}`, {
+    return fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation?patient=${patient.id}`, {
       credentials: 'omit',
       headers: {
         Authorization: 'Basic ' + btoa('fhiruser:change-password'),
@@ -53,7 +53,7 @@ export const PatientMonitor = (currentRoom: any) => {
   };
   
   const fetchCommunication = (patient: { id: any; }) => {
-    return fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Communication?patient=${patient.id}`, {
+    return fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Communication?patient=${patient.id}`, {
       credentials: 'omit',
       headers: {
         Authorization: 'Basic ' + btoa('fhiruser:change-password'),
@@ -69,7 +69,7 @@ export const PatientMonitor = (currentRoom: any) => {
   };
   
   const fetchDevice = (patient: { id: any; }) => {
-    return fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device?patient=${patient.id}`, {
+    return fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Device?patient=${patient.id}`, {
       credentials: 'omit',
       headers: {
         Authorization: 'Basic ' + btoa('fhiruser:change-password'),
@@ -145,7 +145,7 @@ export const PatientMonitor = (currentRoom: any) => {
 
   useEffect(() => {
       const patientDataURL =
-        'http://3.110.169.17:9444/fhir-server/api/v4/Patient?_count=30';
+        'http://pmscloud.in:9444/fhir-server/api/v4/Patient?_count=30';
 
       fetch(patientDataURL, {
         credentials: 'omit',
@@ -172,7 +172,7 @@ export const PatientMonitor = (currentRoom: any) => {
           console.error(error);
           // setIsLoading(false);
         });
-        const socket = new WebSocket("ws://3.110.169.17:9444/fhir-server/api/v4/notification");
+        const socket = new WebSocket("ws://pmscloud.in:9444/fhir-server/api/v4/notification");
         socket.onopen = () => {
             console.log("Socket open successful");
         };
@@ -180,7 +180,7 @@ export const PatientMonitor = (currentRoom: any) => {
             var recieved_data = JSON.parse(data.data)
             if (recieved_data.location.split("/")[0] == "Observation"){
 
-                fetch(`http://3.110.169.17:9444/fhir-server/api/v4/${recieved_data.location}`, {
+                fetch(`http://pmscloud.in:9444/fhir-server/api/v4/${recieved_data.location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -211,7 +211,7 @@ export const PatientMonitor = (currentRoom: any) => {
             // }
             }
             else if (recieved_data.location.split("/")[0] == "Communication"){
-                fetch(`http://3.110.169.17:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
+                fetch(`http://pmscloud.in:9444/fhir-server/api/v4/${JSON.parse(data.data).location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
