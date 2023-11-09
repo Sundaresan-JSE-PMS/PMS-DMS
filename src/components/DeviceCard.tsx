@@ -29,7 +29,7 @@ export interface DeviceDetails {
             "value": string;
         }[];
     
-};
+} | null;
   device_resource_id: string;
   observation_resource: {
     "resourceType": string;

@@ -13,6 +13,8 @@ export interface roomData {
     roomName: string;
     roomId: string;
     roomChange: Function;
+    deviceChange: Function;
+    deviceChangeToggle: Boolean;
 }
 
 
@@ -20,7 +22,7 @@ export interface roomData {
 export const RoomCard: FC<roomData> = (props) => {
     const [snackSucc, setSnackSucc] = useState(false);
     const [snack, setSnack] = useState(false)
-
+   
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         console.log(event)
         if (reason === 'clickaway') {
@@ -60,9 +62,10 @@ export const RoomCard: FC<roomData> = (props) => {
 
     const [open, setOpen] = useState(false);
     const [deviceChanged, setDeviceChanged] = useState(false)
+    useEffect(() => {setDeviceChanged(!deviceChanged)},[props.deviceChangeToggle])
     const [renameRoom, setRenameRoom] = useState(false)
     useEffect(() => {
-        fetch(`http://localhost:9444/fhir-server/api/v4/Device?_count=20`, {
+        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device?_count=20`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -70,7 +73,6 @@ export const RoomCard: FC<roomData> = (props) => {
         })
         .then((response) => response.json())
         .then((data) => {if(data.entry){
-          console.log(data.entry)
           setDeviceList(data.entry)
         }})
     },[deviceChanged])
@@ -95,17 +97,16 @@ export const RoomCard: FC<roomData> = (props) => {
             "status": "suspended",
             "name": x
         }
-        fetch(`http://localhost:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
             headers: {
                 "Content-Type": "application/json",
-                Authorization: "Basic " + btoa("fhiruser:change-password"), // set HTTP basic auth header
+                Authorization: "Basic " + btoa("fhiruser:change-password"), 
             },
         })
         .then((response) => {
-            console.log(response.status)
             setSnack(true)
         
             if(response.status==200){setSnackSucc(true); props.roomChange()}
@@ -144,7 +145,7 @@ export const RoomCard: FC<roomData> = (props) => {
             ...deviceList[Number(index)].resource,
             location: vvtemp
         }
-        fetch(`http://localhost:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
+        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Device/${deviceList[Number(index)].resource.id}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -155,7 +156,7 @@ export const RoomCard: FC<roomData> = (props) => {
         })
         .then((response) => {
             setSnack(true)
-            if(response.status==200){setSnackSucc(true);setDeviceChanged(!deviceChanged)}
+            if(response.status==200){setSnackSucc(true);setDeviceChanged(!deviceChanged);props.deviceChange()}
             else{setSnackSucc(false)}
         })
 
@@ -170,7 +171,7 @@ export const RoomCard: FC<roomData> = (props) => {
         const { location, ...data } = device;
       
         // Define the URL and request options
-        const apiUrl = `http://localhost:9444/fhir-server/api/v4/Device/${device.id}`;
+        const apiUrl = `http://3.110.169.17:9444/fhir-server/api/v4/Device/${device.id}`;
         const requestOptions: RequestInit = {
           credentials: "omit",
           method: "PUT",
@@ -196,8 +197,7 @@ export const RoomCard: FC<roomData> = (props) => {
     const [deleteDevice, setDeleteDevice] = useState(false)
     const [deleteRoom, setDeleteRoom] = useState(false)
     const removeRoomButton = () => {
-        console.log("Called")
-        fetch(`http://localhost:9444/fhir-server/api/v4/Location/${props.roomId}`, {
+        fetch(`http://3.110.169.17:9444/fhir-server/api/v4/Location/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "DELETE",
             headers: {
@@ -206,7 +206,6 @@ export const RoomCard: FC<roomData> = (props) => {
             },
         })
         .then((response) => {
-            console.log(response.status)
             setSnack(true)
             if(response.status==200){setSnackSucc(true);props.roomChange()}
             else{setSnackSucc(false)}
@@ -311,7 +310,6 @@ export const RoomCard: FC<roomData> = (props) => {
                 <Stack width={'100%'} display={'flex'} direction={'row'} flexWrap={'wrap'}
                 >
                 {deviceList.map((device, index) => {
-                    console.log("HELLO WORLD")
                         if(device?.resource?.location?.reference.split("/")[1] != props.roomId){
                             return(
                                     <Button onClick={() => {setMiniDialog(true); setSelectedDevice(index)}} sx={{width:'48%', height:'60px', justifyContent:'center', textAlign:'center', color:'white', border:'0.1px solid #282828'}}>
@@ -338,12 +336,10 @@ export const RoomCard: FC<roomData> = (props) => {
                     <Box onClick={() => {setMiniDialog(false)}} sx={{minWidth:'90px', minHeight:'45px'}}><CustomNoButton text="Cancel"></CustomNoButton></Box>
                     <Box onClick={() => {addButton(selectedDevice); setMiniDialog(false)}} sx={{minWidth:'90px', minHeight:'45px'}}><CustomOkButton text="Confirm"></CustomOkButton></Box>
                     </Stack>
-                    
-                </DialogActions>
+               </DialogActions>
             </Dialog>
         </Dialog>
-        
-        )
+    )
   }
   const [controlColor, setControlColor] = useState("grey")
   const [controlOpacity, setOpacity] = useState("0.8")
@@ -352,8 +348,7 @@ export const RoomCard: FC<roomData> = (props) => {
         <Paper  elevation={5} sx={{ borderRadius: "25px", background:'transparent'}}>
           <Card
             style={{ boxShadow:'none' ,background: "transparent", borderRadius: "25px", minHeight:"280px", border: `1px solid ${controlColor}`
-             }}
-          >
+             }}>
             <Stack width={'100%'} direction={'row'} justifyContent={'center'} textAlign={'center'}>
             <CardContent sx={{marginTop:'0%', width:'100%', justifyContent:'center', textAlign:'center'}}>
                     <Stack marginTop={'0%'}>
@@ -410,10 +405,7 @@ export const RoomCard: FC<roomData> = (props) => {
                     </Alert>
             </Snackbar>
             </Stack>
-            
-              
-            
-          </Card>
+            </Card>
         </Paper>
         
     </Box>

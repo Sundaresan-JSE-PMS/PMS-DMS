@@ -1,7 +1,7 @@
 // import { AccountCircle } from '@mui/icons-material'
 import { Box, Card,Stack, Typography, ButtonBase, } from '@mui/material'
 // import { red } from '@mui/material/colors'
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect, useMemo, useState } from 'react'
 // import { Link } from 'react-router-dom'
 // import { Divider } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -132,7 +132,6 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     // const devicetimer = setInterval(timer, 10000)
 
 
-
     // const devicetimer = setInterval(timer, 10000)
 
     // setInterval(secondTimer,7000)
@@ -155,7 +154,6 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     // clearInterval(devicetimer)
     // console.log(devicetimer)
     // runtimer = setInterval(timer, 10000)
-
     if (props.observation_resource?.component?.[1] && runNo>=2 && props.communication_resource?.extension?.[1]) {
         
         setNewData(true);
@@ -226,7 +224,6 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     //     // }
     //     console.log(newData)
     // }
-
     // const tick =setInterval(timer,1000)
 //   useEffect(() => {console.log(props.patient_id)},[props.patient_id])
 const [controlOpacity, setControlOpacity] = useState("0.8")
@@ -241,7 +238,7 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
       onMouseLeave={() => {setControlOpacity("0.8")}} onMouseEnter={() => {setControlOpacity("1")}} onClick={() => {setIsOpen(true)}}>
         <ButtonBase sx={{width:'100%', borderRadius:'25px'}}>
         <Card
-            style={{width:'100%', backgroundImage:'linear-gradient(to bottom, #34405D, #151E2F, #34405D)', borderRadius: "25px", height:"300px", opacity:controlOpacity, boxShadow: `0px 0px 30px 5px ${isBlinking ? alarmColor: '#202020'}`, border:'1px solid #606060'
+            style={{width:'100%', backgroundImage:'linear-gradient(to bottom, #34405D, #151E2F, #34405D)', borderRadius: "25px", height:"300px",  boxShadow: `0px 0px 30px 5px ${isBlinking ? alarmColor: '#202020'}`, border:'1px solid #606060'
         }}
           >
             {newData ? (<>
@@ -269,8 +266,7 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
                                     <Typography variant="subtitle2"  color={'#CBCFE5'}>
                                         {props?.device_id}
                                     </Typography>
-                                
-                            </Box>
+                         </Box>
                         </Box>                         
                     </Box>
                     <Stack width={"100%"} height={'45%'} direction={'row'}>
@@ -301,8 +297,7 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
                                     return (data.data)
                                 }
                             )()}
-                            
-                        </Typography>
+                       </Typography>
                         </Box>
                         <Box width={'33.33%'} height={'100%'} sx={{ borderRight:'2px solid grey', borderTop:'2px solid grey'}} justifyContent={'center'} textAlign={'center'}>
                             <div style={{marginTop:'7%'}}><Typography variant='caption' color={"#A8C5D4"}>Air Temp °C</Typography></div>
@@ -463,7 +458,7 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
 
         <NewDeviceDetails 
         isDialogOpened={isOpen} 
-        handleCloseDialog={() => {console.log("MY BOI");setIsOpen(false)}}
+        handleCloseDialog={() => {setIsOpen(false)}}
         observation_resource={props.observation_resource}
         communication_resource={props.communication_resource}
         device_id={props.device_id}

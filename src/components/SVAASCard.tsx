@@ -171,7 +171,7 @@ export const SVAASCard: FC<DeviceDetails> = (props): JSX.Element => {
     // console.log(devicetimer)
     // runtimer = setInterval(timer, 10000)
     if (props.observation_resource?.component?.[1] && runNo>=2 && props.communication_resource?.extension?.[1]) {
-        console.log(props.observation_resource.id)
+        
         setNewData(true);
         
         setRequiredForBorderColor(!requiredForBorderColor)
@@ -179,7 +179,6 @@ export const SVAASCard: FC<DeviceDetails> = (props): JSX.Element => {
         
         // console.log(props.observation_resource.identifier[0].value);
         for (var i=0; i< props?.communication_resource?.extension?.[1].valueCodeableConcept?.coding?.length; i++){
-        console.log(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code)
         if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='High Priority'){
             setAlarmColor('red')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
@@ -344,7 +343,7 @@ style={{ backgroundImage:'linear-gradient(to bottom, #34405D, #151E2F, #34405D)'
                             <Typography variant='caption'  color={"#A8C5D4"} paddingTop={'15%'}  >PR(BPM)</Typography>
                             <Typography variant='h6' paddingTop={'5%'} color={"#5db673"}>
                                     {(() => {
-                                            let data = findData("PR")
+                                            let data = findData("Pulse Rate")
                                             return (data.data)
                                         }
                                     )()}
