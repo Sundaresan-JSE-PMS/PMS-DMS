@@ -555,8 +555,8 @@ export const Header: FC<HeaderProps> = (props) => {
                 <Divider sx={{border:'1px solid grey'}} ></Divider>
               <MenuItem value="R&D"
                 sx={{
-                  width: '250px',padding: '6%',backgroundColor: '#131726'}} onClick={() => {navigate('/rooms');setNotHome(false);setPrevRoom(room);}}>
-                Rooms & Device Settings <SettingsIcon sx={{ marginLeft: 'auto' }} />
+                  width: '250px',padding: '6%', paddingLeft:'50px',backgroundColor: '#131726'}} onClick={() => {navigate('/rooms');setNotHome(false);setPrevRoom(room);}}>
+                Rooms & Device Settings <SettingsIcon sx={{ paddingLeft: '40px' }} />
               </MenuItem>
                               </Collapse>
                             </List>

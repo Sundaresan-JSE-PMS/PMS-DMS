@@ -166,7 +166,7 @@ export const Rooms:FC<roomdata> = (props) => {
           >
             
             {temproom[0]?.resource.status!="" && roomBoxes}
-            <Box  width={"350px"} sx={{opacity:controlOpacity, backgroundColor:'transparent', borderRadius:'30px'}} onMouseLeave={() => {setControlboarder("grey");setOpacity("0.8")}} onMouseEnter={() => {setControlboarder("#2BA0E0");setOpacity("1")}} onClick={() => {setaddnewbutton(true)}}>
+            <Box  width={"350px"} minHeight={'300px'} maxHeight={'300px'} sx={{opacity:controlOpacity, backgroundColor:'transparent', borderRadius:'30px'}} onMouseLeave={() => {setControlboarder("grey");setOpacity("0.8")}} onMouseEnter={() => {setControlboarder("#2BA0E0");setOpacity("1")}} onClick={() => {setaddnewbutton(true)}}>
               <Paper  elevation={5} sx={{ borderRadius: "25px",background:'transparent'}}>
                 <Card
                   style={{ background: "transparent", borderRadius: "25px", minHeight:"280px", border: `1px solid ${controlBorder}`

@@ -443,8 +443,8 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
             <Box width={'100%'} height={'100%'} sx={{backgroundColor:'transparent'}} display={'flex'} textAlign={"center"} justifyContent={"center"}>
             <Stack width={'100%'} height={'100%'} justifyContent={"center"} textAlign={"center"}>
                     <FontAwesomeIcon icon={faPowerOff} style={{fontSize: 70, color:'white', marginLeft:'auto', marginRight:'auto', fontWeight:'lighter', paddingBottom:'3%'}} />
-                    <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'grey'}}>{props?.device_id}</Typography>
-                    <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'grey'}}>Not Active/Connected</Typography>
+                    <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto',  color:'grey'}}>{props?.device_id}</Typography>
+                    <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto',  color:'grey'}}>Not Active/Connected</Typography>
             </Stack>
             </Box>
                 

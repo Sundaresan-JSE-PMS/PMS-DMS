@@ -344,7 +344,7 @@ export const RoomCard: FC<roomData> = (props) => {
   const [controlColor, setControlColor] = useState("grey")
   const [controlOpacity, setOpacity] = useState("0.8")
   return (
-    <Box width={"350px"} sx={{ opacity:controlOpacity, backgroundColor:'transparent'}} onMouseLeave={() => {setControlColor("grey");setOpacity("0.8")}} onMouseEnter={() => {setControlColor("#2BA0E0");setOpacity("1")}} > { /* onClick={() => setOpen(true)}> */}
+    <Box width={"350px"} minHeight={'300px'} maxHeight={'300px'}  sx={{ opacity:controlOpacity, backgroundColor:'transparent'}} onMouseLeave={() => {setControlColor("grey");setOpacity("0.8")}} onMouseEnter={() => {setControlColor("#2BA0E0");setOpacity("1")}} > { /* onClick={() => setOpen(true)}> */}
         <Paper  elevation={5} sx={{ borderRadius: "25px", background:'transparent'}}>
           <Card
             style={{ boxShadow:'none' ,background: "transparent", borderRadius: "25px", minHeight:"280px", border: `1px solid ${controlColor}`
@@ -373,7 +373,7 @@ export const RoomCard: FC<roomData> = (props) => {
         </Stack>
         
         </Menu>
-            <Typography sx={{userSelect:"none" ,marginTop:'5%'}}>{props.roomName}</Typography>
+            <Typography sx={{userSelect:"none"}}>{props.roomName}</Typography>
                 </Stack>
             <Stack spacing={"10%"} marginTop={'10%'} width={'70%'} marginLeft={'auto'} marginRight={'auto'}>
                 <Select sx={{fontSize:'10%', borderRadius:'25px'}} >
