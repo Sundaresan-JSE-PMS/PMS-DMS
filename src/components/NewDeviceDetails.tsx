@@ -1445,9 +1445,10 @@ items.forEach((item) => {
         //   })
     },[timeFrame])
     useEffect(() => {
-        
+        console.log(observation)
         if(observation[1]?.resource?.component?.length>1){
-            console.log("WELLOW")
+            
+            console.log(observation)
             setTimes(observation.map((obs) => {
                 let zeroth: {}[] = []
                 let first: {}[] = []
@@ -1455,6 +1456,110 @@ items.forEach((item) => {
                 let third: {}[] = []
 
                 observation[1].resource.component.map((data, index) => {
+                    if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
+                        let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
+                        zeroth.push({
+                            label: data.code.text.toString(),
+                            data: observation.map((data2) => {
+                                if(data2?.resource?.component){
+                                    return (
+                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                                    )
+                                }
+                                
+                            }),
+                            yAxisID: heaterYaxis[unit] || "y"
+                        })
+                    }
+                    else if(data.code.text.toString() == "Pulse Rate" || data.code.text.toString() == "SpO2" || data.code.text.toString() == "SPO2"){
+                        let unit2 = data.valueQuantity.unit.toString() as keyof typeof pulseoximeterYaxis;
+                        first.push({
+                            label: data.code.text.toString() ,
+                            data: observation.map((data2) => {
+                                if(data2?.resource?.component){
+                                    return (
+                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                                    )
+                                }
+                            }),
+                            yAxisID: pulseoximeterYaxis[unit2] || "y"
+                        })
+                    }
+                    else if(data.valueQuantity.unit.toString() == "g"){
+                        second.push({
+                            label: data.code.text.toString(),
+                            data: observation.map((data2) => {
+                                if(data2?.resource?.component){
+                                    return (
+                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                                    )
+                                }
+                            }),
+                            yAxisID: "y"
+                        })
+                    }
+                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "Set FiO2")
+                    {
+                        let unit = data.valueQuantity.unit.toString() as keyof typeof pressure1OptionYaxis;
+                        zeroth.push({
+                            label: data.code.text.toString(),
+                            data: observation.map((data2) => {
+                                if(data2?.resource?.component){
+                                    return (
+                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                                    )
+                                }
+                            }),
+                            yAxisID: pressure1OptionYaxis[unit] || "y"
+                        })
+                    }
+                    else if(data.valueQuantity.unit.toString() == "CmH2O" || data.valueQuantity.unit.toString() == "Bar"){
+                        let unit = data.valueQuantity.unit.toString() as keyof typeof pressure2OptionYaxis;
+                        second.push({
+                            label: data.code.text.toString(),
+                            data: observation.map((data2) => {
+                                if(data2?.resource?.component){
+                                    return (
+                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                                    )
+                                }
+                            }),
+                            yAxisID: pressure2OptionYaxis[unit] || "y"
+                        })
+                    }
+                    // else if(data.code.text.toString() == "Humidity set" || data.code.text.toString() == "Measure Humidity"){
+                    //     let unit2 = data.valueQuantity.unit.toString();
+                    //     third.push({
+                    //         label: data.code.text.toString(),
+                    //         data: observation.map((data2, index2) => {
+                    //             return (
+                    //                 data2?.resource?.component[index]?.valueQuantity?.value.toString()
+                    //             )
+                    //         }),
+                    //         yAxisID: "y"
+                    //     })
+                    // }
+                    
+                })
+                setDataSet([zeroth, first, second, third])
+                var fd = new Date(obs.resource.meta.lastUpdated.toString())
+                var t = fd.toLocaleTimeString()
+                var d = fd.getDate()+"/"+(fd.getMonth()+1)
+                
+                return(
+                    // new Date(obs.resource.meta.lastUpdated).toLocaleString())
+                    d+"-"+t
+                )
+                }))
+        }
+        else if(observation[0]?.resource?.component?.length>1){
+            setTimes(observation.map((obs) => {
+                let zeroth: {}[] = []
+                let first: {}[] = []
+                let second: {}[] = []
+                let third: {}[] = []
+
+                observation[0].resource.component.map((data, index) => {
                     if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
                         let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
                         zeroth.push({
