@@ -1841,7 +1841,29 @@ items.forEach((item) => {
                         
                         </Typography>
                         <Typography variant="h6">
-                        {props.device_id}
+                            {(() => {
+                                if(props.observation_resource){
+                                    var q = "";
+                                    if(props.observation_resource.identifier[0].value.toString()=="PMS-CIC"){
+                                        q = "CIC | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-INC"){
+                                        q = "INC | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-HCM"){
+                                        q = "Brammi | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-SYRINGE"){
+                                        q = "Syringe | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-SVAAS"){
+                                        q = "SVAAS | "
+                                    }
+                                    
+                                    return (q+props.device_id)
+                                }
+                            })()}
+                        {/* {props.device_id} */}
                         </Typography>
                         
                         </Stack>
