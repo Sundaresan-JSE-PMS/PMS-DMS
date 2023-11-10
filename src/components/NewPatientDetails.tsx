@@ -933,7 +933,7 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
                         else{
                             return (
                                 obs.component?.map((val) => {
-                                    if(val.code.text=="SpO2" || val.code.text=="SPO2"||val.code.text=="Pulse Rate"||val.code.text=="Weight"||val.code.text=="Measured Skin Temp"||val.code.text=="Set Skin Temp"||val.code.text=="PI"||val.code.text=="APNEA"||val.code.text=="Rectal Measure Temp")
+                                    if(val.code.text=="SpO2" || val.code.text=="SPO2"||val.code.text=="Pulse Rate"||val.code.text=="Weight"||val.code.text=="Measured Skin Temp"||val.code.text=="Set Skin Temp"||val.code.text=="PI"||val.code.text=="APNEA"||val.code.text=="Rectal Measure Temp"||val.code.text=="Skin Measure Temp")
                                     return(
                                     <Stack alignItems={'center'} spacing={'10px'}>
                                         <Typography variant="subtitle1" >
@@ -1498,14 +1498,19 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
                                                     {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
                                                     <Line ref={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
                                                     <div id="legend-container"></div>
-                                                    <Divider />
-                                                    {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
-                                                    <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
+                                                    
+                                                    {props.observation_resource[0]?.identifier[0]?.value?.toString()!="PMS-HCM" && (
+                                                        <>
+                                                        <Divider />
+                                                        <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
                                                     <div id="legend-container2"></div>
                                                     <Divider />
                                                     {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
                                                     <Line ref={chartRef3} options={weightOption as ChartOptions} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                                                    <div id="legend-container3"></div>
+                                                    <div id="legend-container3"></div></>
+                                                    ) }
+                                                    {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
+                                                    
                                                 </Stack>
                                                 {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
                                                     <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">
@@ -1679,7 +1684,7 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
             return (props.device.map((device) => {
                 return (
                     <Box borderRadius={'10px'} justifyContent={'center'} textAlign={'center'} boxShadow={`0px 0px 10px 2px #00B1FD`} border={'1px solid #00B1FD'} height={'70px'}>
-                        <Typography paddingTop={'10 px'} paddingLeft={'10px'} paddingRight={'10px'}>{device.identifier[1].value}</Typography>
+                        <Typography paddingTop={'10px'} paddingLeft={'10px'} paddingRight={'10px'}>{device.identifier[1].value}</Typography>
                         <Typography variant="caption" paddingTop={'5px'} paddingLeft={'10px'} paddingRight={'10px'}>{device.identifier[0].value}</Typography>
                     </Box>
                 )
@@ -1757,24 +1762,27 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
                        <Typography variant='h5' paddingLeft={'2%'}>Alarms</Typography>
                        {props.communication_resource?.map((comms, index) => {
                         console.log(comms)
-                        return (
-                            <Accordion elevation={0} defaultExpanded={true} sx={{ width:'100%',backgroundColor:"transparent", backgroundImage:'none', marginTop:'10px' , marginBottom:"10px", border:'1px solid grey', borderRadius:'15px', '&:before': {opacity: 0}}} >
-                                <AccordionSummary
-                                        expandIcon={<ExpandMoreRounded sx={{ fontSize:'200%'}}/>}
-                                        aria-controls="panel1a-content"
-                                        id="panel1a-header"
-                                        
-                                        >
-                                        <Typography variant='h5' component={"h2"} >{props.device && props.device[index] && props.device[index].identifier[1].value }
-                                        {(props.device==undefined || (!props.device && !props.device[index])) && props.observation_resource[index].identifier[0].value}</Typography>
-                                </AccordionSummary>
-                                <AccordionDetails>
-                                <Box width={'100%'} display={'flex'} textAlign={'center'} justifyContent={'center'} flexWrap={'wrap'}>
-                                    {alarmCard(index)}
-                                </Box>
-                                </AccordionDetails>
-                            </Accordion>
-                        )
+                        if(comms.meta.versionId!="1"){
+                            return (
+                                <Accordion elevation={0} defaultExpanded={true} sx={{ width:'100%',backgroundColor:"transparent", backgroundImage:'none', marginTop:'10px' , marginBottom:"10px", border:'1px solid grey', borderRadius:'15px', '&:before': {opacity: 0}}} >
+                                    <AccordionSummary
+                                            expandIcon={<ExpandMoreRounded sx={{ fontSize:'200%'}}/>}
+                                            aria-controls="panel1a-content"
+                                            id="panel1a-header"
+                                            
+                                            >
+                                            <Typography variant='h5' component={"h2"} >{props.device && props.device[index] && props.device[index].identifier[1].value }
+                                            {(props.device==undefined || (!props.device && !props.device[index])) && props.observation_resource[index].identifier[0].value}</Typography>
+                                    </AccordionSummary>
+                                    <AccordionDetails>
+                                    <Box width={'100%'} display={'flex'} textAlign={'center'} justifyContent={'center'} flexWrap={'wrap'}>
+                                        {alarmCard(index)}
+                                    </Box>
+                                    </AccordionDetails>
+                                </Accordion>
+                            )
+                        }
+                        
                        })}
                         <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:'white', backgroundColor:'#111522', border:'0.5px solid grey', fontWeight:50, boxShadow: `0px 0px 10px 1px #6e6f88`, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ fontSize: 80 }}  />} onClick={() => {setTableVisible(!tableVisisble);}}> 
                             <Box sx={{ fontWeight: 'regular', m: 1, fontSize:16, }}>Alarm Log</Box>

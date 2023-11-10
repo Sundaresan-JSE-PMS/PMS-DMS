@@ -311,11 +311,39 @@ export const RoomCard: FC<roomData> = (props) => {
                 >
                 {deviceList.map((device, index) => {
                         if(device?.resource?.location?.reference.split("/")[1] != props.roomId){
+                            
                             return(
                                     <Button onClick={() => {setMiniDialog(true); setSelectedDevice(index)}} sx={{width:'48%', height:'60px', justifyContent:'center', textAlign:'center', color:'white', border:'0.1px solid #282828'}}>
-                                        <Typography variant="subtitle1" component={"h2"}>
+                                        <Box>
+                                            
+                                        <Typography variant="subtitle1" component={"h4"}>
+                                        {(() => {
+                                            var dev = (device.resource.identifier[1].value).toString()
+                                            if(dev=="Heating Cooling Machine"){
+                                                return "Brammi"
+                                            }
+                                            else if(dev=="Intensive Neonatal Care Center"){
+                                                return "INC"
+                                            }
+                                            else if(dev=="Comprehensive Infant Care Centre"){
+                                                return "CIC"
+                                            }
+                                            else if(dev=="SVAAS"){
+                                                return "SVAAS"
+                                            }
+                                            else if(dev=="PMS-SYRINGE"){
+                                                return "Syringe"
+                                            }
+                                            return dev
+                                        })()}
+                                            
+                                        {}
+                                        </Typography>
+                                        <Typography variant="caption" component={"h4"}>
                                         {(device.resource.identifier[0].value).toString()}
                                         </Typography>
+                                        </Box>
+                                        
                                     </Button>
                             )
                 }

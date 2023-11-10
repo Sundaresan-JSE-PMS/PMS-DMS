@@ -332,13 +332,17 @@ const [controlOpacity, setControlOpacity] = useState("0.8")
                                             let data = findData("Set Skin Temp 1")
                                             return (data.data)
                                         }
+                                        // if(props.observation_resource?.component[0].valueQuantity.unit=="MATTRESS"){
+                                        //     let data = findData("Set Temp")
+                                        //     return (data.data)
+                                        // }
                                         else{return ""}
                                     })()}
                                 </Typography>
                             </div>
                             <Typography variant='h6' color={"#5db673"} paddingLeft={'3%'}>
                                 {(() => {
-                                        let data = findData("Measured Skin Temp 2")
+                                        let data = findData("Set Temp")
                                         return (data.data)
                                     }
                                 )()}

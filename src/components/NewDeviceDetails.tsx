@@ -1446,15 +1446,15 @@ items.forEach((item) => {
     },[timeFrame])
     useEffect(() => {
         
-        if(observation[0]?.resource?.component?.length>1){
-            
+        if(observation[1]?.resource?.component?.length>1){
+            console.log("WELLOW")
             setTimes(observation.map((obs) => {
                 let zeroth: {}[] = []
                 let first: {}[] = []
                 let second: {}[] = []
                 let third: {}[] = []
 
-                observation[0].resource.component.map((data, index) => {
+                observation[1].resource.component.map((data, index) => {
                     if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
                         let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
                         zeroth.push({
@@ -1676,14 +1676,14 @@ items.forEach((item) => {
                         {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
                         <Line ref={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
                         <div id="legend-container"></div>
-                        <Divider />
+                        {/* <Divider /> */}
                         {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
-                        <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container2"></div>
-                        <Divider />
+                        {/* <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line> */}
+                        {/* <div id="legend-container2" style={{width:'1px', height='1px' }}></div> */}
+                        {/* <Divider /> */}
                         {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
-                        <Line ref={chartRef3} options={weightOption as ChartOptions} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container3"></div>
+                        {/* <Line ref={chartRef3} options={weightOption as ChartOptions} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line> */}
+                        {/* <div id="legend-container3" style={{width:'1px', height='1px' }}></div> */}
                     </Stack>
                     {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
                         <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">

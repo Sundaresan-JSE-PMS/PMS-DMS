@@ -157,7 +157,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
     }
     const [tt, settt] = useState(0)
     useEffect(() => {
-            if(tt>5){
+            if(tt>1){
                 if(isArray(props.observation_resource)){
                     if(props.observation_resource.length>0){
                         // console.log(props.observation_resource)
@@ -223,7 +223,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                 }
             }
             else{
-                settt
+                settt(tt+1)
             }
 
         
