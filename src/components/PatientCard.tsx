@@ -123,7 +123,9 @@ export interface PatientDetails {
           }[];
     }[];
     patient_name: string;
-    darkTheme:boolean
+    darkTheme:boolean;
+    selectedIcon:string;
+    
    
   }
 
@@ -133,6 +135,19 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
     const [obsResource, setObsResource] = useState<any[]>([])
     const [isOpen, setIsOpen] = useState(false);
     const [isBlinking, setIsBlinking] = useState(false);
+    const getCardWidth = () => {
+        switch (props.selectedIcon) {
+          case 'view':
+            return '24.4%';
+          case 'apps':
+            return '32.3%';
+        case 'vertical':
+                return '80%';  
+            
+          default:
+            return '50%';
+        }
+      };
     const [alarmColor, setAlarmColor] = useState("")
     const [obsmeta, setobsmeta] = useState<any[]>([])
     const [commeta, setcommeta] = useState<any[]>([])
@@ -275,12 +290,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
 
     
     return (
-        <Box  width={{
-            xs: "90%",
-            sm: "48%", 
-            md: "33.33%", 
-            lg: "24.7%", 
-         }}  sx={{borderRadius:'18px'}}
+        <Box width={getCardWidth()}  sx={{borderRadius:'18px'}}
           onClick={() => {setIsOpen(true)}}>
             <Card
           style={{ backgroundColor:props.darkTheme?'#1C1C1E':'#FFFFFF', borderRadius: "10px", height:"260px", border: `6px solid ${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}` }}
@@ -303,61 +313,12 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                   
                     <><Stack height={'80%'} width={'100%'}>
                             <Stack height={'60%'} width={'100%'}  direction={'row'}>
-                                {/* <Box width={'50%'} >
-    <div style={{marginTop:'7%'}}><Typography variant='h6' color={props.darkTheme?'white':'#124D81'} paddingLeft={'10%'} style={{fontWeight: 'bold', fontFamily: 'Helvetica'}}>Baby Temp</Typography>
-    
-    </div>
-                     
-                      <div style={{display:'flex', textAlign:'center', justifyContent:'center'}}>
-                         
-                          <Typography variant='h1' color={props.darkTheme?'white':'#124D81'} >
-                          {(() => {
-                                            let data = finddata("Measured Skin Temp 1")
-                                            return (data!.data)
-                                    })()}
-                          </Typography>
-                          <Typography variant='subtitle1'  color={props.darkTheme?'white':'#124D81'}  >
-                          ℃
-                          </Typography>
-                          <Typography variant='subtitle1'color={props.darkTheme?'white':'#124D81'} paddingTop={'25%'} >
-                          {(() => {
-                                            let data = finddata("Set Skin Temp")
-                                            return (data!.data)
-                                    })()}
-                          </Typography>
-                      </div>
-    </Box> */}
+                               
                                 <Box width={'100%'} sx={{ padding: '10px' }}>
 
                                     {/* <Line data={data} options={options} /> */}
                                 </Box>
-                                {/* <Box width={'25%'} >
-    <div style={{marginTop:'15%'}}><Typography variant='subtitle1'  color={props.darkTheme?'white':'#4B7193'} style={{fontWeight: 'bold', fontFamily: 'Helvetica'}} >Heater Temp</Typography></div>
-                     
-                      <div style={{display:'flex', textAlign:'center', justifyContent:'center'}}>
-                        <Typography variant='h2' color={props.darkTheme?'white':'#4B7193'} >
-                        {(() => {
-                                            let data = finddata("Heater Level")
-                                            return (data!.data)
-                                    })()}
-                          </Typography>
-                          <Typography variant='subtitle1' color={props.darkTheme?'white':'#4B7193'} paddingTop={'13%'} paddingLeft={'3%'}>
-                             %
-                          </Typography>
-                      </div>
-    </Box> */}
-
-                                {/* <Box width={'25%'} > <div style={{marginTop:'15%'}}><Typography variant='subtitle1' style={{fontWeight: 'bold', fontFamily: 'Helvetica'}}  color={props.darkTheme?'white':'#124D81'}  paddingLeft={'20%'}>Alarm <FontAwesomeIcon icon={faBell }  color={props.darkTheme?'white':'#124D81'}/></Typography>
-    </div>
-                     
-                      <div style={{display:'flex', textAlign:'center', justifyContent:'center'}}>
-                         
-                      <Typography  variant='subtitle1' color={`${alarmColor}`} paddingTop={'10%'} >
-                                            {displayAlarm}
-                                        </Typography>
-                          
-                      </div>
-                      </Box> */}
+                            
                             </Stack>
 
 
@@ -372,34 +333,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                                         })()}</Typography>
 
                                     </div></Box>
-                                {/* <Box width={'25%'} ><div style={{marginTop:'7%'}}><Typography variant='subtitle1' color={props.darkTheme?'white':'#3C89C0'}  style={{fontWeight: 'bold', fontFamily: 'Helvetica'}}  paddingLeft={'10%'}>Heart Rate</Typography></div>
-                     
-                      <div style={{display:'flex', textAlign:'center',paddingLeft:'8%', justifyContent:'left'}}>
-                         
-                         <Typography variant='h4' color={props.darkTheme?'white':'#3C89C0'}  >
-                         {(() => {
-                                            let data = finddata("Pulse Rate")
-                                            return (data!.data)
-                                    })()}
-                         </Typography>
-                         <Typography variant='subtitle2'  color={props.darkTheme?'white':'#3C89C0'}  paddingTop={'15%'} paddingLeft={'3%'}>
-                           BPM
-                         </Typography>
-                     </div></Box> */}
-                                {/* <Box width={'25%'} ><div style={{marginTop:'7%'}}><Typography variant='subtitle1'  color={props.darkTheme?'white':'#3C89C0'} style={{fontWeight: 'bold', fontFamily: 'Helvetica'}} paddingLeft={'10%'}>Spo2</Typography></div>
-                     
-                      <div style={{display:'flex', textAlign:'center', paddingLeft:'6%', justifyContent:'left'}}>
-                         
-                         <Typography variant='h4'  color={props.darkTheme?'white':'#3C89C0'}   >
-                         {(() => {
-                                            let data = finddata("SpO2")
-                                            return (data!.data)
-                                    })()}
-                         </Typography>
-                         <Typography variant='subtitle2'  color={props.darkTheme?'white':'#3C89C0'}  paddingTop={'15%'} paddingLeft={'3%'}>
-                           %
-                         </Typography>
-                     </div></Box> */}
+                               
                                 <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FFC017"} style={{ fontFamily: 'Helvetica' }}>PR <span style={{ fontSize: '13px' }}>B/min</span></Typography></div>
                                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
                                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
@@ -412,20 +346,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                                         </Typography>
 
                                     </div></Box>
-                                {/* <Box width={'25%'} ><div style={{marginTop:'7%'}}><Typography variant='subtitle2'   color={props.darkTheme?'white':'#3C89C0'}  style={{fontWeight: 'bold', fontFamily: 'Helvetica'}} paddingLeft={'10%'}>PI</Typography></div>
-                    
-                      <div style={{display:'flex', textAlign:'center', paddingLeft:'6%', justifyContent:'left'}}>
-                         
-                         <Typography variant='h4'  color={props.darkTheme?'white':'#3C89C0'} >
-                         {(() => {
-                                            let data = finddata("PI")
-                                            return (data!.data)
-                                    })()}
-                         </Typography>
-                         <Typography variant='subtitle2'  color={props.darkTheme?'white':'#3C89C0'}  paddingTop={'15%'} paddingLeft={'3%'}>
-                           BPM
-                         </Typography>
-                     </div></Box> */}
+                              
                                 <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#94FF37"} style={{ fontFamily: 'Helvetica' }}>PI <span style={{ fontSize: '13px' }}>B/Min</span></Typography></div>
                                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
                                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
@@ -438,20 +359,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                                         </Typography>
 
                                     </div></Box>
-                                {/* <Box width={'25%'} ><div style={{marginTop:'7%'}}><Typography variant='subtitle2'  color={props.darkTheme?'white':'#38AAC3'}    style={{fontWeight: 'bold', fontFamily: 'Helvetica'}}  paddingLeft={'10%'}>Weight</Typography></div>
-                     
-                      <div style={{display:'flex', textAlign:'center', paddingLeft:'6%', justifyContent:'left'}}>
-                         
-                         <Typography variant='h4'color={props.darkTheme?'white':'#38AAC3'} >
-                         {(() => {
-                                            let data = finddata("Weight")
-                                            return (data!.data)
-                                    })()}
-                         </Typography>
-                         <Typography variant='subtitle1'color={props.darkTheme?'white':'#38AAC3'} paddingTop={'10%'} paddingLeft={'3%'}>
-                           KG
-                         </Typography>
-                     </div></Box> */}
+                              
                                 <Box width={'22%'} sx={{ textAlign: 'left' }}><div><Typography variant='subtitle1' color={"#0BB1FA"} style={{ fontFamily: 'Helvetica' }}>Spo2 <span style={{ fontSize: '13px' }}>%</span></Typography></div>
                                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
                                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
@@ -542,6 +450,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                     </Stack>
 
             </Card>
+            {props.selectedIcon !== 'vertical' && (
             <NewPatientDetails 
                 isDialogOpened={isOpen}
                 handleCloseDialog={() => { setIsOpen(false); } }
@@ -553,7 +462,9 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                 newData={newData}
                 key={props.patient_resource_id}
                 patient_resource_id={props.patient_resource_id} 
-                darkTheme={props.darkTheme} />
+                darkTheme={props.darkTheme} 
+                selectedIcon={props.selectedIcon}
+                />)}
        </Box>
     )
 }

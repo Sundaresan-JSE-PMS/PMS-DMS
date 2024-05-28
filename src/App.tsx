@@ -42,7 +42,9 @@ function App() {
   const [currentRoom, setCurrentRoom] = useState("")
   const [roomAltered, setRoomAltered] = useState(false)
   const [UserOrganization, setUserOrganization] = useState("");
-  
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [darkTheme, setDarkTheme] = useState(false);
+  const [selectedIcon, setSelectedIcon] = useState<string>("");
   useEffect(() => {
     if (isAuthenticated) {
       getIdTokenClaims()
@@ -54,7 +56,7 @@ function App() {
         });
     }
   }, [isAuthenticated]);
-  const [darkTheme, setDarkTheme] = useState(false);
+  
 
   const toggleDarkTheme = () => {
     setDarkTheme((prevTheme) => !prevTheme);
@@ -77,14 +79,14 @@ function App() {
           sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
           open={isLoading}
         ><CircularProgress color="inherit" /></Backdrop>
-        <Header darkTheme={darkTheme} toggleDarkTheme={toggleDarkTheme} roomAltered={roomAltered} currentRoom={currentRoom} roomChange={roomChange} userOrganization={UserOrganization}  />
+        <Header darkTheme={darkTheme} setSearchQuery={setSearchQuery} toggleDarkTheme={toggleDarkTheme} roomAltered={roomAltered} currentRoom={currentRoom} roomChange={roomChange} userOrganization={UserOrganization} selectedIcon={selectedIcon} setSelectedIcon={setSelectedIcon}   />
         <Routes>
           <Route path="/" element={<Home  />}/>
           <Route path="/user" element={<UserInfo />} />
           <Route path="/rooms" element={<Rooms roomModified={roomModified} userOrganization={UserOrganization} darkTheme={darkTheme} />} />
           {/* <Route path="/devicedata" element={<DetailedDevice />} /> */}
-          <Route path="/patient-monitor" element={<PatientMonitor currentRoom={currentRoom} userOrganization={UserOrganization} darkTheme={darkTheme}/>} />
-          <Route path="/all-patient" element={<AllPatient currentRoom={currentRoom} userOrganization={UserOrganization} darkTheme={darkTheme}/>} />
+          <Route path="/patient-monitor" element={<PatientMonitor currentRoom={currentRoom} userOrganization={UserOrganization}  darkTheme={darkTheme} selectedIcon={selectedIcon}/>} />
+          <Route path="/all-patient" element={<AllPatient searchQuery={searchQuery} currentRoom={currentRoom} userOrganization={UserOrganization} darkTheme={darkTheme} selectedIcon={selectedIcon} />} />
           <Route path="/device-monitor" element={<DeviceMonitor currentRoom={currentRoom} darkTheme={darkTheme}/>} />
           <Route path="/admin"  element={<AdminPage userOrganization={UserOrganization} darkTheme={darkTheme} />} />
           <Route path="/organization"  element={<Organization darkTheme={darkTheme}/>} />

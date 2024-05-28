@@ -5,11 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faDroplet  } from '@fortawesome/free-solid-svg-icons'; 
 import { Line } from 'react-chartjs-2';
 
-
-
-
 export interface DummyPatientDetails {
-    
+    selectedIcon: string;
     darkTheme:boolean
    
   }
@@ -24,10 +21,23 @@ export interface DummyPatientDetails {
         tension: number;
     }[];
 }
- export const  DummyPatientCard: FC<DummyPatientDetails> = ({darkTheme}): JSX.Element => {
+ export const  DummyPatientCard: FC<DummyPatientDetails> = ({darkTheme,selectedIcon}): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false)
   const [alarmColor,] = useState("#202020");
   const [isBlinking, setIsBlinking] = useState(true);
+  const getCardWidth = () => {
+    switch (selectedIcon) {
+      case 'view':
+        return '24.4%';
+      case 'apps':
+        return '32.3%';
+    case 'vertical':
+            return '80%';  
+        
+      default:
+        return '24.4%';
+    }
+  };
   const [data, setData] = useState<ChartData>({
       labels: [],
       datasets: [
@@ -89,12 +99,7 @@ export interface DummyPatientDetails {
       };
     }, [alarmColor]);
   return (
-      <Box  width={{
-          xs: "90%", // Full width on extra small screens (mobile)
-          sm: "48%", // Full width on small screens (tablet)
-          md: "33.33%", // 75% width on medium screens (laptop)
-          lg: "24.7%", // 60% width on large screens (TV)
-          }}
+      <Box  width={getCardWidth()}
           
           sx={{borderRadius:'18px'}}
       onClick={() => {setIsOpen(true)}}>
@@ -187,8 +192,16 @@ export interface DummyPatientDetails {
           </Stack>
 
       </Card>
-      <DummyPatientDetails 
-              isOpen={isOpen} handleCloseDialog={() => { setIsOpen(false); } } darkTheme={darkTheme}/>
+      {selectedIcon !== 'vertical' && (
+        <DummyPatientDetails
+          selectedIcon={selectedIcon}
+          isOpen={isOpen}
+          handleCloseDialog={() => { setIsOpen(false); }}
+          darkTheme={darkTheme}
+        />
+      )}
+      {/* <DummyPatientDetails 
+          selectedIcon={selectedIcon}   isOpen={isOpen} handleCloseDialog={() => { setIsOpen(false); } } darkTheme={darkTheme}/> */}
 
   </Box>
   )

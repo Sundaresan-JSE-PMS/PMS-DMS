@@ -1,6 +1,6 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {Tooltip, Accordion, AccordionDetails, AccordionSummary, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, ToggleButton, ToggleButtonGroup, Typography, MenuItem, Select } from "@mui/material";
+import {Tooltip, Accordion,Card, CardContent, AccordionDetails, AccordionSummary, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, IconButton, Stack, ToggleButton, ToggleButtonGroup, Typography, MenuItem, Select } from "@mui/material";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FC } from "react";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -138,6 +138,7 @@ export interface PatientDetails {
     }[];
     patient_name: string;
     darkTheme:boolean;
+    selectedIcon:string
     
   }
   type TemperatureData = {
@@ -1726,6 +1727,321 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
 
     return (
         <React.Fragment>
+    {props.selectedIcon === 'vertical' ? (   
+            <Card
+      sx={{
+        minWidth: {
+          xs: '90%',
+          sm: '90%',
+          md: '70%',
+          lg: '70%',
+        },
+        maxWidth: {
+          xs: '90%',
+          sm: '90%',
+          md: '70%',
+          lg: '70%',
+        },
+        minHeight: '90%',
+        borderRadius: '25px',
+        boxShadow: `0px 0px 40px 1px #404040`,
+        border: '0.4px solid #505050',
+        backgroundColor: darkTheme ? '#000000' : '#FFFFFF',
+      }}
+    >
+      <CardContent sx={{ padding: '0px' }}>
+        <Stack direction={'row'} width={'102%'}>
+          <Stack direction={'row'} width={'100%'} sx={{ justifyContent: 'space-between', marginLeft: 'auto', marginRight: 'auto' }}>
+            <Typography variant="h6" color={darkTheme ? '#FFFFFF' : '#124D81'} fontWeight={'regular'}>
+            {props.patient_name} 
+            </Typography>
+            <Typography color={darkTheme ? '#FFFFFF' : '#124D81'} variant="h6">
+            {props.patient_id}
+            </Typography>
+          </Stack>
+          <IconButton sx={{ width: '45px', marginTop: '-4px', marginLeft: '10px' }} onClick={() => { setvarq(!varq); }}>
+            <FontAwesomeIcon style={{ padding: '0px', margin: '0px', color: darkTheme ? '#FFFFFF' : '#124D81' }} icon={faXmark} />
+          </IconButton>
+        </Stack>
+        <Divider sx={{ marginTop: '20px', marginBottom: '20px', backgroundColor: '#E4E4E4' }} />
+        {/* Content based on selectedTab */}
+        {selectedTab === 'overview' && (
+        <Box>
+        <Box justifyContent={'center'} textAlign={'center'} color={darkTheme?'#FFFFFF':'#124D81'} width={'100%'} marginTop={"20px"}>
+            {realtimeDataDisplay()}
+        </Box>
+        <Divider sx={{marginTop:'40px', marginBottom:'20px', backgroundColor:'#E4E4E4'}}/>
+        <Typography variant='h5' color={darkTheme?'#FFFFFF':'#124D81'} paddingLeft={'2%'}>Connected Devices</Typography>
+        <Box marginTop={'3%'} marginLeft={'3%'} display={'flex'} textAlign={'center'} justifyContent={'left'} flexWrap={'wrap'} width={'100%'} gap={'10px'}>
+        {connectedDevices()}
+    </Box>
+        </Box>
+          )}
+         {selectedTab === 'patientinfo' && (
+              <Stack direction="column" spacing={2}  justifyContent="center">
+              {/* First Row */}
+              <Stack width={'100%'} direction="row" spacing={3} justifyContent="center">
+                 
+              <Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+              
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color= {darkTheme ? '#FFFFFF':"#124D81"} style={{ fontFamily: 'Helvetica' }}>
+ Baby Name:
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold', fontFamily: 'Helvetica', marginLeft: '5px' }}>
+{props.patient_name} 
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+ Birth Weight:
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{fontWeight: 'bold', marginLeft: '5px' }}>
+ 730 g
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+ Gender:
+</Typography>
+<Select
+sx={{ backgroundColor: '#F3F2F7',color:darkTheme?'#FFFFFF':'#124D81',paddingLeft:'20px' ,'& .MuiSelect-icon': {
+color: darkTheme?'#FFFFFF':'#124D81', // Change the color of the arrow dropdown to blue
+},}}
+value={gender}
+
+onChange={handleChange1}
+variant="standard"
+displayEmpty
+
+
+style={{ marginLeft: '40px',width:'150px',alignItems:'center'}}
+>
+<MenuItem value="" disabled>
+<em>Select Gender</em>
+</MenuItem>
+<MenuItem value="male">Male</MenuItem>
+<MenuItem value="Femlae">Female</MenuItem>
+
+
+</Select>
+</Box>
+</Box>
+
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+Blood Group :
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold', fontFamily: 'Helvetica', marginLeft: '5px' }}>
+ {/* O +ve */}
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+Mothers Name :
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold',marginLeft: '5px' }}>
+ {/* Sheela */}
+</Typography>
+</Box>
+
+</Box>
+</Stack>
+
+<Box width={'100%'}>
+<Box sx={{ position: 'relative', marginBottom: '20px' }}>
+{/* Edit icon */}
+
+{/* Box content */}
+<Typography variant="h6" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontFamily: 'Helvetica', textAlign: 'left' }}>Admission Details</Typography>
+<Divider sx={{ marginBottom: '20px', backgroundColor: '#E4E4E4', color: '#E4E4E4', height: '1px' }} />
+<Stack width={'100%'} direction="row" minHeight={"100px"} spacing={3} justifyContent="center">
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontFamily: 'Helvetica' }}>
+Date of Admission:
+</Typography>
+<LocalizationProvider dateAdapter={AdapterDateFns}>
+<DatePicker
+value={selectedDate}
+onChange={handleDateChange}
+renderInput={(params: any) => (
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} {...params} />
+)}
+style={{ marginLeft: '5px' }}
+/>
+</LocalizationProvider>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+Room No :
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{fontWeight: 'bold', marginLeft: '5px' }}>
+ 01
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+Reason of Admission :
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold',marginLeft: '5px' }}>
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>
+Reporting Nurse :
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold',marginLeft: '5px' }}>
+</Typography>
+</Box></Box>
+
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+Birth Date & Time : 
+</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold', fontFamily: 'Helvetica', marginLeft: '5px' }}>
+</Typography>
+</Box>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} >
+Gestational Age:
+</Typography>
+
+
+<Select sx={{ backgroundColor: '#F3F2F7',color:darkTheme?'#FFFFFF':'#124D81',paddingLeft:'20px' ,'& .MuiSelect-icon': {color: darkTheme?'#FFFFFF':'#124D81' },}}value={gestationalAge} placeholder="Select Here" onChange={handleChange} variant="standard" displayEmpty style={{ marginLeft: '50px',width:'150px',alignItems:'center'}}>
+<MenuItem value="" disabled><em>Select Age</em></MenuItem>
+<MenuItem value="25 weeks">25 weeks</MenuItem>
+<MenuItem value="26 weeks">26 weeks</MenuItem>
+<MenuItem value="27 weeks">27 weeks</MenuItem>         
+<MenuItem value="28 weeks">28 weeks</MenuItem>
+<MenuItem value="29 weeks">29 weeks</MenuItem>
+<MenuItem value="30 weeks">30 weeks</MenuItem>
+<MenuItem value="31 weeks">31 weeks</MenuItem>
+<MenuItem value="32 weeks">32 weeks</MenuItem>
+<MenuItem value="33 weeks">33 weeks</MenuItem>
+<MenuItem value="34 weeks">34 weeks</MenuItem>
+<MenuItem value="35 weeks">35 weeks</MenuItem>
+<MenuItem value="36 weeks">36 weeks</MenuItem>
+</Select>
+
+</Box>
+
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"}>Reporting Doctor :</Typography>
+<Typography variant="subtitle1" color={darkTheme ? '#FFFFFF':"#124D81"} style={{ fontWeight: 'bold',marginLeft: '5px' }}>{}</Typography>
+</Box>
+
+
+</Box>
+</Stack>
+</Box>
+</Box>
+
+<Divider sx={{ marginBottom: '20px', backgroundColor: '#E4E4E4', color: '#E4E4E4',height:'1px' }} />
+<Stack width={'100%'} direction="row" spacing={3} justifyContent="center">
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="h6" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+Vital Signs
+</Typography>
+
+
+</Box>
+<Divider sx={{marginTop:'40px', marginBottom:'20px', backgroundColor:'black'}}/>
+
+</Box>                     
+
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography  variant="h6" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+Anthropometry
+</Typography>
+
+</Box>
+
+</Box>
+</Stack>
+<Divider sx={{ marginBottom: '20px', backgroundColor: '#E4E4E4', color: '#E4E4E4',height:'1px' }} />
+<Stack width={'100%'} direction="row"  spacing={3} justifyContent="center">
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography variant="h6" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+APGAR Details
+</Typography>
+
+
+</Box>
+<Divider sx={{marginTop:'40px', marginBottom:'20px', backgroundColor:'black', color:'black'}}/>
+
+</Box>                     
+
+<Box width="100%" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+<Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+<Typography  variant="h6" color={darkTheme ? '#FFFFFF':"#124D81"} style={{  fontFamily: 'Helvetica' }}>
+Skin Assessment
+</Typography>
+
+</Box>
+
+</Box>
+</Stack>
+
+          </Stack>
+        
+         )}
+       {selectedTab === 'trends' && (
+         <Box>
+        {props.observation_resource && props.observation_resource!=undefined && props.observation_resource[0].identifier[0].value.toString()!='PMS-SYRINGE' && (<>
+            <Divider sx={{marginTop:'40px', marginBottom:'20px', backgroundColor:'#E4E4E4'}}/>
+            <Typography variant='h5' color={darkTheme?'#FFFFFF':'#124D81'} paddingLeft={'2%'}>Trends</Typography>
+            {graphDataDisplay}
+        </>)}
+        
+         {/* {graphDataDisplay} */}
+        {/* <Box marginTop={'3%'} marginLeft={'3%'} display={'flex'} textAlign={'center'} justifyContent={'left'} flexWrap={'wrap'} width={'100%'} gap={'10px'}>
+            {connectedDevices()}
+        </Box> */}
+        </Box>
+         )}
+       {selectedTab === 'alarms' && (
+       <Box> <Typography variant='h5' color={darkTheme?'#FFFFFF':'#124D81'} paddingLeft={'2%'}>Alarms</Typography>
+       {props.communication_resource?.map((comms, index) => {
+        console.log(comms)
+        if(comms.meta.versionId!="1"){
+            return (
+                <Accordion elevation={0} defaultExpanded={true} sx={{ width:'100%',backgroundColor:darkTheme?'transparent':"#F3F2F7", backgroundImage:'none', marginTop:'10px' , marginBottom:"10px", border:'1px solid grey', borderRadius:'15px', '&:before': {opacity: 0}}} >
+                    <AccordionSummary
+                            expandIcon={<ExpandMoreRounded sx={{color:darkTheme?'#FFFFFF':'#124D81', fontSize:'200%'}}/>}
+                            aria-controls="panel1a-content"
+                            id="panel1a-header"
+                            
+                            >
+                            <Typography variant='h5' color={darkTheme?'#FFFFFF':'#124D81'} component={"h2"} >{props.device && props.device[index] && props.device[index].identifier[1].value }
+                            {(props.device==undefined || (!props.device && !props.device[index])) && props.observation_resource[index].identifier[0].value}</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <Box width={'100%'}  display={'flex'} textAlign={'center'} justifyContent={'center'} flexWrap={'wrap'}>
+                        {alarmCard(index)}
+                    </Box>
+                    </AccordionDetails>
+                </Accordion>
+            )
+        }
+        
+       })}
+        <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:'#111522', backgroundColor:'white', border:'0.5px solid grey', fontWeight:50, boxShadow: `0px 0px 10px 1px #6e6f88`, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ color:'black',fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ color:'black',fontSize: 80 }}  />} onClick={() => {setTableVisible(!tableVisisble);}}> 
+            <Box sx={{ fontWeight: 'regular', m: 1, fontSize:16, }} >Alarm Log</Box>
+        </Button>
+        <div  style={{marginLeft:'auto', width:'85%', marginRight:'auto'}} >
+            {tableVisisble && <Table infscrollfunc={infscrollfunc} rows={rows} columns={columns}/>}
+        </div> </Box>
+          )}
+       
+      </CardContent>
+    </Card>
+) : (    
             <Dialog
                 open={props.isDialogOpened}
                 sx={{
@@ -2059,6 +2375,8 @@ export const NewPatientDetails: FC<PatientDetails> = (props): JSX.Element => {
                        
                     </DialogContent>
            </Dialog>
+        )}
+      
         </React.Fragment>
     )
 }

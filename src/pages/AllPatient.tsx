@@ -4,11 +4,14 @@ import { useAuth0 } from '@auth0/auth0-react';
 import pmsLogo from '../assets/phx_logo.png';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { PatientCard } from '../components/PatientCard';
+//import { NewPatientDetails } from "../components/NewPatientDetails";
 
 type PatientMonitorProps = {
   userOrganization: string;
   currentRoom: any;
-  darkTheme: boolean; // Adjust the type according to your requirements
+  darkTheme: boolean;
+  searchQuery: string;
+  selectedIcon: string; // Adjust the type according to your requirements
 };
 type Patient = {
   resourceType: string;
@@ -26,7 +29,7 @@ type Patient = {
     value: string;
   }[];
 };
-  export const AllPatient: React.FC<PatientMonitorProps> = ({ userOrganization, currentRoom ,darkTheme}) => {
+  export const AllPatient: React.FC< PatientMonitorProps> = ({ userOrganization, currentRoom ,darkTheme,searchQuery,selectedIcon}) => {
   console.log("in patient Monitor Page rooms",currentRoom);
   console.log("in patient Monitor Page",userOrganization);
 
@@ -37,8 +40,30 @@ type Patient = {
   const { isAuthenticated, loginWithRedirect } = useAuth0();
   const [isLoading, setIsLoading] = useState(true);
   const [pageNumber, setPageNumber] = useState(1);
-  const [searchQuery] = useState<string>(''); // State for search query
+  
+  //const [isDialogOpened, setIsDialogOpened] = useState(false);
+  //const [isOpen, setIsOpen] = useState(false);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]); // State for filtered patient list
+ 
+  
+  
+  //const [selectedPatient, setSelectedPatient] = useState<SelectedPatientData | null>(
+   // null
+//);
+//const handlePatientCardClick = (cardData: SelectedPatientData) => {
+  // setSelectedCard(cardData);
+//   if (selectedPatient && selectedPatient.device_id === cardData.device_id) {
+//     setSelectedPatient(null); // Deselect the card
+//   } else {
+//     setSelectedPatient(cardData); // Select the new card
+//   }
+// };
+// const handleCloseDetails = () => {
+//   setSelectedPatient(null); // Resets the selected card to hide details
+// };
+ 
+  
+ 
 
   useEffect(() => {
     filterPatients(searchQuery);
@@ -277,7 +302,7 @@ type Patient = {
       }
     };
   }, [pageNumber]);
-  
+ 
   const patientCards = filteredPatients.map(patient => {
     return (
     <PatientCard
@@ -289,6 +314,10 @@ type Patient = {
       observation_resource={parentobs[String(patient.id)]}
       communication_resource={parentcomm[String(patient.id)]}
       darkTheme={darkTheme}
+      selectedIcon={selectedIcon}
+      
+      
+     
     />
   )});
   
@@ -307,16 +336,73 @@ type Patient = {
       setFilteredPatients(filtered ?? []);
     }
   };
+  const containerStyles = selectedIcon === 'vertical' ? {
+    display: 'flex',
+    justifyContent: 'left',
+    alignItems: 'left',
+    width: '100%',
+    
+    
+  } : {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  };
   useEffect(() => {
     console.log(parentdevice);
   }, [parentdevice]);
 
   return (
     
-      
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-      
+      <div>
+    <div style={containerStyles}>
+      {selectedIcon === 'vertical' ? (
+    <>
           <Box sx={{display: "flex",marginTop:'0px',paddingTop:'0px',flexWrap: "wrap",gap: '2rem',mt: {xs: 5,sm: 6,md: 4,lg: 3,},
+                      mb: {xs: 3,sm: 4,md: 4,lg: 3,
+                      },
+                      justifyContent: "center",
+                      width:'40%'
+                    }}
+                  >
+              {isAuthenticated && (
+                <Box sx={{width:"100%"}}>
+               
+                
+                  <Box
+                            sx={{
+                              // backgroundColor:'red',
+                              display: "flex",flexWrap: "wrap", gap: '0.3rem', justifyContent: "left", width:"100%", marginBottom:'2%' }}>
+                     
+                      {patientCards}
+                      
+    </Box>
+              
+              
+             </Box>
+              )}
+              {!isAuthenticated && !isLoading && (
+                <Stack marginTop={'9%'} justifyContent={'center'} textAlign={'center'} spacing={'40px'} width={'70%'}>
+                  <img src={pmsLogo} alt="Phoenix" style={{maxWidth: '50%',height: 'auto', marginLeft:'auto',marginRight:'auto' }}/>
+                  <Typography variant='h3' color={'white'} fontWeight={'50'}>NeoLife Sentinel</Typography> {/*PhoenixCare Sentinel*/ }
+                  <Typography variant='h6' color={'grey'} fontWeight={'50'}>Remote Device Monitoring System</Typography>
+                  <Stack direction={'row'} spacing={'30px'} justifyContent={'space-evenly'}>
+                  <Button variant='outlined'sx={{width:'200px', height:'50px', borderRadius:'100px'}} endIcon={<OpenInNewIcon />} target='_blank' href='https://www.phoenixmedicalsystems.com/'>Product page</Button>
+                  <Button variant='contained' sx={{width:'200px', height:'50px', borderRadius:'100px'}} onClick={() => loginWithRedirect()}>Sign In</Button>
+                  
+                  </Stack>
+                </Stack>
+              )}
+        </Box>
+        <Box sx={{ width: '50%',justifyContent:'center',backgroundColor:'red'}}>
+        <Box sx={{ padding: '20px' }}>
+              {/* Render NewPatientDetails card */}
+           
+            </Box> </Box>
+        </>
+  ) : (
+    // Render only the first box component when selected icon is not 'vertical'
+    <Box sx={{display: "flex",marginTop:'0px',paddingTop:'0px',flexWrap: "wrap",gap: '2rem',mt: {xs: 5,sm: 6,md: 4,lg: 3,},
                       mb: {xs: 3,sm: 4,md: 4,lg: 3,
                       },
                       justifyContent: "center",
@@ -352,10 +438,11 @@ type Patient = {
                 </Stack>
               )}
         </Box>
+  )}
          </div>
        
     
-        
+         </div>    
     
   )
 }

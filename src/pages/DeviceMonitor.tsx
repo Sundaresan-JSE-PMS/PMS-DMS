@@ -452,7 +452,7 @@ useEffect(() => {
     })
     const syringe = devices.entry?.map((device) => {
       if 
-        (String(device.resource.identifier[1]?.value) === "PMS-SYRINGE" || String(device.resource.identifier[1]?.value) === "Intensive Neonatal Care Center" )
+        (String(device.resource.identifier[1]?.value) === "PMS-SYRINGE"  )
          
       {
         var correct = false;
@@ -532,7 +532,7 @@ useEffect(() => {
     })
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-          <Box sx={{display: "flex",flexWrap: "wrap",gap: '2rem',mt: {xs: 5,sm: 6,md: 7,lg: 8,},
+          <Box sx={{display: "flex",flexWrap: "wrap",gap: '2rem',mt: {xs: 5,sm: 6,md: 3,lg: 4,},
                   mb: {xs: 3,sm: 4,md: 5,lg: 6,
                   },
                   justifyContent: "center",
