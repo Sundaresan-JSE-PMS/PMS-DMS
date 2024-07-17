@@ -122,10 +122,7 @@ export interface DeviceDetails {
   darkTheme:boolean;
   selectedIcon:string;
 }
-
-
 export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
-
     const [isOpen, setIsOpen] = useState(false);
     const [alarmColor, setAlarmColor] = useState("#202020")
     const [newData, setNewData] = useState(false);
@@ -141,14 +138,21 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
         setNewData(true);
         setRequiredForBorderColor(!requiredForBorderColor)
         for (var i=0; i< props?.communication_resource?.extension?.[1].valueCodeableConcept?.coding?.length; i++){
-        console.log(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code)
-        if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='High Priority'){
+        console.log('checking alarm 1 from INC',props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code)
+        if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='High Priority')
+            {
             setAlarmColor('red')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+            console.log('checking alarm 2',props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
             break
-        }else{
+            }
+
+        else
+
+        {
             setAlarmColor('yellow')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+            
         }
     }
     setRequiredForTimer(!requiredForTimer)
@@ -171,7 +175,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
      let intervalId: number | undefined;
  
      if (newData) {
-        const interval = alarmColor === 'red' ? 300 : 600;
+        const interval = alarmColor === 'red' ? 300 : 1200;
        intervalId = setInterval(() => {
          setIsBlinking((prevIsBlinking) => !prevIsBlinking);
        }, interval); // Adjust the blinking interval (in milliseconds) as needed
@@ -188,6 +192,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     useEffect(() => {
         let timer: number | undefined;
         if(newData){
+            
             timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},15000)
 
         }

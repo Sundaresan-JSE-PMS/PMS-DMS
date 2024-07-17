@@ -6,6 +6,8 @@ import { FC, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {  faBell, faPowerOff,faTemperatureArrowDown, faTemperatureArrowUp} from '@fortawesome/free-solid-svg-icons'
 import { NewDeviceDetails } from './NewDeviceDetails';
+import ViewCompactIcon from '@mui/icons-material/ViewCompact';
+import { AcUnit, DeviceThermostatRounded, DeviceThermostatSharp, DeviceThermostatTwoTone, ThermostatAutoOutlined, ThermostatOutlined } from '@mui/icons-material';
 
 export interface DeviceDetails {
     onClick: () => void;
@@ -437,11 +439,11 @@ const getCardWidth = () => {
 
 
                            <Stack height={'40%'} width={'100%'} direction={'row'}>
-                              <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#62ECFF"} style={{ fontFamily: 'Helvetica' }}>Core Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
+                              <Box width={'25%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FF9549"} style={{ fontFamily: 'Helvetica' }}>Core <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
                                 
                                   <div style={{ display: 'flex', justifyContent: 'left' }}>
 
-                                      <Typography variant='h3' color={"#62ECFF"}> 
+                                      <Typography variant='h3' color={"#FF9549"}> 
                                          {(() => {
                                         let data = findData("Rectal Measure Temp")
                                          return (data.data)
@@ -449,11 +451,11 @@ const getCardWidth = () => {
 
                                   </div></Box>
                              
-                              <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FF59BD"} style={{ fontFamily: 'Helvetica' }}>Skin Temp <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
+                              <Box width={'25%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FFD79C"} style={{ fontFamily: 'Helvetica' }}>Skin <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
                                   
                                   <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
 
-                                      <Typography variant='h3' color={"#FF59BD"}>
+                                      <Typography variant='h3' color={"#FFD79C"}>
                                       {(() => {
                                          let data = findData("Measured Skin Temp 2")
                                         return (data.data)
@@ -463,11 +465,11 @@ const getCardWidth = () => {
 
                                   </div></Box>
                             
-                              <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#00D1FF"} style={{ fontFamily: 'Helvetica' }}>Mattress <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
+                              <Box width={'25%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#EBE671"} style={{ fontFamily: 'Helvetica' }}>Mattress <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
                                  
                                   <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
 
-                                      <Typography variant='h3' color={"#00D1FF"}>
+                                      <Typography variant='h3' color={"#EBE671"}>
                                       {(() => {
                                                        let data = findData("Current FiO2 Flow") //Current FiO2 Flow?? Check with SVAAS Team
                                                          return (data.data)
@@ -477,11 +479,34 @@ const getCardWidth = () => {
 
                                   </div></Box>
                             
-                              <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}>
-                                <FontAwesomeIcon icon={faTemperatureArrowDown} color={props.darkTheme?'white':'#124D81'}  style={{paddingTop:'15%', paddingLeft:'10%', fontSize:'350%'}} />
-                                    {/* <FontAwesomeIcon icon={faTemperatureArrowUp}  style={{paddingTop:'20%', paddingRight:'7%', fontSize:'300%'}} /> */}
+                                 
 
-                                 </Box>
+<Box
+  width={'25%'}
+  sx={{
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    textAlign: 'left'
+  }}
+>
+  <DeviceThermostatRounded
+    style={{
+      color:'grey' ,
+      fontSize: '350%'
+    }}
+  />
+  <AcUnit
+    style={{
+      color: '#00A6C4' ,
+      position: 'absolute',
+      top: 10,
+      right: 10,
+      transform: 'translate(5%, -5%)'  // Adjust positioning as needed
+    }}
+  />
+</Box>
                           </Stack>
                       </Stack> 
                      

@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button,  Box, Stack, Typography, Divider, IconButton, ToggleButtonGroup, ToggleButton, Tooltip } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button,  Box, Stack, Typography, Divider, IconButton, ToggleButtonGroup, ToggleButton, Tooltip, CircularProgress } from '@mui/material'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -141,7 +141,10 @@ labels: any[];
 datasets: any[]; 
 };
 export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
+    console.log('this is the patient check',props.patient);
     const [selectedLegends, setSelectedLegends] = useState<any>([])
+    const [isBoxVisible, setIsBoxVisible] = useState(true);
+
     const chartRef1 = useRef<any | null>(null);
     const chartRef2 = useRef<any | null>(null);
     const chartRef3 = useRef<any | null>(null);
@@ -293,6 +296,8 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
     const [timeFrame, setTimeFrame] = useState(-1)
     const [times, setTimes] = useState<Array<any>>([])
     const [dataset, setDataSet] = useState([[{}]])
+    const [loading, setLoading] = useState(false);
+    
     const heaterYaxis = {
         "%": "y",
         "C": "y1",
@@ -540,7 +545,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
                     display: true,
                     drawOnChartArea: true,
                     drawTicks: true,
-                    color: 'grey'
+                    color:darkTheme? 'grey':'black'
                 },
                 
             },
@@ -549,7 +554,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
             display: true,
             position: 'left' as const,
             grid: {
-                color: '#303030',
+                color: darkTheme? 'grey':'black',
                 drawOnChartArea: true,
               },
             title: {
@@ -566,7 +571,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
             display: true,
             position: 'right' as const,
             grid: {
-                color: '#303030',  
+                color: darkTheme? 'grey':'black',  
               drawOnChartArea: false,
             },
             title: {
@@ -633,17 +638,26 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         scales: {
             x: {
                 ticks: {
-                    color:darkTheme? 'white':'black',
+               
+                    color:darkTheme? 'white':'black' ,
                     autoSkip: true,
                     maxTicksLimit: 10
-                }
+                },
+             
+                grid: {
+                    display: true,
+                    drawOnChartArea: true,
+                    drawTicks: true,
+                    color:darkTheme? 'grey':'black'
+                },
+                
             },
           y: {     //g
             type: 'linear' as const,
             display: true,
             position: 'left' as const,
             grid: {
-                color: '#303030',
+                color: darkTheme? 'grey':'black',
                 drawOnChartArea: true,
               },
             title: {
@@ -698,34 +712,45 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         scales: {
             x: {
                 ticks: {
-                    color:darkTheme? 'white':'black',
+               
+                    color:darkTheme? 'white':'black' ,
                     autoSkip: true,
                     maxTicksLimit: 10
-                }
+                },
+                border: {
+                    display: true
+                },
+                grid: {
+                    display: true,
+                    drawOnChartArea: true,
+                    drawTicks: true,
+                    color:darkTheme? 'grey':'black'
+                },
+                
             },
-          y: {      // Celcius
-            type: 'linear' as const,
-            display: true,
-            position: 'left' as const,
-            title: {
-                color:darkTheme? 'white':'black',
+            y: {      // Celcius
+                type: 'linear' as const,
                 display: true,
-                text: "Percentage (%)"
-            },
-            ticks: {
-                color:darkTheme? 'white':'black' // Set the color of the scale values (ticks) to red
-            },
-            grid: {
-                color: '#303030',
-                drawOnChartArea: true,
+                position: 'left' as const,
+                grid: {
+                    color: darkTheme? 'grey':'black',
+                    drawOnChartArea: true,
+                  },
+                title: {
+                    color:darkTheme?'white':'black',
+                    display: true,
+                    text: "Percentage (%)"
+                },
+                ticks: {
+                    color:darkTheme? 'white':'black' // Set the color of the scale values (ticks) to red
+                }
               },
-              
-          },
           y1: {     // %
             type: 'linear' as const,
             display: true,
             position: 'right' as const,
             grid: {
+                color: darkTheme? 'white':'black',  
                 drawOnChartArea: false,
               },
             title: {
@@ -754,7 +779,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
     const alarmUI = newalarm[selectAlarm]?.time?.alarm.map((vals,index) => {
         if(newalarm[selectAlarm].time.priority[index]=="High Priority"){
             return (
-                <Box width={'200px'}  height={'110px'} sx={{border:'1px solid red', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px red`,backgroundColor:darkTheme?'#2F3D4A':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
+                <Box width={'200px'}  height={'110px'} sx={{border:'1px solid red', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px red`,backgroundColor:darkTheme?'#1C1C1E':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
                     <Typography variant='subtitle1' color={darkTheme?'white':'#124D81'} paddingTop={'13%'}><b>{vals}</b></Typography>
                     <div style={{display:'flex', justifyContent:'center', textAlign:'center'}}>
                         <Typography variant='subtitle2' color={darkTheme?'white':'#124D81'} >{(newalarm[selectAlarm].date).toString()} - {(newalarm[selectAlarm].time.val).toString()}</Typography>
@@ -765,7 +790,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         }
         if(newalarm[selectAlarm].time.priority[index]=="Medium Priority"){
             return (
-                <Box width={'200px'} height={'110px'} sx={{border:'1px solid #ffd700', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px #ffd700`,backgroundColor:darkTheme?'#2F3D4A':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
+                <Box width={'200px'} height={'110px'} sx={{border:'1px solid #ffd700', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px #ffd700`,backgroundColor:darkTheme?'#1C1C1E':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
                     <Typography variant='subtitle1'  color={darkTheme?'white':'#124D81'} paddingTop={'13%'}><b>{vals}</b></Typography>
                     <div style={{display:'flex', justifyContent:'center', textAlign:'center'}}>
                         <Typography variant='subtitle2'  color={darkTheme?'white':'#124D81'} >{(newalarm[selectAlarm].date).toString()} - {(newalarm[selectAlarm].time.val).toString()}</Typography>
@@ -775,7 +800,7 @@ export const NewDeviceDetails: FC<DeviceDetails> = (props): JSX.Element => {
         }
         if(newalarm[selectAlarm].time.priority[index]=="Low Priority"){
             return (
-                <Box width={'200px'} height={'110px'} sx={{border:'1px solid cyan', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px cyan`,backgroundColor:darkTheme?'#2F3D4A':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
+                <Box width={'200px'} height={'110px'} sx={{border:'1px solid cyan', borderRadius:'10px', margin:'15px', boxShadow: `0px 0px 10px 1px cyan`,backgroundColor:darkTheme?'#1C1C1E':'#FFFFFF'}} justifyContent={'center'} textAlign={'center'}>
                     <Typography variant='subtitle1'  color={darkTheme?'white':'#124D81'} paddingTop={'13%'}><b>{vals}</b></Typography>
                     <div style={{display:'flex', justifyContent:'center', textAlign:'center'}}>
                         <Typography variant='subtitle2'  color={darkTheme?'white':'#124D81'}>{(newalarm[selectAlarm].date).toString()} - {(newalarm[selectAlarm].time.val).toString()}</Typography>
@@ -1409,24 +1434,25 @@ items.forEach((item) => {
     }
 
     const [selectedTab, setSelectedTab] = useState('overview');
+    
     const handleTabChange = (_event: any, newTab: React.SetStateAction<string> | null) => {
         if (newTab !== null) {
             setSelectedTab(newTab);
         }
     };
-
-
-    useEffect(() => {
+ useEffect(() => {
         let url = []
         let currentNewDate = new Date()
         let currentdate = currentNewDate.getDate().toString().padStart(2,'0')
         let currentmonth = (Number(currentNewDate.getMonth())+1).toString().padStart(2,'0')
         let currentyear = currentNewDate.getFullYear()
         let currentDate = currentyear+"-"+currentmonth+"-"+currentdate
+        console.log('current date', currentDate)
         if(timeFrame!=-1){
+            setLoading(true);
             if(timeFrame==0){
                 let prevdate = ""
-                url.push(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
+                url.push(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=1440`)
                 Promise.all(
                     url.map((query) => {
                         return fetch(query, {
@@ -1441,10 +1467,7 @@ items.forEach((item) => {
         
                             if(data.total===0){return null}
                             if(((data.entry[0].resource.meta.lastUpdated).toString())==prevdate){return null}
-                            
                             prevdate = (data.entry[0].resource.meta.lastUpdated).toString()
-        
-                            
                             return (data.entry.map((val: any)=>(val)))
                             
                         })
@@ -1454,439 +1477,315 @@ items.forEach((item) => {
                 .then((results) => {
                     const dats = results.filter((entry) => entry!==null)
                     .reduce((accumulator, currentvalue) => accumulator.concat(currentvalue),[])
-                    console.log(dats)
-                    setObservation(dats.reverse())
+                    console.log(dats);
+                    setObservation(dats.reverse());
+                    setLoading(false);
                 })
             }
             else{
                 
                 getDataForGraph(1,currentDate+"T00:00:00Z").then((result: any) => {
-                    setObservation(result.reverse())
+                    setObservation(result.reverse());
+                    setLoading(false); 
                 })
     
-                // console.log(x)
-                // for (let incrementDate = 0; incrementDate < 7 ; incrementDate++) {
-                //     let weekNewDate = new Date(currentNewDate.setDate(currentNewDate.getDate() - incrementDate));
-                //     let weekdate = weekNewDate.getUTCDate().toString().padStart(2,'0')
-                //     let weekmonth = (Number(weekNewDate.getMonth())+1).toString().padStart(2,'0')
-                //     let weekyear = weekNewDate.getUTCFullYear()
-                //     let weekDate = weekyear+"-"+weekmonth+"-"+weekdate
-                //     // url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
-                //     for (let index2 = 0; index2 < 24; index2++) {
-                //         url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
-                //     }
-                    
-                                    
-                // }
-                // url.push(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`)
-                // fetch(`http://pmscloud.in:9444/fhir-server/api/v4/Observation/${props.observation_resource?.id}/_history?_count=1`,{
-                //     credentials:'omit',
-                //     method:'GET',
-                //     headers: {
-                //         Authorization: "Basic "+ btoa("fhiruser:change-password")
-                //     }
-                // }).then((response) => response.json())
-                // .then((data) => {
-                //     pr
-                // })
+               
             }
         }
-        
-
-        // let temparr: any[] = []
-        
-
-        
-        //   })
+    
     },[timeFrame])
+    // useEffect(() => {
+    //     const fetchObservationsInChunks = async () => {
+    //         const baseUrl = `${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource?.id}/_history`;
+    //         const currentNewDate = new Date();
+    //         const currentDate = currentNewDate.toISOString().split("T")[0];
+    //         let observationData = [];
+    
+    //         if (timeFrame !== -1) {
+    //             if (timeFrame === 0) {
+    //                 const promises = [];
+    //                 for (let i = 0; i < 1440; i++) { // 1440 minutes in a day
+    //                     const startDate = new Date(currentNewDate.getTime() - i * 60000); // Subtract i minutes
+    //                     const endDate = new Date(startDate.getTime() - 60000); // 1 minute earlier
+    //                     const startISO = startDate.toISOString();
+    //                     const endISO = endDate.toISOString();
+    
+    //                     const url = `${baseUrl}?_since=${endISO}&_until=${startISO}`;
+    //                     promises.push(
+    //                         fetch(url, {
+    //                             credentials: "omit",
+    //                             method: "GET",
+    //                             headers: {
+    //                                 Authorization: "Basic " + btoa("fhiruser:change-password"),
+    //                             },
+    //                         })
+    //                         .then(response => response.json())
+    //                         .then(data => {
+    //                             if (data.total === 0) return null;
+    //                             return data.entry.map((val: any) => val);
+    //                         })
+    //                     );
+    //                 }
+    
+    //                 const results = await Promise.all(promises);
+    //                 const validResults = results.filter(entry => entry !== null);
+    //                 observationData = validResults.flat().reverse();
+    //             } else {
+    //                 const result = await getDataForGraph(1, currentDate + "T00:00:00Z");
+    //                 observationData = result.reverse();
+    //             }
+    
+    //             setObservation(observationData);
+    //         }
+    //     };
+    
+    //     fetchObservationsInChunks();
+    // }, [timeFrame]);
+
+
     useEffect(() => {
-        console.log(observation)
-        if(observation[1]?.resource?.component?.length>1){
-            
-            console.log(observation)
+        console.log(observation);
+    if (observation.length > 0) {
             setTimes(observation.map((obs) => {
-                let zeroth: {}[] = []
-                let first: {}[] = []
-                let second: {}[] = []
-                let third: {}[] = []
-
-                observation[1].resource.component.map((data, index) => {
-                    if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
+                let zeroth: {}[] = [];
+                let first: {}[] = [];
+                let second: {}[] = [];
+                let third: {}[] = [];
+    
+                const components = observation[1]?.resource?.component || observation[0]?.resource?.component || [];
+    
+                components.map((data, index) => {
+                    if (["C", "C°"].includes(data.valueQuantity.unit.toString()) || ["Set Heater", "Heater Level"].includes(data.code.text.toString())) {
                         let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
                         zeroth.push({
                             label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                                
-                            }),
+                            data: observation.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
                             yAxisID: heaterYaxis[unit] || "y"
-                        })
-                    }
-                    else if(data.code.text.toString() == "Pulse Rate" || data.code.text.toString() == "SpO2" || data.code.text.toString() == "SPO2"){
+                        });
+                    } else if (["Pulse Rate", "SpO2", "SPO2"].includes(data.code.text.toString())) {
                         let unit2 = data.valueQuantity.unit.toString() as keyof typeof pulseoximeterYaxis;
                         first.push({
-                            label: data.code.text.toString() ,
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
+                            label: data.code.text.toString(),
+                            data: observation.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
                             yAxisID: pulseoximeterYaxis[unit2] || "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "g"){
+                        });
+                    } else if (data.valueQuantity.unit.toString() === "g") {
                         second.push({
                             label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
+                            data: observation.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
                             yAxisID: "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "Set FiO2")
-                    {
+                        });
+                    } else if (["LPM", "Set FiO2"].includes(data.valueQuantity.unit.toString())) {
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure1OptionYaxis;
                         zeroth.push({
                             label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
+                            data: observation.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
                             yAxisID: pressure1OptionYaxis[unit] || "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "CmH2O" || data.valueQuantity.unit.toString() == "Bar"){
+                        });
+                    } else if (["CmH2O", "Bar"].includes(data.valueQuantity.unit.toString())) {
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure2OptionYaxis;
                         second.push({
                             label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
+                            data: observation.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
                             yAxisID: pressure2OptionYaxis[unit] || "y"
-                        })
+                        });
                     }
-                    // else if(data.code.text.toString() == "Humidity set" || data.code.text.toString() == "Measure Humidity"){
-                    //     let unit2 = data.valueQuantity.unit.toString();
-                    //     third.push({
-                    //         label: data.code.text.toString(),
-                    //         data: observation.map((data2, index2) => {
-                    //             return (
-                    //                 data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                    //             )
-                    //         }),
-                    //         yAxisID: "y"
-                    //     })
-                    // }
-                    
-                })
-                setDataSet([zeroth, first, second, third])
-                var fd = new Date(obs.resource.meta.lastUpdated.toString())
-                var t = fd.toLocaleTimeString()
-                var d = fd.getDate()+"/"+(fd.getMonth()+1)
-                
-                return(
-                    // new Date(obs.resource.meta.lastUpdated).toLocaleString())
-                    d+"-"+t
-                )
-                }))
-        }
-        else if(observation[0]?.resource?.component?.length>1){
+                });
+    setDataSet([zeroth, first, second, third]);
+                var fd = new Date(obs.resource.meta.lastUpdated.toString());
+                var t = fd.toLocaleTimeString();
+                var d = fd.getDate() + "/" + (fd.getMonth() + 1);
+    
+                // return `${d}\n${t}`;
+                return d + "-"+ t;
+            }));
+        } else {
             setTimes(observation.map((obs) => {
-                let zeroth: {}[] = []
-                let first: {}[] = []
-                let second: {}[] = []
-                let third: {}[] = []
-
-                observation[0].resource.component.map((data, index) => {
-                    if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
-                        let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
-                        zeroth.push({
-                            label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                                
-                            }),
-                            yAxisID: heaterYaxis[unit] || "y"
-                        })
-                    }
-                    else if(data.code.text.toString() == "Pulse Rate" || data.code.text.toString() == "SpO2" || data.code.text.toString() == "SPO2"){
-                        let unit2 = data.valueQuantity.unit.toString() as keyof typeof pulseoximeterYaxis;
-                        first.push({
-                            label: data.code.text.toString() ,
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
-                            yAxisID: pulseoximeterYaxis[unit2] || "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "g"){
-                        second.push({
-                            label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
-                            yAxisID: "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "Set FiO2")
-                    {
-                        let unit = data.valueQuantity.unit.toString() as keyof typeof pressure1OptionYaxis;
-                        zeroth.push({
-                            label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
-                            yAxisID: pressure1OptionYaxis[unit] || "y"
-                        })
-                    }
-                    else if(data.valueQuantity.unit.toString() == "CmH2O" || data.valueQuantity.unit.toString() == "Bar"){
-                        let unit = data.valueQuantity.unit.toString() as keyof typeof pressure2OptionYaxis;
-                        second.push({
-                            label: data.code.text.toString(),
-                            data: observation.map((data2) => {
-                                if(data2?.resource?.component){
-                                    return (
-                                        data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                                    )
-                                }
-                            }),
-                            yAxisID: pressure2OptionYaxis[unit] || "y"
-                        })
-                    }
-                    // else if(data.code.text.toString() == "Humidity set" || data.code.text.toString() == "Measure Humidity"){
-                    //     let unit2 = data.valueQuantity.unit.toString();
-                    //     third.push({
-                    //         label: data.code.text.toString(),
-                    //         data: observation.map((data2, index2) => {
-                    //             return (
-                    //                 data2?.resource?.component[index]?.valueQuantity?.value.toString()
-                    //             )
-                    //         }),
-                    //         yAxisID: "y"
-                    //     })
-                    // }
-                    
-                })
-                setDataSet([zeroth, first, second, third])
-                var fd = new Date(obs.resource.meta.lastUpdated.toString())
-                var t = fd.toLocaleTimeString()
-                var d = fd.getDate()+"/"+(fd.getMonth()+1)
-                
-                return(
-                    // new Date(obs.resource.meta.lastUpdated).toLocaleString())
-                    d+"-"+t
-                )
-                }))
-        }
-        else{
-            setTimes(observation.map((obs) => {
-
                 let second = [{
                     label: "",
                     data: [] as string[],
                     yAxisID: "y"
-                }]
-                setDataSet([second, second, second, second])
-                return(
-                    new Date(obs?.resource?.meta.lastUpdated.toString()).toLocaleTimeString())
-                }))
+                }];
+                setDataSet([second, second, second, second]);
+                return new Date(obs?.resource?.meta.lastUpdated.toString()).toLocaleTimeString();
+            }));
         }
-            // setLoading(false)
-    },[observation])
+    }, [observation]);
+  
+    // useEffect(() => {
+    //     if (observation.length > 0) {
+    //         const times = observation.map((obs) => {
+    //             var fd = new Date(obs.resource.meta.lastUpdated.toString())
+    //             const t = fd.toLocaleTimeString();
+    //             const d = `${fd.getDate()}/${fd.getMonth() + 1}`;
+    //             return `${d}-${t}`;
+    //         });
+
+    //         setLabels(times);
+
+    //         const newDataSet = observation[0]?.resource?.component?.map((data, index) => ({
+    //             label: data.code.text,
+    //             data: observation.map((obs) => obs?.resource?.component[index]?.valueQuantity?.value.toString()),
+    //             yAxisID: data.valueQuantity.unit.includes('C') ? 'y' : 'y1',
+    //         })) || [];
+
+    //         setDataset([newDataSet]);
+    //         setGraphData(true);
+    //         setRenderGraph(!renderGraph);
+    //     }
+    // }, [observation]);
+
+
+    // useEffect(() => {
+    //     console.log(observation);
+    //     const processObservationData = (observations: any[]) => {
+    //         let zeroth: {}[] = [];
+    //         console.log("Processing observations:", observations);
+    //                    let first: {}[] = [];
+    //                      let second: {}[] = [];
+    //                     let third: {}[] = [];
+    
+    //         const components = observations[0]?.resource?.component || [];
+    
+    //         components.forEach((data: { valueQuantity: { unit: string; }; code: { text: { toString: () => string; }; }; }, index: string | number) => {
+    //             if (["C", "C°"].includes(data.valueQuantity?.unit) || ["Set Heater", "Heater Level"].includes(data.code.text.toString())) {
+    //                 let unit = data.valueQuantity.unit as keyof typeof heaterYaxis;
+    //                 zeroth.push({
+    //                     label: data.code.text.toString(),
+    //                     data: observations.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
+    //                     yAxisID: heaterYaxis[unit] || "y"
+    //                 });
+    //             } else if (["Pulse Rate", "SpO2", "SPO2"].includes(data.code.text.toString())) {
+    //                 let unit2 = data.valueQuantity.unit as keyof typeof pulseoximeterYaxis;
+    //                 first.push({
+    //                     label: data.code.text.toString(),
+    //                     data: observations.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
+    //                     yAxisID: pulseoximeterYaxis[unit2] || "y"
+    //                 });
+    //             } else if (data.valueQuantity.unit === "g") {
+    //                 second.push({
+    //                     label: data.code.text.toString(),
+    //                     data: observations.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
+    //                     yAxisID: "y"
+    //                 });
+    //             } else if (["LPM", "Set FiO2"].includes(data.valueQuantity.unit.toString())) {
+    //                 let unit = data.valueQuantity.unit as keyof typeof pressure1OptionYaxis;
+    //                 zeroth.push({
+    //                     label: data.code.text.toString(),
+    //                     data: observations.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
+    //                     yAxisID: pressure1OptionYaxis[unit] || "y"
+    //                 });
+    //             } else if (["CmH2O", "Bar"].includes(data.valueQuantity.unit.toString())) {
+    //                 let unit = data.valueQuantity.unit as keyof typeof pressure2OptionYaxis;
+    //                 second.push({
+    //                     label: data.code.text.toString(),
+    //                     data: observations.map((data2) => data2?.resource?.component ? data2?.resource?.component[index]?.valueQuantity?.value.toString() : null),
+    //                     yAxisID: pressure2OptionYaxis[unit] || "y"
+    //                 });
+    //             }
+    //         });
+    //         console.log("Processed datasets:", [zeroth, first, second, third]);
+    //         return [zeroth, first, second, third];
+    //     };
+    
+    //     const chunkSize = 100; // Number of observations to process in each chunk
+    //     const chunks = [];
+    
+    //     for (let i = 0; i < observation.length; i += chunkSize) {
+    //         chunks.push(observation.slice(i, i + chunkSize));
+    //     }
+    
+    //     // Process each chunk of observations
+    //     Promise.all(chunks.map((chunk) => processObservationData(chunk)))
+    //         .then((chunkedDataSets) => {
+    //             // Combine chunked datasets into final datasets
+    //             const combinedDataSets = chunkedDataSets.reduce((acc, curr) => {
+    //                 return [
+    //                     acc[0].concat(curr[0]),
+    //                     acc[1].concat(curr[1]),
+    //                     acc[2].concat(curr[2]),
+    //                     acc[3].concat(curr[3]),
+    //                 ];
+    //             }, [[], [], [], []]);
+    
+    //             // Set the datasets in state
+    //             setDataSet(combinedDataSets);
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error processing observation data:', error);
+    //         });
+    
+    // }, [observation]);
+    
     useEffect(() => {console.log(selectedLegends)},[selectedLegends])
     useEffect(() => {props.handleCloseDialog()},[varq])
     const graph = useMemo(() => {
-        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-CIC"){
+        if (loading) {
             return (
-                <Stack width={'100%'} height={'100%'}  direction={'row'} justifyContent={'center'} divider={
-                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%',backgroundColor:'#505050', color:'#505050'}}/>
-                }>
-                    <Stack height={'100%'} width={'95%'} sx={{backgroundColor:'transparent'}} spacing={'5%'} marginRight={'auto'}  marginLeft={'2%'} marginTop={'2%'}>
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
-                        <Line ref={chartRef1} options={temperatureOption as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
-                        <div id="legend-container"></div>
-                        <Divider />
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
-                        <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions<'line'>} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container2"></div>
-                        <Divider />
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
-                        <Line ref={chartRef3} options={weightOption as ChartOptions<'line'>} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container3"></div>
-                    </Stack>
-                    {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
-                        <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">
-                        
-                        
-                        
-                        </Stack>
+                <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={<Divider orientation='vertical' flexItem sx={{ marginLeft: '1%', backgroundColor: '#505050', color: '#505050' }} />}><CircularProgress/></Stack>
 
-                        <Button color="primary"  startIcon={<FileDownloadIcon />} variant="contained" sx={{marginTop:'70%', borderRadius:'25px', width:'200px'}} onClick={() => {
-                            setDownloadConfirmation(true)
-                        }}>
-                            Download
-                        </Button>
-                        
-                    </Box> */}
-
-                </Stack>
-            )
-        }
-        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMSinc" || props.observation_resource?.identifier[0]?.value?.toString()=="PMS-INC"){
+            );
+           
             
+           
+        }
+
+        if (props.observation_resource?.identifier[0]?.value?.toString() === "PMS-CIC") {
             return (
-                <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={
-                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%',backgroundColor:'#505050', color:'#505050'}}/>
-                }>
-                    <Stack height={'100%'} width={'95%'} spacing={'5%'} sx={{backgroundColor:'transparent'}}  marginRight={'auto'} marginLeft={'2%'} marginTop={'2%'}>
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
-                        <Line ref={chartRef1} options={temperatureOption as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
+                <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={<Divider orientation='vertical' flexItem sx={{ marginLeft: '1%', backgroundColor: '#505050', color: '#505050' }} />}>
+                    <Stack height={'100%'} width={'95%'} sx={{ backgroundColor: 'transparent' }} spacing={'5%'} marginRight={'auto'} marginLeft={'2%'} marginTop={'2%'}>
+                        <Line ref={chartRef1} options={temperatureOption as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]}></Line>
                         <div id="legend-container"></div>
-                        <Divider />
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
+                        
                         <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions<'line'>} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
                         <div id="legend-container2"></div>
-                        <Divider />
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
+                       
                         <Line ref={chartRef3} options={weightOption as ChartOptions<'line'>} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
                         <div id="legend-container3"></div>
                     </Stack>
-                    {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
-                        <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">
-                        
-                        
-                        
-                        </Stack>
-
-                        <Button color="primary"  startIcon={<FileDownloadIcon />} variant="contained" sx={{marginTop:'70%', borderRadius:'25px', width:'200px'}} onClick={() => {
-                            setDownloadConfirmation(true)
-                        }}>
-                            Download
-                        </Button>
-                        
-                    </Box> */}
-
                 </Stack>
-            )
+            );
         }
-        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-SVAAS" || props.observation_resource?.identifier[0]?.value?.toString()=="PMSsvaas"){
 
-            return (
+        // Add other conditions for different identifiers...
 
-                <Stack width={'100%'} height={'100%'} direction={'row'} divider={
-                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%'}}/>
-                }>
-                    <Stack height={'100%'} width={'95%'} spacing={'5%'} sx={{backgroundColor:'transparent'}}  marginRight={'auto'} marginLeft={'2%'} marginTop={'2%'}>
-                        <Line ref={chartRef1} options={pressure1Option as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
-                        <div id="legend-container"></div>
-                        <Divider />
-                        <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions<'line'>} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container2"></div>
-                        <Divider />
-                        <Line ref={chartRef3} options={pressure2Option as ChartOptions<'line'>} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
-                        <div id="legend-container3"></div>
-                    </Stack>
-
-                </Stack>
-
-
-
-                
-            )
-        }
-        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-HCM"){
-            return (
-                <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={
-                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%',backgroundColor:'#505050', color:'#505050'}}/>
-                }>
-                    <Stack height={'100%'} width={'95%'} spacing={'5%'} sx={{backgroundColor:'transparent'}}  marginRight={'auto'} marginLeft={'2%'} marginTop={'2%'}>
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
-                        <Line ref={chartRef1} options={temperatureOption as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
-                        <div id="legend-container"></div>
-                        {/* <Divider /> */}
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
-                        {/* <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line> */}
-                        {/* <div id="legend-container2" style={{width:'1px', height='1px' }}></div> */}
-                        {/* <Divider /> */}
-                        {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
-                        {/* <Line ref={chartRef3} options={weightOption as ChartOptions} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line> */}
-                        {/* <div id="legend-container3" style={{width:'1px', height='1px' }}></div> */}
-                    </Stack>
-                    {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
-                        <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">
-                        
-                        
-                        
-                        </Stack>
-
-                        <Button color="primary"  startIcon={<FileDownloadIcon />} variant="contained" sx={{marginTop:'70%', borderRadius:'25px', width:'200px'}} onClick={() => {
-                            setDownloadConfirmation(true)
-                        }}>
-                            Download
-                        </Button>
-                        
-                    </Box> */}
-
-                </Stack>
-            )
-        }
-        return <div></div>
-    },[rendergraph])
+        return <div></div>;
+    }, [rendergraph, loading]);
     return (
         <React.Fragment>
-           {props.selectedIcon === 'vertical' ? 
+           {props.selectedIcon === 'vertical' ? isBoxVisible &&
            (  
-            <Box
-            sx={{
+            
+            <Box   sx={{
               height: '100%', // Set the height of the NewPatientDetails container to 100% of its parent
               overflowY: 'scroll', // Add a vertical scrollbar if content exceeds height
               minWidth: { xs: '90%', sm: '90%', md: '90%', lg: '100%' },
               maxWidth: { xs: '90%', sm: '90%', md: '90%', lg: '100%' },
-              borderRadius: '25px',
+              borderRadius: '20px',
               border : '0.4px solid #505050',
-              backgroundColor: darkTheme ? '#000000' : '#FFFFFF',
+              backgroundColor: darkTheme ? '#000000' : '#FFFFFF','&::-webkit-scrollbar': {
+      width: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: darkTheme ? '#888' : '#ccc',
+      borderRadius: '10px',
+      border: '2px solid transparent',
+      backgroundClip: 'content-box',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: darkTheme ? '#555' : '#aaa',
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: darkTheme ? '#333' : '#f1f1f1',
+      borderRadius: '10px',
+    },
             }}
           >
-                
-                  <Stack direction={'row'} sx={{ justifyContent: 'space-between',padding:'10px', marginLeft: 'auto', marginRight: 'auto' }}>
+            <Box>
+            <Stack direction={'row'} sx={{ justifyContent: 'space-between',padding:'10px', marginLeft: 'auto', marginRight: 'auto' }}>
                     <Stack direction={'row'} >
                     <Typography variant="h6" color={darkTheme?'#FFFFFF': '#2F3D4A'} fontWeight={'regular'} >
-                    {props.patient?.extension[1]?.valueString} &nbsp; | &nbsp; {props.patient?.identifier[0]?.value}
-                    
-                        </Typography>
+                  B/O:{props.patient?.extension[0]?.valueString}  ({props.patient?.identifier[0]?.value}) | &nbsp;</Typography>
                         <Typography variant="h6" color={darkTheme?'#FFFFFF': '#2F3D4A'}>
                             {(() => {
                                 if(props.observation_resource){
@@ -1912,17 +1811,11 @@ items.forEach((item) => {
                             })()}
                         {/* {props.device_id} */}
                         </Typography>
-                        
-                    </Stack>
-                    <IconButton  onClick={() => { setvarq(!varq)}}><FontAwesomeIcon style={{ paddingRight: '15px', margin: '0px', color: darkTheme ? '#FFFFFF' : '#124D81' }} icon={faXmark} /></IconButton>
+                   </Stack>
+                    <IconButton  onClick={() => setIsBoxVisible(false)}><FontAwesomeIcon style={{ paddingRight: '15px', margin: '0px', color: darkTheme ? '#FFFFFF' : '#124D81' }} icon={faXmark} /></IconButton>
                   </Stack>
                   <Divider sx={{  marginBottom: '10px', backgroundColor: '#E4E4E4' }} />
-                  <Stack
-            sx={{
-              alignItems: 'center', // Center the children horizontally
-              justifyContent: 'center', // Center the children vertically (if needed)
-              width: '100%', // Ensure the Stack takes up full width of its parent
-            }}
+                  <Stack sx={{alignItems: 'center', justifyContent: 'center', width: '100%'}}
           >
             <ToggleButtonGroup
               value={selectedTab}
@@ -1974,7 +1867,7 @@ items.forEach((item) => {
                     sx={{display: "flex",flexWrap: "wrap",gap: { xs: "2rem",sm: "2rem",md: "4rem",lg: "4rem",xl: "4rem"},
                     mt: {xs: 5,sm: 6,md: 7,lg: 8,},
                     mb: {xs: 5,sm: 6,md: 7,lg: 8,},
-                    justifyContent: "center",}}>
+                    justifyContent: "center",padding:'5px'}}>
                     <Stack alignItems={'center'} spacing={'10px'}>
                     <Typography variant="subtitle1" color={darkTheme?'#FFFFFF':'#124D81'}  >
                         {props.newData && props.observation_resource?.component[0]?.code.text}
@@ -2121,13 +2014,14 @@ items.forEach((item) => {
                     display: "flex",
                     flexWrap: "wrap",
                     color:darkTheme?'#FFFFFF':'#124D81',
-                    justifyContent: "center"}}><Typography variant='h6' sx={{fontWeight:'bold', paddingTop:'1%', opacity:'0.5'}}>{props.newData && 'Oximeter Not connected'}{!props.newData && ''}</Typography>
+                    justifyContent: "center"}}>
+                        <Typography variant='h6' sx={{fontWeight:'bold', paddingTop:'1%', opacity:'0.5'}}>{props.newData && 'Oximeter Not connected'}{!props.newData && ''}</Typography>
                     </Box>}
                     </> )}
                     {selectedTab === 'trends' && (
                 <>
                 {props.observation_resource?.identifier[0]?.value?.toString()!="PMS-SYRINGE" &&
-                                <div style={{marginTop:'25px'}}>
+                                <div style={{padding:'25px'}}>
                                 {   
                                         graphData && (<>
                                         <Stack direction={'row'} width={"100%"} justifyContent={'space-between'}>
@@ -2135,21 +2029,53 @@ items.forEach((item) => {
                                                 Export
                                         </Button> */}
                                         <Stack width={'100%'} direction={{ xs: 'row', sm: 'row', md:'row', lg:'column' }} marginBottom={{ xs: '30px', sm: '30px', md:'20px', lg:'20px' }}>
-                                        <Typography variant='h5' paddingLeft={'2%'} color={darkTheme?'#FFFFFF':'#124D81'}>Trends</Typography>
-                                        <Stack width={'100%'} direction={'row'}  textAlign={'center'}  >
-                                           <ToggleButtonGroup value={timeFrame} exclusive size="small" sx={{marginLeft:'auto', marginRight:'1%',backgroundColor:'grey', }}>
-                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'50px', borderTopLeftRadius:'20px',borderBottomLeftRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(0)}}>
-                                                Day
+
+                                        <Stack width={'100%'} direction={'row-reverse'}  textAlign={'start'}  >
+                                        <IconButton  sx={{height:'30px', width:'40px', color:darkTheme?'#000000':'white', borderRadius:'5px',backgroundColor:darkTheme?'#CACACA':'#1C1C1E'}} onClick={() => {setDownloadConfirmation(true)}}><FileDownloadIcon  /></IconButton>
+                                        <ToggleButtonGroup
+    value={timeFrame}
+    exclusive
+    size="small"
+    sx={{
+        marginLeft: 'auto',
+        marginRight: '1%',
+        backgroundColor: `${darkTheme ? '#1C1C1E' : '#CACACA'} !important`,
+        '& .MuiToggleButton-root': { color: darkTheme ? 'white' : 'black' },
+        '& .Mui-selected': {
+            backgroundColor: `${darkTheme ? '#CACACA' : '#000000'} !important`,
+           
+            color: darkTheme ? '#000000' : '#FFFFFF',
+        },
+    }}
+>
+                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'50px',  fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(0)}}>
+                                                24 Hr
                                                 </ToggleButton>,
                                                 <ToggleButton value={1} key="center" sx={{height:'30px', width:'55px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(1)}}>
                                                     1 Week
                                                 </ToggleButton>,
-                                                <ToggleButton value={2} key="right" sx={{height:'30px', width:'58px', borderTopRightRadius:'20px',borderBottomRightRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(2)}}>
+                                                <ToggleButton value={2} key="right" sx={{height:'30px', width:'58px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(2)}}>
                                                     2 Weeks
                                                 </ToggleButton>
+                                                
                                             </ToggleButtonGroup>
-                                            <ToggleButtonGroup value={S_and_D} exclusive size="small" sx={{marginRight:'1%',backgroundColor:'grey', '& .MuiToggleButton-root': {color:'white'},'& .Mui-selected': {backgroundColor: '#124D81',},}}>
-                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'80px', borderTopLeftRadius:'20px',borderBottomLeftRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {
+                                            
+                                            <ToggleButtonGroup
+    value={S_and_D}
+    exclusive
+    size="small"
+    sx={{
+        marginRight: '1%',
+        backgroundColor: `${darkTheme ? '#1C1C1E' : '#CACACA'} !important`,
+        
+        '& .MuiToggleButton-root': { color:`${darkTheme ? 'white' : 'black'} !important`},
+        '& .Mui-selected': {
+            backgroundColor: `${darkTheme ? '#CACACA' : 'black'} !important`,
+            color: `${darkTheme ? '#000000' : '#FFFFFF'} !important`,
+        },
+    }}
+>
+                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'80px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {
                                                     setS_and_D(0)
                                                     let temp: any[] = []
                                                     chartRef1.current.data.datasets.forEach((dataset: { label: any; }, datasetIndex: any) => {
@@ -2171,7 +2097,7 @@ items.forEach((item) => {
                                                 }}>
                                                     Select all
                                                 </ToggleButton>
-                                                <ToggleButton value={1} key="right" sx={{height:'30px', width:'80px', borderTopRightRadius:'20px',borderBottomRightRadius:'20px', fontSize:'10px', textTransform:'capitalize'}}  onClick={() => {
+                                                <ToggleButton value={1} key="right" sx={{height:'30px', width:'80px',  fontSize:'10px', textTransform:'capitalize'}}  onClick={() => {
                                                     setS_and_D(1)
                                                     chartRef1.current.data.datasets.forEach((_dataset: any, datasetIndex: any) => {
                                                         chartRef1.current.setDatasetVisibility(datasetIndex, false);
@@ -2190,21 +2116,21 @@ items.forEach((item) => {
                                                     Deselect all
                                                 </ToggleButton>
                                             </ToggleButtonGroup>
-                                            <Button color="primary" startIcon={<FileDownloadIcon />} variant="contained" sx={{  borderRadius:'25px', width:'100px', height:'30px', textTransform:'capitalize', fontSize:'10px', color:'white'}} onClick={() => {
+                                            {/* <Button color="primary"  variant="contained" sx={{  width:'10px', height:'30px', textTransform:'capitalize', color:'white'}} onClick={() => {
                                                 setDownloadConfirmation(true)
                                             }}>
-                                                Download
-                                            </Button>
-                                        </Stack>
-                                        </Stack>
+                                              <FileDownloadIcon />
+                                            </Button> */}
+                                             
+                                        </Stack></Stack>
                                         <Dialog
                                             open={downloadConfirmation}
                                             onClose={() => {setDownloadConfirmation(false)}}
                                             scroll='paper'
-                                            PaperProps={{style:{borderRadius:'25px', boxShadow: `0px 0px 40px 1px #404040`, border:'0.4px solid #505050', backgroundImage:'linear-gradient(to bottom, #111522, #111522, #111522)', minWidth:'400px', minHeight:'200px'}}} // borderRadius:'3%', boxShadow: `0px 0px 20px 10px #7B7B7B`, border:'1px solid #7B7B7B
+                                            PaperProps={{style:{borderRadius:'25px', border:'0.4px solid #505050', backgroundColor:'#000000', minWidth:'400px', minHeight:'200px'}}} // borderRadius:'3%', boxShadow: `0px 0px 20px 10px #7B7B7B`, border:'1px solid #7B7B7B
                                         >
                                             <DialogTitle id="responsive-dialog-title" sx={{textAlign:"center", fontWeight:'bold', padding:'9%'}}>
-                                                {`Confirm Download data of the following parameters` }
+                                                {`Download data of the following parameters` }
                                             </DialogTitle>
                                             <DialogContent sx={{textAlign:"center", marginBottom:'auto', paddingBottom:'9%'}}>
                                                 <Stack marginLeft={'auto'} marginRight={'auto'} width={'70%'} spacing={'5px'} justifyContent={'center'} textAlign={'center'}>
@@ -2219,14 +2145,11 @@ items.forEach((item) => {
                                                 <Stack direction={'row'} width={'100%'} justifyContent={'space-around'}>    
                                                 <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={() => {setDownloadConfirmation(false)}}><CustomNoButton text="Cancel"></CustomNoButton></Box>
                                                 
-                                                <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={handleExportData}><CustomOkButton text="Confirm"></CustomOkButton></Box>
+                                                <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={handleExportData}><CustomOkButton text="Download"></CustomOkButton></Box>
                                                 </Stack>
                                                 
                                             </DialogActions>
-                                        </Dialog>
-                                        
-                
-                                        </Stack>
+                                        </Dialog></Stack>
                                         
                                         {/* <div style={{justifyContent:'center'}}>
                                             
@@ -2247,7 +2170,7 @@ items.forEach((item) => {
                     </>)}
                  {selectedTab === 'alarms' && (
                 <>
-                <Typography variant='h5' paddingLeft={'2%'} color={darkTheme?'#FFFFFF':'#124D81'} paddingTop={'3%'}>Alarms</Typography>
+               
                 <Stack direction={'row'} width={'100%'} justifyContent={'space-between'} marginTop={'3%'}>
                     <IconButton sx={{height:'50px', width:'50px', borderRadius:'100px', marginTop:'auto', marginBottom:'auto',color:'blue'}} onClick={() => {if(selectAlarm>0){setSelectAlarm(selectAlarm-1)}}}><FontAwesomeIcon fontSize={'30px'} icon={faChevronLeft} style={{color:`${leftarrowcolor}`}}/></IconButton>
                     <Box width={'100%'} display={'flex'} textAlign={'center'} justifyContent={'center'} flexWrap={'wrap'} >
@@ -2257,7 +2180,7 @@ items.forEach((item) => {
                     <IconButton sx={{height:'50px', width:'50px', borderRadius:'100px', marginTop:'auto', marginBottom:'auto'}} onClick={() => {if(selectAlarm<newalarm.length){setSelectAlarm(selectAlarm+1)}}}><FontAwesomeIcon fontSize={'30px'} icon={faChevronRight} style={{color:`${rightarrowcolor}`}} /></IconButton>  
                 </Stack>
                 {/* onClick={() => {setTableVisible(!tableVisisble)}} endIcon={tableVisisble ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
-                <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:'#111522', backgroundColor:'white', border:'0.5px solid grey', fontWeight:50, boxShadow: `0px 0px 10px 1px #6e6f88`, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ fontSize: 80 }}  />} onClick={() => { handleClick();setTableVisible(!tableVisisble);}}> 
+                <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:darkTheme? 'white':'#1C1C1E', backgroundColor:darkTheme?'#1C1C1E':'white', border:'0.5px solid grey', fontWeight:50, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ fontSize: 80 }}  />} onClick={() => { handleClick();setTableVisible(!tableVisisble);}}> 
                 <Box sx={{ fontWeight: 'regular', m: 1, fontSize:16, }}>Alarm Log</Box>
                 </Button>
                 <div  style={{ width:'100%'}} >
@@ -2267,7 +2190,7 @@ items.forEach((item) => {
                 {/* <div style={{width:'10px', height:'10px', backgroundColor:'yellow'}} ref={scrollto}></div> */}
                 </>
                  )}
-              </Box>
+              </Box></Box>
 ) : (    
             <Dialog
                 open={props.isDialogOpened}
@@ -2288,7 +2211,7 @@ items.forEach((item) => {
                     sm: '90%',
                     md: '70%',
                     lg: '70%',
-                },minHeight:'90%',borderRadius:'25px', boxShadow: `0px 0px 40px 1px #404040`, border:'0.4px solid #505050', backgroundColor: darkTheme?'#000000': '#FFFFFF'}}}
+                },minHeight:'90%',borderRadius:'25px', border:'0.4px solid #505050', backgroundColor: darkTheme?'#000000': '#FFFFFF'}}}
                 >
                 <DialogTitle
                     sx={{
@@ -2334,7 +2257,22 @@ items.forEach((item) => {
 
                     
                 </DialogTitle>
-                <DialogContent dividers={true} sx={{justifyContent:'center', overflowY: 'scroll'}}>
+                <DialogContent dividers={true} sx={{justifyContent:'center', overflowY: 'scroll', '&::-webkit-scrollbar': {
+      width: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: darkTheme ? '#888' : '#ccc',
+      borderRadius: '10px',
+      border: '2px solid transparent',
+      backgroundClip: 'content-box',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: darkTheme ? '#555' : '#aaa',
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: darkTheme ? '#333' : '#f1f1f1',
+      borderRadius: '10px',
+    },}}>
                 {/* <Box width={'60px'} height={'30px'} borderRadius={'25px'} sx={{backgroundColor:'red', marginLeft:'auto', opacity:`${liveOpacity ? '1':'0'}`, textAlign:'center'}}>
                     <Typography>LIVE</Typography>
                 </Box> */}
@@ -2520,7 +2458,7 @@ items.forEach((item) => {
                     </Box>}
                     </> )}
 
-                <Divider sx={{marginTop:'20px', backgroundColor:'grey', color:'grey'}}/>
+            
                 {selectedTab === 'trends' && (
                 <>
                 {props.observation_resource?.identifier[0]?.value?.toString()!="PMS-SYRINGE" &&
@@ -2532,21 +2470,53 @@ items.forEach((item) => {
                                                 Export
                                         </Button> */}
                                         <Stack width={'100%'} direction={{ xs: 'row', sm: 'row', md:'row', lg:'column' }} marginBottom={{ xs: '30px', sm: '30px', md:'20px', lg:'20px' }}>
-                                        <Typography variant='h5' paddingLeft={'2%'} color={darkTheme?'#FFFFFF':'#124D81'}>Trends</Typography>
-                                        <Stack width={'100%'} direction={'row'}  textAlign={'center'}  >
-                                           <ToggleButtonGroup value={timeFrame} exclusive size="small" sx={{marginLeft:'auto', marginRight:'1%',backgroundColor:'grey', }}>
-                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'50px', borderTopLeftRadius:'20px',borderBottomLeftRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(0)}}>
-                                                Day
+
+                                        <Stack width={'100%'} direction={'row-reverse'}  textAlign={'start'}  >
+                                        <IconButton  sx={{height:'30px', width:'40px', color:darkTheme?'#000000':'white', borderRadius:'5px',backgroundColor:darkTheme?'#CACACA':'#1C1C1E'}} onClick={() => {setDownloadConfirmation(true)}}><FileDownloadIcon  /></IconButton>
+                                        <ToggleButtonGroup
+    value={timeFrame}
+    exclusive
+    size="small"
+    sx={{
+        marginLeft: 'auto',
+        marginRight: '1%',
+        backgroundColor: `${darkTheme ? '#1C1C1E' : '#CACACA'} !important`,
+        '& .MuiToggleButton-root': { color: darkTheme ? 'white' : 'black' },
+        '& .Mui-selected': {
+            backgroundColor: `${darkTheme ? '#CACACA' : '#000000'} !important`,
+           
+            color: darkTheme ? '#000000' : '#FFFFFF',
+        },
+    }}
+>
+                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'50px',  fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(0)}}>
+                                                24 Hr
                                                 </ToggleButton>,
                                                 <ToggleButton value={1} key="center" sx={{height:'30px', width:'55px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(1)}}>
                                                     1 Week
                                                 </ToggleButton>,
-                                                <ToggleButton value={2} key="right" sx={{height:'30px', width:'58px', borderTopRightRadius:'20px',borderBottomRightRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(2)}}>
+                                                <ToggleButton value={2} key="right" sx={{height:'30px', width:'58px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {setTimeFrame(2)}}>
                                                     2 Weeks
                                                 </ToggleButton>
+                                                
                                             </ToggleButtonGroup>
-                                            <ToggleButtonGroup value={S_and_D} exclusive size="small" sx={{marginRight:'1%',backgroundColor:'grey', '& .MuiToggleButton-root': {color:'white'},'& .Mui-selected': {backgroundColor: '#124D81',},}}>
-                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'80px', borderTopLeftRadius:'20px',borderBottomLeftRadius:'20px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {
+                                            
+                                            <ToggleButtonGroup
+    value={S_and_D}
+    exclusive
+    size="small"
+    sx={{
+        marginRight: '1%',
+        backgroundColor: `${darkTheme ? '#1C1C1E' : '#CACACA'} !important`,
+        
+        '& .MuiToggleButton-root': { color:`${darkTheme ? 'white' : 'black'} !important`},
+        '& .Mui-selected': {
+            backgroundColor: `${darkTheme ? '#CACACA' : 'black'} !important`,
+            color: `${darkTheme ? '#000000' : '#FFFFFF'} !important`,
+        },
+    }}
+>
+                                                <ToggleButton value={0} key="left" sx={{height:'30px', width:'80px', fontSize:'10px', textTransform:'capitalize'}} onClick={() => {
                                                     setS_and_D(0)
                                                     let temp: any[] = []
                                                     chartRef1.current.data.datasets.forEach((dataset: { label: any; }, datasetIndex: any) => {
@@ -2568,7 +2538,7 @@ items.forEach((item) => {
                                                 }}>
                                                     Select all
                                                 </ToggleButton>
-                                                <ToggleButton value={1} key="right" sx={{height:'30px', width:'80px', borderTopRightRadius:'20px',borderBottomRightRadius:'20px', fontSize:'10px', textTransform:'capitalize'}}  onClick={() => {
+                                                <ToggleButton value={1} key="right" sx={{height:'30px', width:'80px',  fontSize:'10px', textTransform:'capitalize'}}  onClick={() => {
                                                     setS_and_D(1)
                                                     chartRef1.current.data.datasets.forEach((_dataset: any, datasetIndex: any) => {
                                                         chartRef1.current.setDatasetVisibility(datasetIndex, false);
@@ -2587,21 +2557,21 @@ items.forEach((item) => {
                                                     Deselect all
                                                 </ToggleButton>
                                             </ToggleButtonGroup>
-                                            <Button color="primary" startIcon={<FileDownloadIcon />} variant="contained" sx={{  borderRadius:'25px', width:'100px', height:'30px', textTransform:'capitalize', fontSize:'10px', color:'white'}} onClick={() => {
+                                            {/* <Button color="primary"  variant="contained" sx={{  width:'10px', height:'30px', textTransform:'capitalize', color:'white'}} onClick={() => {
                                                 setDownloadConfirmation(true)
                                             }}>
-                                                Download
-                                            </Button>
-                                        </Stack>
-                                        </Stack>
+                                              <FileDownloadIcon />
+                                            </Button> */}
+                                             
+                                        </Stack></Stack>
                                         <Dialog
                                             open={downloadConfirmation}
                                             onClose={() => {setDownloadConfirmation(false)}}
                                             scroll='paper'
-                                            PaperProps={{style:{borderRadius:'25px', boxShadow: `0px 0px 40px 1px #404040`, border:'0.4px solid #505050', backgroundImage:'linear-gradient(to bottom, #111522, #111522, #111522)', minWidth:'400px', minHeight:'200px'}}} // borderRadius:'3%', boxShadow: `0px 0px 20px 10px #7B7B7B`, border:'1px solid #7B7B7B
+                                            PaperProps={{style:{borderRadius:'25px', border:'0.4px solid #505050', backgroundColor:'#000000', minWidth:'400px', minHeight:'200px'}}} // borderRadius:'3%', boxShadow: `0px 0px 20px 10px #7B7B7B`, border:'1px solid #7B7B7B
                                         >
                                             <DialogTitle id="responsive-dialog-title" sx={{textAlign:"center", fontWeight:'bold', padding:'9%'}}>
-                                                {`Confirm Download data of the following parameters` }
+                                                {`Download data of the following parameters` }
                                             </DialogTitle>
                                             <DialogContent sx={{textAlign:"center", marginBottom:'auto', paddingBottom:'9%'}}>
                                                 <Stack marginLeft={'auto'} marginRight={'auto'} width={'70%'} spacing={'5px'} justifyContent={'center'} textAlign={'center'}>
@@ -2616,13 +2586,11 @@ items.forEach((item) => {
                                                 <Stack direction={'row'} width={'100%'} justifyContent={'space-around'}>    
                                                 <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={() => {setDownloadConfirmation(false)}}><CustomNoButton text="Cancel"></CustomNoButton></Box>
                                                 
-                                                <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={handleExportData}><CustomOkButton text="Confirm"></CustomOkButton></Box>
+                                                <Box sx={{minWidth:'90px', minHeight:'45px'}} onClick={handleExportData}><CustomOkButton text="Download"></CustomOkButton></Box>
                                                 </Stack>
                                                 
                                             </DialogActions>
                                         </Dialog>
-                                        
-                
                                         </Stack>
                                         
                                         {/* <div style={{justifyContent:'center'}}>
@@ -2638,13 +2606,13 @@ items.forEach((item) => {
                                     {
                                         !graphData && (<div></div>)
                                     } 
-                                    <Divider sx={{marginTop:'40px', backgroundColor:'white', color:'white'}} />           
+                                   
                                 </div>
                 }
                 </>)}
                 {selectedTab === 'alarms' && (
                 <>
-                <Typography variant='h5' paddingLeft={'2%'} color={darkTheme?'#FFFFFF':'#124D81'} paddingTop={'3%'}>Alarms</Typography>
+               
                 <Stack direction={'row'} width={'100%'} justifyContent={'space-between'} marginTop={'3%'}>
                     <IconButton sx={{height:'50px', width:'50px', borderRadius:'100px', marginTop:'auto', marginBottom:'auto',color:'blue'}} onClick={() => {if(selectAlarm>0){setSelectAlarm(selectAlarm-1)}}}><FontAwesomeIcon fontSize={'30px'} icon={faChevronLeft} style={{color:`${leftarrowcolor}`}}/></IconButton>
                     <Box width={'100%'} display={'flex'} textAlign={'center'} justifyContent={'center'} flexWrap={'wrap'} >
@@ -2654,7 +2622,7 @@ items.forEach((item) => {
                     <IconButton sx={{height:'50px', width:'50px', borderRadius:'100px', marginTop:'auto', marginBottom:'auto'}} onClick={() => {if(selectAlarm<newalarm.length){setSelectAlarm(selectAlarm+1)}}}><FontAwesomeIcon fontSize={'30px'} icon={faChevronRight} style={{color:`${rightarrowcolor}`}} /></IconButton>  
                 </Stack>
                 {/* onClick={() => {setTableVisible(!tableVisisble)}} endIcon={tableVisisble ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
-                <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:'#111522', backgroundColor:'white', border:'0.5px solid grey', fontWeight:50, boxShadow: `0px 0px 10px 1px #6e6f88`, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ fontSize: 80 }}  />} onClick={() => { handleClick();setTableVisible(!tableVisisble);}}> 
+                <Button sx={{width:'20%', height:'50px', marginLeft:'40%', marginTop:'3%', marginBottom:'3%', borderRadius:'50px', color:darkTheme? 'white':'#1C1C1E', backgroundColor:darkTheme?'#1C1C1E':'white', border:'0.5px solid grey', fontWeight:50, textTransform:'capitalize'}}  endIcon={tableVisisble ? <KeyboardArrowUpIcon sx={{ fontSize: 80 }} /> : <KeyboardArrowDownIcon sx={{ fontSize: 80 }}  />} onClick={() => { handleClick();setTableVisible(!tableVisisble);}}> 
                 <Box sx={{ fontWeight: 'regular', m: 1, fontSize:16, }}>Alarm Log</Box>
                 </Button>
                 <div  style={{ width:'100%'}} >
@@ -2670,4 +2638,3 @@ items.forEach((item) => {
         </React.Fragment>
     )
 }
-

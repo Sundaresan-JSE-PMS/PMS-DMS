@@ -163,14 +163,18 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
         
         console.log("patient name:", props.observation_resource.identifier[0].value);
         for (var i=0; i< props?.communication_resource?.extension?.[1].valueCodeableConcept?.coding?.length; i++){
-        console.log(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code)
+            
         if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='High Priority'){
             setAlarmColor('red')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+            console.log('checking alarm 1',props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
             break
+           
         }else{
-            setAlarmColor('#F3AF00')
+            setAlarmColor('#FFD600')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+            console.log('checking alarm 2',props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+            break
         }
     }
     setRequiredForTimer(!requiredForTimer)
@@ -193,7 +197,7 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
      let intervalId: number | undefined;
  
      if (newData) {
-        const interval = alarmColor === 'red' ? 300 : 600;
+        const interval = alarmColor === 'red' ? 300 : 1200;
        intervalId = setInterval(() => {
          setIsBlinking((prevIsBlinking) => !prevIsBlinking);
        }, interval); // Adjust the blinking interval (in milliseconds) as needed
@@ -255,7 +259,7 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
 
   return (
 
-    <Box width={getCardWidth()}  sx={{borderRadius:'18px'}} onClick={getOnClickHandler()}>
+    <Box width={getCardWidth()}  onClick={getOnClickHandler()}>
       <Card style={{ backgroundColor:props.darkTheme?'#1C1C1E':'#FFFFFF', borderRadius: "10px", height:"260px", border: `6px solid ${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}` }}>
       {newData ? (<>
       <Stack width={'100%'} height={'100%'}>
@@ -285,22 +289,22 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
 
 
                              <Stack height={'40%'} width={'100%'} direction={'row'}>
-                                <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FF6939"} style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
+                                <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={ alarm === 'Skin1 Temperature Low' || alarm === 'Skin1 Temperature High' ? alarmColor : '#FF6939' } style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
                                   
                                     <div style={{ display: 'flex', justifyContent: 'left' }}>
 
-                                        <Typography variant='h3' color={"#FF6939"}>{(() => {
+                                        <Typography variant='h3' color={alarm === 'Skin1 Temperature Low' ? alarmColor : "#FF6939"}>{(() => {
                                             let data = findData("Measured Skin Temp 1");
                                             return (data!.data);
                                         })()}</Typography>
 
                                     </div></Box>
                                
-                                <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FFD600"} style={{ fontFamily: 'Helvetica' }}>PR <span style={{ fontSize: '13px' }}>B/min</span></Typography></div>
+                                <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#EDAB00"} style={{ fontFamily: 'Helvetica' }}>PR <span style={{ fontSize: '13px' }}>B/min</span></Typography></div>
                                     
                                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
 
-                                        <Typography variant='h3' color={"#FFD600"}>
+                                        <Typography variant='h3' color={"#EDAB00"}>
                                             {(() => {
                                                 let data = findData("Pulse Rate");
                                                 return (data!.data);

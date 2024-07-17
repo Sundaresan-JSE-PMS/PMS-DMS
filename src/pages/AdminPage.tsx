@@ -146,7 +146,7 @@ console.log("in admin page",userOrganization);
   //   // Add your logic to make the API call for adding a new user
   //   fetch('https://pmsind.co.in:5000create', {
   //     method: 'POST',
-  //     headers: {
+  //     headers: {         
   //       'Content-Type': 'application/json',
   //     },
   //     body: JSON.stringify({ email, username, password, role, organization }), // Include organizationId in the request
@@ -345,13 +345,7 @@ console.log("in admin page",userOrganization);
                     onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
                   />
                    <InputLabel id="demo-simple-select-standard-label">Role</InputLabel>
-                  <Select
-                  
-                  
-                    fullWidth
-                    value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-                  >
+                  <Select fullWidth value={newUser.role} onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}>
                     <MenuItem value="Hospital Technician">Hospital Technician</MenuItem>
                     <MenuItem value="Hospital Clinician">Hospital Clinician</MenuItem>
                   </Select>

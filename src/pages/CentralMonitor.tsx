@@ -219,6 +219,8 @@ export const CentralMonitor: React.FC<CentralMonitorProps> = ({ currentRoom, dar
     };
 }, []);
 
+
+
 const handleDeviceCardClick = (device : Device ) => {
     setSelectedDevice(device);
     console.log("handleDeviceclick",device);
@@ -248,6 +250,29 @@ useEffect(() => {
       console.log("from devicemonitor checking darkTheme", darkTheme);
   }
 }, [currentRoom, darkTheme]);
+
+const [patientResource, setPatientResource] = useState(null);
+
+useEffect(() => {
+  if (selectedDevice) {
+      const patientRef = selectedDevice.patient.reference;
+      fetchPatientDetails(patientRef);
+  }
+}, [selectedDevice]);
+
+const fetchPatientDetails = async (reference: string) => {
+  try {
+      const response = await fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/${reference}`, {
+          headers: {
+              Authorization: `Basic ${btoa('fhiruser:change-password')}`
+          }
+      });
+      const data = await response.json();
+      setPatientResource(data);
+  } catch (error) {
+      console.error('Error fetching patient details:', error);
+  }
+};
 
    useEffect(() => {
     console.log('useEffect triggered ');
@@ -469,7 +494,7 @@ useEffect(() => {
             })
         const brammi = devices.entry?.map(( deviceEntry) => {
             const device = deviceEntry.resource as unknown as Device;
-                if(String(device.identifier[1]?.value)=="Heating Cooling Machine"){
+                if((String(device.identifier[1]?.value)=="Heating Cooling Machine")){
                 var correct = false
                 // var temp = String(device.resource.id)
                 if(device.patient && parentcomm[String(device.id)] && parentobs[String(device.id)]){
@@ -524,7 +549,22 @@ useEffect(() => {
            <Box sx={{ display: 'flex',marginTop: '0px', paddingTop: '0px', flexWrap: 'wrap', gap: '2rem', mt: { xs: 5, sm: 6, md: 4, lg: 3 }, mb: { xs: 3, sm: 4, md: 4, lg: 3 }, justifyContent: 'left', minWidth: '40%' ,maxWidth:'40%',height: '100%',}}>
                
                   <Box sx={{width:"100%"}}>
-                  <Box sx={{display: "flex", flexWrap: "wrap", gap: '0.3rem', justifyContent: "center", width: "100%", marginBottom: '2%',maxHeight: '800px', overflowY: 'auto'  }}>
+                  <Box sx={{display: "flex", flexWrap: "wrap", gap: '0.3rem', justifyContent: "center", width: "100%", marginBottom: '2%',maxHeight: '800px', overflowY: 'auto' ,'&::-webkit-scrollbar': {
+      width: '10px',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: darkTheme ? '#888' : '#ccc',
+      borderRadius: '10px',
+      border: '2px solid transparent',
+      backgroundClip: 'content-box',
+    },
+    '&::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: darkTheme ? '#555' : '#aaa',
+    },
+    '&::-webkit-scrollbar-track': {
+      backgroundColor: darkTheme ? '#333' : '#f1f1f1',
+      borderRadius: '10px',
+    }, }}>
                     {isLoadingWarmers ? (
                   
                     <Skeleton  variant="rounded" width={500} height={300} animation="wave"  sx={{ borderRadius: '25px'}}/>
@@ -551,24 +591,25 @@ useEffect(() => {
                
           </Box>
           <Box sx={{display: 'flex', marginTop: '0px', gap: '2rem', mt: { xs: 5, sm: 6, md: 4, lg: 2 }, mb: { xs: 3, sm: 4, md: 4, lg: 2 }, justifyContent: 'center', width: '60%' ,height: '100%',}}>
-          { selectedDevice && (
-                            <NewDeviceDetails  
-                                isDialogOpened={isOpen}
-                                handleCloseDialog={() => { setIsOpen(false); } }
-                                darkTheme={darkTheme}
-                                selectedIcon={selectedIcon}
-                                device_id={String(selectedDevice.identifier[0].value)}
-                                device_resource_id={String(selectedDevice.id)}
-                                observation_resource={parentobs[selectedDevice.id] || []}
-                                communication_resource={parentcomm[selectedDevice.id] || []}
-                                patient={patient[selectedDevice.patient.reference]} 
-                                newData={true}            
-            
-            
-            />
-       )}
-      </Box>
+          {selectedDevice && patientResource && (
+                <NewDeviceDetails
+                    isDialogOpened={isOpen}
+                    handleCloseDialog={() => setIsOpen(false)}
+                    darkTheme={darkTheme}
+                    selectedIcon={selectedIcon}
+                    device_id={String(selectedDevice.identifier[0].value)}
+                    device_resource_id={String(selectedDevice.id)}
+                    observation_resource={parentobs[selectedDevice.id] || []}
+                    communication_resource={parentcomm[selectedDevice.id] || []}
+                    patient={patientResource}
+                    newData={true}
+                />
+            )}
+                                </Box>
+                                
+      
           </div>
+
         ) : (  
             <Box sx={{display: "flex",flexWrap: "wrap",gap: '2rem',mt: {xs: 5,sm: 6,md: 7,lg: 3,},
             mb: {xs: 3,sm: 4,md: 5,lg: 2,

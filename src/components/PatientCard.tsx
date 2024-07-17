@@ -153,14 +153,10 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
     const [alarmColor, setAlarmColor] = useState("")
     const [obsmeta, setobsmeta] = useState<any[]>([])
     const [commeta, setcommeta] = useState<any[]>([])
-    
-    // const [newData, setNewData] = useState(false);
     const [requiredForTimer, setRequiredForTimer] = useState(false)
     const [borderRadiusForRerender, setBorderRadiusForRerender] = useState(true)
     const [newData, setNewData] = useState(false)
-    
     const [displayAlarm, setDisplayAlarm] = useState("")
-    // const [dontRunFirstTime, setDontRunFirstTime] = useState(0)
     const getDevices = () => {
         
         if(props.device?.length>0){
@@ -233,7 +229,7 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                                     setAlarmColor('yellow')
                                 }
                             } } }})}}
-},[props])
+    },[props])
         
     useEffect(() => {
         let intervalId: number | undefined;
@@ -318,16 +314,12 @@ export const PatientCard: FC<PatientDetails> = (props): JSX.Element => {
                     
                     <Stack height={'80%'} width={'100%'}>
                             <Stack height={'60%'} width={'100%'}  direction={'row'}>
-                               
                                 <Box width={'100%'} sx={{ padding: '10px' }}>
                                 <Pleth patientId={props.patient_resource_id}/>
                                     {/* <Line data={data} options={options} /> */}
                                 </Box>
-                            
                             </Stack>
-
-
-                            <Stack height={'40%'} width={'100%'} direction={'row'}>
+                    <Stack height={'40%'} width={'100%'} direction={'row'}>
                                 <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#F60D4C"} style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
                                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
                                     <div style={{ display: 'flex', justifyContent: 'left' }}>

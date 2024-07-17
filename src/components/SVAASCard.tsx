@@ -4,6 +4,7 @@ import { FC, useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBell, faPowerOff, } from '@fortawesome/free-solid-svg-icons'
 import { NewDeviceDetails } from './NewDeviceDetails';
+import Pleth from "./Pleth"
 
 export interface DeviceDetails {
 onClick: () => void;
@@ -489,7 +490,7 @@ const getCardWidth = () => {
                           <Stack height={'60%'} width={'100%'}  direction={'row'}>
                              
                               <Box width={'100%'} sx={{ padding: '10px' }}>
-                             pleth
+                              <Pleth patientId={props.patient?.id}/>
                               </Box>
                           
                           </Stack>
