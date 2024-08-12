@@ -73,7 +73,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onUserClick, onDeleteU
   //   const userId = user.user_id;
 
   //   // Make an API call to update the user information
-  //   fetch(`https://pmsind.co.in:5000rename/${userId}`, {
+  //   fetch(`https://pmsserver.localrename/${userId}`, {
   //     method: 'PUT',
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -99,7 +99,7 @@ export const UserCard: React.FC<UserCardProps> = ({ user, onUserClick, onDeleteU
     const userId = decodeURIComponent(user.user_id);
   
     // Make an API call to update the user information
-    fetch(`https://pmsind.co.in:5000/rename/${userId}`, {
+    fetch(`https://pmsserver.local/fhir/rename/${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

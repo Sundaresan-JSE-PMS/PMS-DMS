@@ -42,9 +42,9 @@ export const Rooms:FC<roomdata> = (props) => {
         if(isAuthenticated){
          
           console.log("In ROom Page:",props.userOrganization);
-          //fetch(` https://pmsind.co.in:5000/Location`, {
-            //changed here fetch(` https://pmsind.co.in:5000/Location?organization= 18d1c76ef29-ba9f998e-83b1-4c43-bc5b-b91b572a6454`, {
-          fetch(` https://pmsind.co.in:5000/Location?organization=${props.userOrganization}`, {
+          //fetch(` https://pmsserver.local/fhir/Location`, {
+            //changed here fetch(` https://pmsserver.local/fhir/Location?organization= 18d1c76ef29-ba9f998e-83b1-4c43-bc5b-b91b572a6454`, {
+          fetch(` https://pmsserver.local/fhir/Location?organization=${props.userOrganization}`, {
             
             
           credentials: "omit",
@@ -92,7 +92,7 @@ export const Rooms:FC<roomdata> = (props) => {
           }
         }
         // console.log
-        fetch(` https://pmsind.co.in:5000/Location`, {
+        fetch(` https://pmsserver.local/fhir/Location`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "POST",
             body: JSON.stringify(data),

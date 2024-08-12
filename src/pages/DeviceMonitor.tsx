@@ -105,7 +105,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
     });
     useEffect(() => {
         setIsLoading(true)
-        const socket = new WebSocket("wss://pmsind.co.in:5000/notification");
+        const socket = new WebSocket("wss://pmsserver.local/fhir/notification");
         socket.onopen = () => {
             console.log("Socket open successful 1st use effect");
         };
@@ -114,7 +114,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
             console.log("entering 1st use effect",recieved_data)
             if (recieved_data.location.split("/")[0] == "Observation"){
 
-                fetch(` https://pmsind.co.in:5000/${recieved_data.location}`, {
+                fetch(` https://pmsserver.local/fhir/${recieved_data.location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -131,7 +131,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
             
             }
             else if (recieved_data.location.split("/")[0] == "Communication"){
-                fetch(` https://pmsind.co.in:5000/${JSON.parse(data.data).location}`, {
+                fetch(` https://pmsserver.local/fhir/${JSON.parse(data.data).location}`, {
                 credentials: "omit",
                 headers: {
                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -149,7 +149,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
             }
             // else if (recieved_data.location.split("/")[0] == "Device"){
             //   // if (devArray.includes(recieved_data.resourceId)){
-            //     fetch(` https://pmsind.co.in:5000/${JSON.parse(data.data).location}`, {
+            //     fetch(` https://pmsserver.local/fhir/${JSON.parse(data.data).location}`, {
             //     credentials: "omit",
             //     headers: {
             //       Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -165,7 +165,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
     }, [])
     useEffect(() => {
     setIsLoading(true);
-    const socket = new WebSocket("wss://pmsind.co.in:5000/notification");
+    const socket = new WebSocket("wss://pmsserver.local/fhir/notification");
 
     socket.onopen = () => {
         console.log("Socket open successful 2nd");
@@ -185,7 +185,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
         console.log("Resource ID:", resourceId);
 
         if (resourceType === "Observation") {
-            fetch(`https://pmsind.co.in:5000/${receivedData.location}`, {
+            fetch(`https://pmsserver.local/fhir/${receivedData.location}`, {
                 credentials: "omit",
                 headers: {
                     Authorization: "Basic " + btoa("fhiruser:change-password"),
@@ -200,7 +200,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
                     console.log("Updated parentobs:", parentobs);
                 });
         } else if (resourceType === "Communication") {
-            fetch(`https://pmsind.co.in:5000/${receivedData.location}`, {
+            fetch(`https://pmsserver.local/fhir/${receivedData.location}`, {
                 credentials: "omit",
                 headers: {
                     Authorization: "Basic " + btoa("fhiruser:change-password"),
@@ -229,7 +229,7 @@ export const DeviceMonitor: React.FC<DeviceMonitorProps> = ({ currentRoom, darkT
 useEffect(() => {
   if (currentRoom !== "") {
       setIsLoading(true);
-      fetch(`https://pmsind.co.in:5000/Device?location=${currentRoom}`, {
+      fetch(`https://pmsserver.local/fhir/Device?location=${currentRoom}`, {
           credentials: "omit",
           headers: {
               Authorization: "Basic " + btoa("fhiruser:change-password"),
@@ -259,7 +259,7 @@ useEffect(() => {
         // var correct = true;
         if(device.resource.patient){
         
-        fetch(` https://pmsind.co.in:5000/Patient/${device.resource.patient.reference.split("/")[1]}`,{
+        fetch(` https://pmsserver.local/fhir/Patient/${device.resource.patient.reference.split("/")[1]}`,{
             credentials: "omit",
             headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -270,7 +270,7 @@ useEffect(() => {
             setPatient((prevPatient) => ({...prevPatient, [temp]: data}))
             console.log("Temp 1?",temp)
         })
-        fetch(` https://pmsind.co.in:5000/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
+        fetch(` https://pmsserver.local/fhir/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -278,7 +278,7 @@ useEffect(() => {
         })
         .then((response) => response.json())
         .then((data) => {
-            if(!data.entry){console.log(` https://pmsind.co.in:5000/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
+            if(!data.entry){console.log(` https://pmsserver.local/fhir/Observation?patient=${device.resource.patient.reference.split("/")[1]}&_count=1&_sort=-_lastUpdated`)}
             else{
             var temp = String(device.resource.id);
           
@@ -286,7 +286,7 @@ useEffect(() => {
             setParentObs((prevParentobs) => ({...prevParentobs, [temp]: data.entry[0]["resource"]}))
             }})
         
-        fetch(` https://pmsind.co.in:5000/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
+        fetch(` https://pmsserver.local/fhir/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -294,7 +294,7 @@ useEffect(() => {
         })
         .then((response) => response.json())
         .then((data) => {
-            if(!data.entry){console.log(` https://pmsind.co.in:5000/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
+            if(!data.entry){console.log(` https://pmsserver.local/fhir/Communication?sender=${device.resource.id}&_count=1&_sort=-_lastUpdated`)}
             else{
             var temp = String(device.resource.id);
             console.log("Temp 3?",temp)

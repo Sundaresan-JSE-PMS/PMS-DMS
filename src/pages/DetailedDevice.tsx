@@ -276,7 +276,7 @@
 //     useEffect(() => {
 
         
-//         fetch(` https://pmsind.co.in:5000/Communication/${communication_resource.id}/_history`, {
+//         fetch(` https://pmsserver.local/fhir/Communication/${communication_resource.id}/_history`, {
 //           credentials: "omit",
 //           headers: {
 //             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -296,7 +296,7 @@
             
 //             while(totaldata>=100){
                 
-//                 fetch(` https://pmsind.co.in:5000/Communication/${communication_resource.id}/_history?_page=${page}&_count=100`,{
+//                 fetch(` https://pmsserver.local/fhir/Communication/${communication_resource.id}/_history?_page=${page}&_count=100`,{
 //                     credentials: "omit",
 //                     headers: {
 //                         Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -313,7 +313,7 @@
 //                 page+=1
 //             }
 //             if(totaldata <100){
-//                 fetch(` https://pmsind.co.in:5000/Communication/${communication_resource.id}/_history?_page=${page}&_count=100`,{
+//                 fetch(` https://pmsserver.local/fhir/Communication/${communication_resource.id}/_history?_page=${page}&_count=100`,{
 //                     credentials: "omit",
 //                     headers: {
 //                         Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -352,7 +352,7 @@
 
 //               // console.log(data)
 //             // if (obsArray.includes(recieved_data.resourceId)){
-//               fetch(` https://pmsind.co.in:5000/${recieved_data.location}`, {
+//               fetch(` https://pmsserver.local/fhir/${recieved_data.location}`, {
 //               credentials: "omit",
 //               headers: {
 //                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -378,7 +378,7 @@
 
 //           if (recieved_data.location.split("/")[0] == "Communication" && recieved_data.location.split("/")[1] == communication_resource.id){
             
-//             fetch(` https://pmsind.co.in:5000/${recieved_data.location}`, {
+//             fetch(` https://pmsserver.local/fhir/${recieved_data.location}`, {
 //               credentials: "omit",
 //               headers: {
 //                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -487,7 +487,7 @@
 //         let currentyear = currentNewDate.getFullYear()
 //         let currentDate = currentyear+"-"+currentmonth+"-"+currentdate
 //         if(timeFrame==0){
-//             url.push(` https://pmsind.co.in:5000/Observation/${observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
+//             url.push(` https://pmsserver.local/fhir/Observation/${observation_resource?.id}/_history?_since=${currentDate}T00:00:00Z&_count=10000`)
 //         }
 //         else if(timeFrame==1){
 //             // let weekNewDate = new Date(currentNewDate.setDate(currentNewDate.getDate() - 7));
@@ -500,9 +500,9 @@
 //                 let weekmonth = (Number(weekNewDate.getMonth())+1).toString().padStart(2,'0')
 //                 let weekyear = weekNewDate.getUTCFullYear()
 //                 let weekDate = weekyear+"-"+weekmonth+"-"+weekdate
-//                 // url.push(` https://pmsind.co.in:5000/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
+//                 // url.push(` https://pmsserver.local/fhir/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T00:00:00Z`)
 //                 for (let index2 = 0; index2 < 24; index2++) {
-//                     url.push(` https://pmsind.co.in:5000/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
+//                     url.push(` https://pmsserver.local/fhir/Observation/${observation_resource?.id}/_history?_count=1&_since=${weekDate}T${index2.toString().padStart(2,'0')}:00:00Z`)
 //                 }
 //             }
 //         }
@@ -513,7 +513,7 @@
 //             let monthyear = monthNewDate.getUTCFullYear()
 //             for (let index = 1; index < 30; index++) {
 //                 let monthDate = monthyear+"-"+monthmonth+"-"+index.toString().padStart(2,'0')
-//                 url.push(` https://pmsind.co.in:5000/Observation/${observation_resource?.id}/_history?_count=1&_since=${monthDate}T00:00:00Z`)
+//                 url.push(` https://pmsserver.local/fhir/Observation/${observation_resource?.id}/_history?_count=1&_since=${monthDate}T00:00:00Z`)
 //             }
 //         }
 //         let temparr: any[] = []
@@ -552,7 +552,7 @@
 //                     //     totaldata = 10000
 //                     // }
 //                     // while(totaldata>=100){
-//                     //     fetch(` https://pmsind.co.in:5000/Observation/${observation_resource.id}/_history?_page=${page}&_count=100`,{
+//                     //     fetch(` https://pmsserver.local/fhir/Observation/${observation_resource.id}/_history?_page=${page}&_count=100`,{
 //                     //         credentials: "omit",
 //                     //         headers: {
 //                     //             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -567,7 +567,7 @@
 //                     //     totaldata=totaldata%100
 //                     //     page+=1
 //                     // }
-//                     // fetch(` https://pmsind.co.in:5000/Observation/${observation_resource.id}/_history?_page=${page}&_count=100`,{
+//                     // fetch(` https://pmsserver.local/fhir/Observation/${observation_resource.id}/_history?_page=${page}&_count=100`,{
 //                     //     credentials: "omit",
 //                     //     method: "GET",
 //                     //     headers: {

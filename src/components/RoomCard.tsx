@@ -144,7 +144,7 @@ const [open, setOpen] = useState(false);
     useEffect(() => {setDeviceChanged(!deviceChanged)},[props.deviceChangeToggle])
     const [renameRoom, setRenameRoom] = useState(false)
     useEffect(() => {
-        fetch(` https://pmsind.co.in:5000/Device?_count=20`, {
+        fetch(` https://pmsserver.local/fhir/Device?_count=20`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -181,8 +181,8 @@ const [open, setOpen] = useState(false);
                 "reference": `Organization/${props.userOrganization}`
             }
         }
-        fetch(` https://pmsind.co.in:5000/Location/${props.roomId}`, {
-            //fetch(` https://pmsind.co.in:5000/Location?organization=${props.userOrganization}/${props.roomId}`, {
+        fetch(` https://pmsserver.local/fhir/Location/${props.roomId}`, {
+            //fetch(` https://pmsserver.local/fhir/Location?organization=${props.userOrganization}/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "PUT",
             body: JSON.stringify(data),
@@ -240,7 +240,7 @@ const [open, setOpen] = useState(false);
 //     console.log("checking patient id in room card:", patientId);
 
 //     // Fetch patient data first to get the existing extensions
-//     fetch(`https://pmsind.co.in:5000/Patient/${patientId}`, {
+//     fetch(`https://pmsserver.local/fhir/Patient/${patientId}`, {
 //         credentials: "omit",
 //         headers: {
 //             Authorization: "Basic " + btoa("fhiruser:change-password"),
@@ -260,7 +260,7 @@ const [open, setOpen] = useState(false);
 //         // Update the patient data with the new extensions
 //         patientData.extension = extensions;
 
-//         const apiUrl = `https://pmsind.co.in:5000/Patient/${patientId}`;
+//         const apiUrl = `https://pmsserver.local/fhir/Patient/${patientId}`;
 //         const requestOptions: RequestInit = {
 //             credentials: "omit",
 //             method: "PUT",
@@ -282,7 +282,7 @@ const [open, setOpen] = useState(false);
 //                     location: vvtemp
 //                 };
 
-//                 return fetch(`https://pmsind.co.in:5000/Device/${device.id}`, {
+//                 return fetch(`https://pmsserver.local/fhir/Device/${device.id}`, {
 //                     credentials: "omit",
 //                     method: "PUT",
 //                     body: JSON.stringify(data),
@@ -331,7 +331,7 @@ const addButton = (index: any) => {
     console.log("checking patient id in room card:", patientId);
 
     // Fetch patient data first to get the existing extensions
-    fetch(`https://pmsind.co.in:5000/Patient/${patientId}`, {
+    fetch(`https://pmsserver.local/fhir/Patient/${patientId}`, {
         credentials: "omit",
         headers: {
             Authorization: "Basic " + btoa("fhiruser:change-password"),
@@ -355,7 +355,7 @@ const addButton = (index: any) => {
             });
         }
 
-        const apiUrl = `https://pmsind.co.in:5000/Patient/${patientId}`;
+        const apiUrl = `https://pmsserver.local/fhir/Patient/${patientId}`;
         const requestOptions: RequestInit = {
             credentials: "omit",
             method: "PUT",
@@ -377,7 +377,7 @@ const addButton = (index: any) => {
                     location: vvtemp
                 };
 
-                return fetch(`https://pmsind.co.in:5000/Device/${device.id}`, {
+                return fetch(`https://pmsserver.local/fhir/Device/${device.id}`, {
                     credentials: "omit",
                     method: "PUT",
                     body: JSON.stringify(data),
@@ -423,7 +423,7 @@ const addButton = (index: any) => {
         const { location, ...data } = device;
       
         // Define the URL and request options
-        const apiUrl = ` https://pmsind.co.in:5000/Device/${device.id}`;
+        const apiUrl = ` https://pmsserver.local/fhir/Device/${device.id}`;
         const requestOptions: RequestInit = {
           credentials: "omit",
           method: "PUT",
@@ -450,8 +450,8 @@ const addButton = (index: any) => {
     const [deleteRoom, setDeleteRoom] = useState(false)
     const removeRoomButton = () => {
         console.log("Called")
-        fetch(` https://pmsind.co.in:5000/Location/${props.roomId}`, {
-            //fetch(` https://pmsind.co.in:5000/Location?organization=${props.userOrganization}/${props.roomId}`, {
+        fetch(` https://pmsserver.local/fhir/Location/${props.roomId}`, {
+            //fetch(` https://pmsserver.local/fhir/Location?organization=${props.userOrganization}/${props.roomId}`, {
             credentials: "omit", // send cookies and HTTP authentication information
             method: "DELETE",
             headers: {

@@ -52,7 +52,7 @@ console.log("in admin page",userOrganization);
 
   // useEffect(() => {
   //   try {
-  //     fetch('https://pmsind.co.in:5000list')
+  //     fetch('https://pmsserver.locallist')
   //       .then((response) => {
   //         if (!response.ok) {
   //           throw new Error('Failed to fetch user data');
@@ -75,8 +75,8 @@ console.log("in admin page",userOrganization);
     try {
       // const organization = '18d1c76ef29-ba9f998e-83b1-4c43-bc5b-b91b572a6454';
 
-      fetch('https://pmsind.co.in:5000/list', {
-        // fetch(`https://pmsind.co.in:5000/delete/${userId}`, {
+      fetch('https://pmsserver.local/fhir/list', {
+        // fetch(`https://pmsserver.local/fhir/delete/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ console.log("in admin page",userOrganization);
   //   const { email, username, password, role } = newUser;
   
   //   // Add your logic to make the API call for adding a new user
-  //   fetch('https://pmsind.co.in:5000create', {
+  //   fetch('https://pmsserver.localcreate', {
   //     method: 'POST',
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ console.log("in admin page",userOrganization);
   //   const { email, username, password, role, organization } = newUser;
 
   //   // Add your logic to make the API call for adding a new user
-  //   fetch('https://pmsind.co.in:5000create', {
+  //   fetch('https://pmsserver.localcreate', {
   //     method: 'POST',
   //     headers: {
   //       'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ console.log("in admin page",userOrganization);
     const { email, username, password, role, organization } = newUser;
   
     // Add your logic to make the API call for adding a new user
-    fetch('https://pmsind.co.in:5000/create', {
+    fetch('https://pmsserver.local/fhir/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -192,7 +192,7 @@ console.log("in admin page",userOrganization);
         console.log('API response:', data);
   
         // After creating the user, fetch the updated user data
-        fetch('https://pmsind.co.in:5000/list', {
+        fetch('https://pmsserver.local/fhir/list', {
         method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ console.log("in admin page",userOrganization);
   
   
   const handleDeleteUser = (userId: string) => {
-    fetch(`https://pmsind.co.in:5000/delete/${userId}`, {
+    fetch(`https://pmsserver.local/fhir/delete/${userId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
