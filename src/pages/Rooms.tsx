@@ -136,11 +136,27 @@ export const Rooms:FC<roomdata> = (props) => {
         )
     }
     const [vvtemp, setvvtemp] = useState(false)
+    // const roomBoxes = temproom.map((room) => {
+    //     return(
+    //         <RoomCard deviceChangeToggle={vvtemp} deviceChange={() => { setvvtemp(!vvtemp); } } roomChange={() => { setRoomAddedRemoved(!roomAddedRemoved); } } roomName={String(room.resource.identifier[0].value)} roomId={String(room.resource.id)} userOrganization={props.userOrganization} darkTheme={props.darkTheme}></RoomCard>
+    //     )
+    // })
+
     const roomBoxes = temproom.map((room) => {
-        return(
-            <RoomCard deviceChangeToggle={vvtemp} deviceChange={() => { setvvtemp(!vvtemp); } } roomChange={() => { setRoomAddedRemoved(!roomAddedRemoved); } } roomName={String(room.resource.identifier[0].value)} roomId={String(room.resource.id)} userOrganization={props.userOrganization} darkTheme={props.darkTheme}></RoomCard>
-        )
-    })
+      return (
+          <RoomCard 
+              key={String(room.resource.id)} // Add a unique key prop here
+              deviceChangeToggle={vvtemp} 
+              deviceChange={() => { setvvtemp(!vvtemp); }} 
+              roomChange={() => { setRoomAddedRemoved(!roomAddedRemoved); }} 
+              roomName={String(room.resource.identifier[0].value)} 
+              roomId={String(room.resource.id)} 
+              userOrganization={props.userOrganization} 
+              darkTheme={props.darkTheme}
+          />
+      );
+  });
+  
   return (
     
     <div>

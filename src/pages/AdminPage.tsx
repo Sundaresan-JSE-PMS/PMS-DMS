@@ -220,7 +220,7 @@ console.log("in admin page",userOrganization);
                     setControlboarder1('#2BA0E0');
                     setControlOpacity1('1');
                   }}
-                >
+                > 
                   <Paper elevation={5} sx={{ borderRadius: '25px', background: 'transparent' }}>
                     <Card
                       sx={{

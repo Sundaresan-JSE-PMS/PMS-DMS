@@ -9,6 +9,7 @@ import { CustomNoButton } from './CustomNoButton'
 import { CustomOkButton } from './CustomOkButton'
 
 export interface roomData {
+    
     roomName: string;
     roomId: string;
     roomChange: Function;
@@ -139,12 +140,12 @@ export const RoomCard: FC<roomData> = (props) => {
     //     }
     // ]);
     
-    const [open, setOpen] = useState(false);
+const [open, setOpen] = useState(false);
     const [deviceChanged, setDeviceChanged] = useState(false)
     useEffect(() => {setDeviceChanged(!deviceChanged)},[props.deviceChangeToggle])
     const [renameRoom, setRenameRoom] = useState(false)
     useEffect(() => {
-        fetch(` ${import.meta.env.VITE_FHIRAPI_URL as string}/Device?_count=40`, {
+        fetch(` ${import.meta.env.VITE_FHIRAPI_URL as string}/Device?_count=100`, {
           credentials: "omit",
           headers: {
             Authorization: "Basic "+ btoa("fhiruser:change-password"),
@@ -318,6 +319,218 @@ export const RoomCard: FC<roomData> = (props) => {
 //     });
 // };
 
+
+//commented to check the add button creating problem????[27/2/25]
+// const addButton = async (index: any) => {
+//     try {
+//         let data = {};
+//         const device = deviceList[Number(index)].resource;
+//         const patientReference = device.patient?.reference;
+
+//         if (!patientReference) {
+//             console.error("No patient reference found for device:", device.id);
+//             return;
+//         }
+       
+
+//       const patientReferenceString = patientReference as unknown as string;
+//         const patientId = patientReferenceString.split("/")[1];
+//         const patientResponse = await fetch(
+//             `${import.meta.env.VITE_FHIRAPI_URL as string}/Patient/${patientId}`, 
+//             {
+//                 credentials: "omit",
+//                 headers: {
+//                     Authorization: "Basic " + btoa("fhiruser:change-password"),
+//                 },
+//             }
+//         );
+
+//         if (!patientResponse.ok) {
+//             throw new Error("Failed to fetch patient data");
+//         }
+
+//         let patientData = await patientResponse.json();
+
+//         if (!Array.isArray(patientData.extension)) {
+//             patientData.extension = [];
+//         }
+
+//         const existingLocationIndex = patientData.extension.findIndex(
+//             (ext: { url: string }) => ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-location'
+//         );
+
+//         if (existingLocationIndex !== -1) {
+//             patientData.extension[existingLocationIndex].valueReference.reference = `Location/${props.roomId}`;
+//         } else {
+//             patientData.extension.push({
+//                 url: 'http://hl7.org/fhir/StructureDefinition/patient-location',
+//                 valueReference: { reference: `Location/${props.roomId}` },
+//             });
+//         }
+
+//         const apiUrl = `${import.meta.env.VITE_FHIRAPI_URL as string}/Patient/${patientId}`;
+//         const patientUpdateResponse = await fetch(apiUrl, {
+//             credentials: "omit",
+//             method: "PUT",
+//             body: JSON.stringify(patientData),
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: "Basic " + btoa("fhiruser:change-password"),
+//             },
+//         });
+
+//         if (!patientUpdateResponse.ok) {
+//             throw new Error("Failed to update patient data");
+//         }
+
+//         data = {
+//             ...device,
+//             location: { reference: `Location/${props.roomId}` },
+//         };
+
+//         const deviceUpdateResponse = await fetch(
+//             `${import.meta.env.VITE_FHIRAPI_URL as string}/Device/${device.id}`,
+//             {
+//                 credentials: "omit",
+//                 method: "PUT",
+//                 body: JSON.stringify(data),
+//                 headers: {
+//                     "Content-Type": "application/json",
+//                     Authorization: "Basic " + btoa("fhiruser:change-password"),
+//                 },
+//             }
+//         );
+
+//         if (!deviceUpdateResponse.ok) {
+//             throw new Error("Failed to update device location");
+//         }
+
+//         setSnack(true);
+//         setSnackSucc(true);
+//         setDeviceChanged(!deviceChanged);
+//         props.deviceChange();
+//         console.log("Internal add: ", device.id);
+
+//         // Notify the backend
+//         const notifyResponse = await fetch(
+//             `${import.meta.env.VITE_DEVICEDATA_URL as string}/addDevice`,
+//             {
+//                 method: "POST",
+//                 headers: { "Content-Type": "application/json" },
+//                 body: JSON.stringify({ deviceId: device.id }),
+//             }
+//         );
+
+//         const notifyData = await notifyResponse.json();
+//         console.log("Response from addDevice endpoint:", notifyData);
+//     } catch (error) {
+//         console.error("Error:", error);
+//         setSnack(true);
+//         setSnackSucc(false);
+//     }
+// };
+
+
+// const addButton = (index: any) => {
+//     let data = {};
+//     const device = deviceList[Number(index)].resource;
+//     const patientReference = device.patient.reference;
+
+//     const patientReferenceString = patientReference as unknown as string;
+//     const patientId = patientReferenceString.split("/")[1];
+
+//     fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Patient/${patientId}`, {
+//         credentials: "omit",
+//         headers: {
+//             Authorization: "Basic " + btoa("fhiruser:change-password"),
+//         },
+//     })
+//     .then((response) => response.json())
+//     .then((patientData) => {
+//         const existingLocationIndex = patientData.extension.findIndex(
+//             (ext: { url: string }) => ext.url === 'http://hl7.org/fhir/StructureDefinition/patient-location'
+//         );
+
+//         if (existingLocationIndex !== -1) {
+//             patientData.extension[existingLocationIndex].valueReference.reference = `Location/${props.roomId}`;
+//         } else {
+//             patientData.extension.push({
+//                 url: 'http://hl7.org/fhir/StructureDefinition/patient-location',
+//                 valueReference: { reference: `Location/${props.roomId}` }
+//             });
+//         }
+
+//         const apiUrl = `${import.meta.env.VITE_FHIRAPI_URL as string}/Patient/${patientId}`;
+//         const requestOptions: RequestInit = {
+//             credentials: "omit",
+//             method: "PUT",
+//             body: JSON.stringify(patientData),
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 Authorization: "Basic " + btoa("fhiruser:change-password"),
+//             },
+//         };
+
+//         fetch(apiUrl, requestOptions)
+//         .then(response => {
+//             if (response.status === 200) {
+//                 let vvtemp = { "reference": `Location/${props.roomId}` };
+//                 data = {
+//                     ...device,
+//                     location: vvtemp
+//                 };
+
+//                 return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Device/${device.id}`, {
+//                     credentials: "omit",
+//                     method: "PUT",
+//                     body: JSON.stringify(data),
+//                     headers: {
+//                         "Content-Type": "application/json",
+//                         Authorization: "Basic " + btoa("fhiruser:change-password"),
+//                     },
+//                 });
+//             } else {
+//                 throw new Error("Failed to update patient data");
+//             }
+//         })
+//         .then(deviceResponse => {
+//             if (deviceResponse.status === 200) {
+//                 setSnack(true);
+//                 setSnackSucc(true);
+//                 setDeviceChanged(!deviceChanged);
+//                 props.deviceChange();
+//                 console.log("Internal add: ", device.id);  // Log the device ID being added
+        
+//                 // Send POST request to notify server of the added device
+//                 return fetch(`${import.meta.env.VITE_DEVICEDATA_URL as string}/addDevice`, {
+//                     method: 'POST',
+//                     headers: {
+//                         'Content-Type': 'application/json',
+//                     },
+//                     body: JSON.stringify({ deviceId: device.id }),
+//                 }).then(res => res.json())
+//                   .then(data => console.log("Response from addDevice endpoint:", data))
+//                   .catch(error => console.error("Error with addDevice POST:", error));
+//             } else {
+//                 throw new Error("Failed to update device location");
+//             }
+//         })
+        
+//         .catch(error => {
+//             console.error("Error updating locations:", error);
+//             setSnack(true);
+//             setSnackSucc(false);
+//         });
+//     })
+//     .catch(error => {
+//         console.error("Error fetching patient data:", error);
+//         setSnack(true);
+//         setSnackSucc(false);
+//     });
+// };
+
+
+//taken from git to check add button working
 const addButton = (index: any) => {
     let data = {};
     const device = deviceList[Number(index)].resource;
@@ -822,4 +1035,3 @@ const removeButton = (index: number) => {
   
   )
 }
-

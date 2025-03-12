@@ -20,7 +20,7 @@ export const Home = (_currentRoom: any) => {
   const { isAuthenticated, isLoading, loginWithRedirect } = useAuth0();
   const navigate = useNavigate();
 
-useEffect(() => {if(isAuthenticated){navigate('/central-monitor')}},[isAuthenticated])
+useEffect(() => {if(isAuthenticated){navigate('/patient-monitor')}},[isAuthenticated])
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>

@@ -445,7 +445,7 @@ useEffect(() => {
         const cpap = devices.entry?.map((deviceEntry) => {
             const device = deviceEntry.resource as unknown as Device;
             console.log("SVAAS device",String(device.id))
-            if((String(device.identifier[1]?.value)=="PMS-SVAAS")){
+            if((String(device.identifier[1]?.value)=="SVAAS")){
            
           var correct = false
             // var temp = String(device.resource.id)

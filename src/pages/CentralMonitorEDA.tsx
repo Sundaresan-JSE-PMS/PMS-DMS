@@ -50,6 +50,9 @@ export const CentralMonitorEDA: React.FC<CentralMonitorEDAProps> = ({ currentRoo
     };
 
     const renderDeviceCard = (device: any) => {
+        console.log("Observation Resource:", deviceData[device.deviceId]?.observation);
+        console.log("Communication Resource:", deviceData[device.deviceId]?.communication);
+        
         const deviceProps = {
             key: device.deviceId,
             device_id: device.macId,
@@ -70,7 +73,7 @@ export const CentralMonitorEDA: React.FC<CentralMonitorEDAProps> = ({ currentRoo
                 return <CICCard {...deviceProps} />;
             case 'Intensive Neonatal Care Center':
                 return <INCCard {...deviceProps} />;
-            case 'PMS-SVAAS':
+            case 'SVAAS':
                 return <SVAASCard {...deviceProps} />;
             case 'Heating Cooling Machine':
                 return <BrammiCard {...deviceProps} />;

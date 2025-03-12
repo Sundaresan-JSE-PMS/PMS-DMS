@@ -30,11 +30,7 @@ const sendEmail = async (metrics, accessToken) => {
             address: 'tariq.a@pmsind.com', 
           },
         },
-        {
-          emailAddress: {
-            address: 'sanjeev.pn@pmsind.com', 
-          },
-        },
+       
        
       ],
     },

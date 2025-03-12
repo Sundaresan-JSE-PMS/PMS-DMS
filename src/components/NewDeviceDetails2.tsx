@@ -1773,7 +1773,7 @@ items.forEach((item) => {
     useEffect(() => {console.log(selectedLegends)},[selectedLegends])
     useEffect(() => {props.handleCloseDialog()},[varq])
     const graph = useMemo(() => {
-        console.log("New device details props: ",props);
+       
         if (loading) {
             return (
                 <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={<Divider orientation='vertical' flexItem sx={{ marginLeft: '1%', backgroundColor: '#505050', color: '#505050' }} />}><CircularProgress/></Stack>

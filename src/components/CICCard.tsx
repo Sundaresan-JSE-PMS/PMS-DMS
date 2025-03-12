@@ -266,7 +266,8 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
 
     <Box width={getCardWidth()}  sx={{borderRadius:'18px'}} onClick={getOnClickHandler()}>
       <Card style={{ backgroundColor:props.darkTheme?'#1C1C1E':'#FFFFFF', borderRadius: "10px", height:"260px", border: `6px solid ${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}` }}>
-      {newData ? (<>
+      {newData ? 
+      (<>
       <Stack width={'100%'} height={'100%'}>
                     <Stack direction={'row'} display={'flex'} width={'100%'} height={'10%'} borderBottom={'0.8px solid #444446'} sx={{backgroundColor:`${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}`}} justifyContent={'space-between'}>
                         <Box >
@@ -294,29 +295,16 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
 
 
                              <Stack height={'40%'} width={'100%'} direction={'row'}>
-                             <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={ alarm === 'Skin1 Temperature Low' || alarm === 'Skin1 Temperature High' ? alarmColor : '#FF6939' } style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
+                                <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FF6939"} style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
                                   
-                                  <div style={{ display: 'flex', justifyContent: 'left' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'left' }}>
 
-                                      {/* <Typography variant='h3' color={alarm === 'Skin1 Temperature Low' ? alarmColor : "#FF6939"}>{(() => {
-                                          let data = findData("Measured Skin Temp 1");
-                                          return (data!.data);
-                                      })()}</Typography> */}
-                                    <Typography variant='h3' color={alarm === 'Skin1 Temperature Low' ? alarmColor : "#FF6939"}>
-    {(() => {
-        let data1 = findData("Measured Skin Temp 2");
-        let data2 = findData("Measured Skin Temp 1");
-        if (data1 && data1.data !== 0) {
-            return data1.data;
-        } else if (data2 && data2.data !== 0) {
-            return data2.data;
-        } else {
-            return "No Data Available";
-        }
-    })()}
-</Typography>
+                                        <Typography variant='h3' color={"#FF6939"}>{(() => {
+                                            let data = findData("Measured Skin Temp 1");
+                                            return (data!.data);
+                                        })()}</Typography>
 
-                                  </div></Box>
+                                    </div></Box>
                                
                                 <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FFD600"} style={{ fontFamily: 'Helvetica' }}>PR <span style={{ fontSize: '13px' }}>B/min</span></Typography></div>
                                     
@@ -473,24 +461,28 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
 
                         <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.8px solid #444446'} height={'10%'} justifyContent={'space-between'}>
                                 <Box marginLeft={'10px'}marginTop={'5px'}>
-                                    <Typography variant="subtitle2" style={{  fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
-                                    {(() => {
-                                        let data = findData("MODE")
-                                        return (data.unit+" "+"MODE")
-                                    })()}
-                                    </Typography>
+                                <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
+                                  {(() => {
+                                      let data = findData("System Mode")
+                                      return (data.unit)
+                                  })()}
+                                  </Typography>
                                 </Box>
 
                                 <Box marginRight={'10px'}marginTop={'5px'}>
                                     <Typography variant="subtitle2" style={{  fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
-                                        warmer
+                                        WARMER
                                     </Typography>
                                 </Box>
                             </Stack>
             
             
-           </Stack></>):(
-                  <><Stack height={'100%'} width={'100%'}>
+           </Stack>
+           
+           </>
+           ):(
+                 
+        <><Stack height={'100%'} width={'100%'}>
                   <Stack direction={'row'} display={'flex'} width={'100%'} height={'10%'} borderBottom={'0.5px solid #444446'} sx={{backgroundColor:`${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}`}} justifyContent={'space-between'}>
               <Box >
                   <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica',paddingLeft:'8px'}}  color={'#7E7E7E'}>

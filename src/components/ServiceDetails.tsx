@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Stack, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, ToggleButton, ToggleButtonGroup, Grid, Card, ListItemText, ListItem, List, useMediaQuery, Theme } from '@mui/material';
-
-
+import { Box, Typography, Stack, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, Paper, ToggleButton, ToggleButtonGroup, Card, ListItemText, ListItem, List, useMediaQuery, Theme, Button, MenuItem, FormControl, Select } from '@mui/material';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleDown } from '@fortawesome/free-solid-svg-icons';
 
 
 interface ServiceDetailsProps {
@@ -19,7 +19,14 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
 }) => {
   const [selectedTab, setSelectedTab] = useState('alarms');
   const [deviceMetricsHistory, setDeviceMetricsHistory] = useState<any[]>([]);
-  
+  const [, setLoading] = useState(false); // Add loading state
+  const [selectedFilter, setSelectedFilter] = useState("All");
+ 
+  const filteredData = deviceMetricsHistory.filter((metric) => {
+    const typeCode = metric.type.coding[0].code;
+    if (selectedFilter === "All") return ['systemaction', 'systemconfig', 'systemtest'].includes(typeCode);
+    return typeCode === selectedFilter;
+  });
 
   const fetchDeviceMetricHistory = async () => {
     try {
@@ -41,6 +48,7 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
   useEffect(() => {
     if (selectedDevice) {
       const fetchData = async () => {
+        setLoading(true); // Set loading to true before fetching data
         try {
           const data = await fetchDeviceMetricHistory();
           setDeviceMetricsHistory(data.entry ? data.entry.map((entry: any) => entry.resource) : []);
@@ -62,25 +70,88 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
       setSelectedTab(newTab);
     }
   };
+  const selfTest = deviceMetricsHistory.filter(
+    (metric) => metric.type.coding[0].code === 'SelfTest'
+  );
+  const systemInfoMetrics = deviceMetricsHistory
+  .filter((metric) => metric.type?.coding?.[0]?.code === "systeminfo")
+  .sort((a, b) => new Date(b.meta?.lastUpdated || 0).getTime() - new Date(a.meta?.lastUpdated || 0).getTime());
 
+const latestSystemInfo = systemInfoMetrics[0]; // Get the most recent entry
+
+ // Debugging
+  const systemtest = deviceMetricsHistory.filter(
+    (metric) => metric.type.coding[0].code === 'systemtest'
+  );
+
+  const systemconfig = deviceMetricsHistory
+  .filter((metric) => metric.type?.coding?.[0]?.code === "systemconfig")
+  .sort((a, b) => new Date(b.meta?.lastUpdated || 0).getTime() - new Date(a.meta?.lastUpdated || 0).getTime());
+
+const latestsystemconfig = systemconfig[0];
   const alarmsData = deviceMetricsHistory.filter(
     (metric) => metric.type.coding[0].code === 'alarm'
   );
 
-  const eventLogsData = deviceMetricsHistory.filter(
-    (metric) => metric.type.coding[0].code === 'eventlog'
-  );
 
   const calibration = deviceMetricsHistory.filter(
     (metric) => metric.type.coding[0].code === 'calibration'
   );
+  
+  
+  const latestData: Record<string, string> = {};
 
+// Extract the latest values for each unique key
+systemconfig.forEach((metric) => {
+  metric.extension?.forEach((ext: { valueString: string }) => {
+    if (ext.valueString) {
+      const [key, value] = ext.valueString.split(":");
+      latestData[key.trim()] = value.trim(); // Store the latest value for each key
+    }
+  });
+});
+
+
+const latestTestData: Record<string, string> = {};
+
+// Extract the latest values for each unique key
+systemtest.forEach((metric) => {
+  metric.extension?.forEach((ext: { valueString: string }) => {
+    if (ext.valueString) {
+      const [key, value] = ext.valueString.split(":");
+      latestTestData[key.trim()] = value.trim(); // Store latest value
+    }
+  });
+});
+
+  
   const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down('sm'));
 
   // Check if selectedDevice is valid and has the expected structure
   if (!selectedDevice || !selectedDevice.resource || !selectedDevice.resource.identifier) {
     return <div>Loading device data...</div>; // Handle loading or missing data
   }
+  const downloadCSV = () => {
+    const csvRows = [
+      ["S.No", "Type", "Event", "Timestamp"], // Header row
+      ...filteredData.map((metric, index) => [
+        index + 1,
+        metric.type.coding[0].code === 'systemaction' ? 'System Action' :
+        metric.type.coding[0].code === 'systemconfig' ? 'System Configuration' : 'System Test',
+        metric.extension?.[0]?.valueString || 'N/A',
+        metric.meta?.lastUpdated ? new Date(metric.meta.lastUpdated).toLocaleString() : 'N/A'
+      ])
+    ].map(row => row.join(",")).join("\n");
+  
+    const blob = new Blob([csvRows], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `DeviceMetrics_${selectedFilter}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
   return (
     <React.Fragment>
@@ -192,42 +263,123 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
  <Stack sx={{ alignItems: 'center', justifyContent: 'center', width: '100%', marginTop: '2%' }}>
       <ToggleButtonGroup value={selectedTab} exclusive onChange={handleTabChange} aria-label="selected tab" sx={{ width: '90%', fontSize: { xs: '5px', sm: '14px' } }} // Adjust font size for mobile
           >
-          <ToggleButton value="selftest" sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }}   style={{ backgroundColor: darkTheme ? (selectedTab === 'selftest' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'selftest' ? '#1C1C1E' : '#CACACA'),color: darkTheme ? (selectedTab === 'selftest' ? '#000000' : '#D9D9D9') :(selectedTab === 'selftest' ? '#D9D9D9' : '#000000') }}>
+          <ToggleButton value="selftest" sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }}   style={{ backgroundColor: darkTheme ? (selectedTab === 'selftest' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'selftest' ? '#124D81' : '#F3F2F7'),color: darkTheme ? (selectedTab === 'selftest' ? '#000000' : '#D9D9D9') :(selectedTab === 'selftest' ? '#FFFFFF' : '#124D81') }}>
             Self Test
           </ToggleButton>
           <ToggleButton
             value="alarms"
             sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }} 
-            style={{
-              backgroundColor: darkTheme ? (selectedTab === 'alarms' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'alarms' ? '#1C1C1E' : '#CACACA'),
-              color: darkTheme ? (selectedTab === 'alarms' ? '#000000' : '#D9D9D9') :(selectedTab === 'alarms' ? '#D9D9D9' : '#000000') 
-            }}
+            style={{ backgroundColor: darkTheme ? (selectedTab === 'alarms' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'alarms' ? '#124D81' : '#F3F2F7'),color: darkTheme ? (selectedTab === 'alarms' ? '#000000' : '#D9D9D9') :(selectedTab === 'alarms' ? '#FFFFFF' : '#124D81') }}
+           
           >
             Alarms
           </ToggleButton>
           <ToggleButton
             value="systemdata"
-            sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }} 
-            style={{
-              backgroundColor: darkTheme ? (selectedTab === 'systemdata' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'systemdata' ? '#1C1C1E' : '#CACACA'),
-              color: darkTheme ? (selectedTab === 'systemdata' ? '#000000' : '#D9D9D9') :(selectedTab === 'systemdata' ? '#D9D9D9' : '#000000') 
-            }}
+            sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }}
+            style={{ backgroundColor: darkTheme ? (selectedTab === 'systemdata' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'systemdata' ? '#124D81' : '#F3F2F7'),color: darkTheme ? (selectedTab === 'systemdata' ? '#000000' : '#D9D9D9') :(selectedTab === 'systemdata' ? '#FFFFFF' : '#124D81') }} 
+            
           >
             System Data
           </ToggleButton>
           <ToggleButton
             value="eventlog"
             sx={{ width: '100%', fontSize: { xs: '8px', sm: '14px' } }} 
-            style={{
-              backgroundColor: darkTheme ? (selectedTab === 'eventlog' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'eventlog' ? '#1C1C1E' : '#CACACA'),
-              color: darkTheme ? (selectedTab === 'eventlog' ? '#000000' : '#D9D9D9') :(selectedTab === 'eventlog' ? '#D9D9D9' : '#000000') 
-            }}
+            style={{ backgroundColor: darkTheme ? (selectedTab === 'eventlog' ? '#CACACA' : '#1C1C1E') : (selectedTab === 'eventlog' ? '#124D81' : '#F3F2F7'),color: darkTheme ? (selectedTab === 'eventlog' ? '#000000' : '#D9D9D9') :(selectedTab === 'eventlog' ? '#FFFFFF' : '#124D81') }} 
+          
           >
             Event Log
           </ToggleButton>
         </ToggleButtonGroup>
       </Stack>
       <Stack>
+      {selectedTab === 'selftest' && (
+          <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
+            <TableContainer
+  component={Paper}
+  style={{
+    width: '90%',
+    marginTop: '4%',
+    backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
+    color: darkTheme ? '#FFFFFF' : '#124D81',
+  }}
+>
+  <Table size= {isMobile?"small":"medium"}>
+    <TableHead >
+      <TableRow>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>S.No</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Self test</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Status</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Time</TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+    {selfTest.map((metric, index) => (
+  <TableRow key={index}>
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+      {index + 1}
+    </TableCell>
+
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+      {metric.extension ? (
+        metric.extension
+          .filter(
+            (ext: { url: string; valueCodeableConcept?: any }) =>
+              ext.url === 'http://terminology.hl7.org/fhir/StructureDefinition/device-SelfTest' &&
+              ext.valueCodeableConcept
+          )
+          .map((ext: { valueCodeableConcept: { coding: {
+            [x: string]: string; display: string 
+}[] } }, index: number) => (
+            <div key={index}>
+              {ext.valueCodeableConcept.coding[0]?.display || 'N/A'}
+              <br />
+            </div>
+          ))
+      ) : (
+        'N/A'
+      )}
+    </TableCell>
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+    {metric.extension ? (
+        metric.extension
+          .filter(
+            (ext: { url: string; valueCodeableConcept?: any }) =>
+              ext.url === 'http://terminology.hl7.org/fhir/StructureDefinition/device-SelfTest' &&
+              ext.valueCodeableConcept
+          )
+          .map((ext: { valueCodeableConcept: { coding: {
+            [x: string]: string; display: string 
+}[] } }, index: number) => (
+            <div key={index}>
+              
+               {ext.valueCodeableConcept.coding[0]?.code || 'N/A'}
+              <br />
+            </div>
+          ))
+      ) : (
+        'N/A'
+      )}
+    </TableCell>
+
+    {/* <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+      {metric.calibration?.[0]?.time ? new Date(metric.calibration[0].time).toLocaleString() : 'N/A'}
+    </TableCell> */}
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+  {metric.meta?.lastUpdated 
+    ? new Date(metric.meta.lastUpdated).toLocaleString() 
+    : 'N/A'}
+</TableCell>
+
+  </TableRow>
+))}
+
+    </TableBody>
+  </Table>
+</TableContainer>
+
+          </Stack>
+        )}
         {selectedTab === 'alarms' && (
           <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
             <TableContainer
@@ -235,45 +387,51 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
   style={{
     width: '90%',
     marginTop: '4%',
-    backgroundColor: darkTheme ? '#000000' : '#CACACA',
-    color: darkTheme ? '#FFFFFF' : '#000000',
+    backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
+    color: darkTheme ? '#FFFFFF' : '#124D81',
   }}
 >
   <Table size= {isMobile?"small":"medium"}>
     <TableHead >
       <TableRow>
-        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>S.No</TableCell>
-        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Alarm</TableCell>
-        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Time</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>S.No</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Alarm</TableCell>
+        <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Time</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
-      {alarmsData.map((metric, index) => (
-        <TableRow key={index}>
-          <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}} >{index + 1}</TableCell>
-          <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}}>
-  {metric.extension ? (
-    metric.extension
-      .filter(
-        (ext: { url: string; valueQuantity: any }) =>
-          ext.url === 'http://terminology.hl7.org/fhir/StructureDefinition/device-alarm' && ext.valueQuantity
-      )
-      .map((ext: { valueQuantity: { code: any } }, index: number) => (
-        <div key={index}>
-          {ext.valueQuantity.code}
-          <br />
-        </div>
-      ))
-  ) : (
-    'N/A'
-  )}
-</TableCell>
+    {alarmsData.map((metric, index) => (
+  <TableRow key={index}>
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+      {index + 1}
+    </TableCell>
 
-          <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}}>
-            {new Date(metric.calibration?.[0]?.time).toLocaleString()|| 'N/A'}
-          </TableCell>
-        </TableRow>
-      ))}
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+      {metric.extension ? (
+        metric.extension
+          .filter(
+            (ext: { url: string; valueString: string }) =>
+              ext.url === 'http://terminology.hl7.org/fhir/StructureDefinition/CRITICAL_ALARM' && ext.valueString
+          )
+          .map((ext: { valueString: string }, idx: number) => (
+            <div key={idx}>
+              {ext.valueString}
+              <br />
+            </div>
+          ))
+      ) : (
+        'N/A'
+      )}
+    </TableCell>
+
+    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+    {metric.meta?.lastUpdated 
+    ? new Date(metric.meta.lastUpdated).toLocaleString() 
+    : 'N/A'}
+    </TableCell>
+  </TableRow>
+))}
+
     </TableBody>
   </Table>
 </TableContainer>
@@ -282,42 +440,100 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
         )}
         {selectedTab === 'eventlog' && (
           <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
-           <TableContainer
-  component={Paper}
-  style={{
-    width: '90%',
-    marginTop: '4%',
-    backgroundColor: darkTheme ? '#000000' : '#CACACA',
-    color: darkTheme ? '#FFFFFF' : '#000000',
-  }}
->
-              <Table size= {isMobile?"small":"medium"}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>S.No</TableCell>
-                    <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Event </TableCell>
-                    <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Timestamp</TableCell>
+          {/* Filter Menu */}
+          <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ width: '90%',  mt: 2 }}>
+          
+      <FormControl
+        variant="standard"
+        sx={{
+          width: '17%',
+          borderRadius: '8px',
+          color: '#124D81',
+          backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
+        }}
+      >
+        
+        <Select
+          value={selectedFilter}
+          onChange={(e) => setSelectedFilter(e.target.value)}
+          MenuProps={{
+            MenuListProps: { disablePadding: true },
+            sx: {'&& .Mui-selected': { backgroundColor: '#124D81', color: '#FFFFFF' } },
+          }}
+          sx={{  color: darkTheme ? '#FFFFFF' : '#124D81', textAlign: 'center' }}
+        >
+          <MenuItem value="All" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>All</MenuItem>
+          <MenuItem value="systemaction" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Action</MenuItem>
+          <MenuItem value="systemconfig" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Configuration</MenuItem>
+          <MenuItem value="systemtest" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Test</MenuItem>
+        </Select>
+      </FormControl>
+      <Button
+       
+       // startIcon={<FileDownloadIcon />}
+       onClick={downloadCSV}
+       sx={{
+         backgroundColor:darkTheme ? '#1C1C1E' : '#F3F2F7',
+    
+         
+       }}
+     >
+      {/* <Typography sx={{color:darkTheme ? '#FFFFFF' : '#124D81',fontWeight: 'bold',}}>Download </Typography> */}
+      <FontAwesomeIcon icon={faCircleDown } color={darkTheme ? '#FFFFFF' : '#124D81'} fontSize={'1.6rem'}/>
+     </Button>
+    </Stack>
+      
+          {/* Table Container */}
+          <TableContainer
+            component={Paper}
+            style={{
+              width: '90%',
+              marginTop: '2%',
+              backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
+              color: darkTheme ? '#FFFFFF' : '#124D81',
+            }}
+          >
+            <Table size={isMobile ? "small" : "medium"}>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>S.No</TableCell>
+                  <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Type</TableCell>
+                  <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Event</TableCell>
+                  <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Timestamp</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredData.map((metric, index) => (
+                  <TableRow key={index}>
+                    {/* Serial Number */}
+                    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+                      {index + 1}
+                    </TableCell>
+      
+                    {/* Type Column - Dynamically Set the Label */}
+                    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+                      {metric.type.coding[0].code === 'systemaction'
+                        ? 'System Action'
+                        : metric.type.coding[0].code === 'systemconfig'
+                        ? 'System Configuration'
+                        : 'System Test'}
+                    </TableCell>
+      
+                    {/* Extract and Display the Relevant Value */}
+                    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+                      {metric.extension?.[0]?.valueString || 'N/A'}
+                    </TableCell>
+      
+                    {/* Last Updated Timestamp */}
+                    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
+                      {metric.meta?.lastUpdated ? new Date(metric.meta.lastUpdated).toLocaleString() : 'N/A'}
+                    </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {eventLogsData.map((metric, index) => (
-                    <TableRow key={index}>
-                      <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}}>{index + 1}</TableCell>
-                      <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}}>
-                      {metric.extension?.[0]?.valueQuantity?.system && (
-    <>{metric.extension[0].valueQuantity.system.split('/').pop()} - </>
-  )}
-  {metric.extension?.[0]?.valueQuantity?.code}
-  
-</TableCell>
-
-                      <TableCell sx={{fontSize: { xs: '10px', sm: '14px' },color: darkTheme ? '#FFFFFF' : '#000000'}}>{new Date(metric.calibration?.[0]?.time).toLocaleString() || 'N/A'}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Stack>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Stack>
         )}
         {selectedTab === 'systemdata' && (
           <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
@@ -325,81 +541,70 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
               {/* System Information Section */}
               <Box sx={{ display: 'flex',  flexDirection: { xs: 'column', md: 'row' }, // Stack on mobile, flex-row on larger screens
 color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
-              <Card sx={{ p:{xs:'1',md:'2'} , backgroundColor: darkTheme ? '#000000' : '#CACACA', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  }}>
-  <List sx={{ color: darkTheme ? '#FFFFFF' : "#000000" }} >
-  {['SoftwareVersion'].map((version) => {
-    const versionResult = eventLogsData.find(metric => 
-      metric.extension?.some((ext: { valueQuantity: { system: string | string[]; }; }) => ext.valueQuantity?.system.includes(version))
-    );
-
-    const codeParts = versionResult?.extension[0]?.valueQuantity?.code?.split(',') || ['N/A', 'N/A']; // Split the code into two parts
-
-    return (
-      <React.Fragment key={version}>
-        <ListItem>
-          <ListItemText 
-           primaryTypographyProps={{
-            sx: { fontSize: '0.8rem' }  // Manually set the font size
-          }}
-            primary={`TFT Version: ${codeParts[0]}`}  // Display first part (TFT Version)
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText 
-          primaryTypographyProps={{
-            sx: { fontSize: '0.8rem' }  // Manually set the font size
-          }}
-            primary={`Control Board Version: ${codeParts[1]}`}  // Display second part (Control Board Version)
-          />
-        </ListItem>
-      </React.Fragment>
-    );
-  })}
-    {[ 'MASIMOVersion'].map((version) => {
-      const versionResult = eventLogsData.find(metric => 
-        metric.extension?.some((ext: { valueQuantity: { system: string | string[]; }; }) => ext.valueQuantity?.system.includes(version))
-      );
-
-      return (
-        <ListItem key={version}>
-          <ListItemText 
-          primaryTypographyProps={{
-            sx: { fontSize: '0.8rem' }  // Manually set the font size
-          }}
-            primary={`${version.replace('Version', ' Version').replace('&', ' & ')}: ${versionResult?.extension[0]?.valueQuantity?.code || 'N/A'}`} 
-          />
-        </ListItem>
-        
-      );
-    })}
-  {['BWS', 'Oximeter'].map((version) => {
-      const versionResult = eventLogsData.find(metric => 
-        metric.extension?.some((ext: { valueQuantity: { system: string | string[]; }; }) => ext.valueQuantity?.system.includes(version))
-      );
-
-      return (
-        <ListItem key={version}>
-          <ListItemText 
-          primaryTypographyProps={{
-            sx: { fontSize: '0.8rem' }  // Manually set the font size
-          }}
-            primary={`${version.replace('Version', ' Version').replace('&', ' & ')}: ${versionResult?.extension[0]?.valueQuantity?.code || 'N/A'}`} 
-          />
-        </ListItem>
-        
-      );
-    })}
-    
-  </List>
+              <Card sx={{ p:{xs:'1',md:'2'} ,backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  ,borderRadius:'15px'}}>
+              <Box textAlign='center' sx={{padding:1,borderBottom:darkTheme?'1px solid #CACACA':'1px solid #124D81'}}><Typography variant='subtitle1' sx={{ color: darkTheme?'#CACACA':'#124D81' }}>Information</Typography></Box>
+              <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
+  {!latestSystemInfo ? (
+    <ListItem>
+      <ListItemText
+        primary={
+          <Typography sx={{ fontSize: "0.5rem" }}>
+            No system info data available
+          </Typography>
+        }
+      />
+    </ListItem >
+  ) : (
+    latestSystemInfo.extension?.map((ext: { url: string; valueString: any; }, index: React.Key | null | undefined) => (
+      <ListItem key={index} sx={{pl:2,pt:0,pb:0}}>
+        <ListItemText
+       
+          primary={
+            <Typography variant='subtitle2'>
+              {ext.url.split("/").pop()?.replace(/_/g, " ")}: {ext.valueString || "N/A"}
+            </Typography>
+          }
+        />
+      </ListItem>
+    ))
+  )}
+              </List>
+              </Card>
+            <Card sx={{ p:{xs:'1',md:'2'} ,borderRadius:'15px', backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  }}>
+            <Box textAlign='center' sx={{padding:1,borderBottom:darkTheme?'1px solid #CACACA':'1px solid #124D81'}}><Typography variant='subtitle1' sx={{ color: darkTheme?'#CACACA':'#124D81' }}>Configuration</Typography></Box>
+            <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
+  {!latestsystemconfig? (
+    <ListItem>
+      <ListItemText
+        primary={
+          <Typography sx={{ fontSize: "0.5rem" }}>
+            No system info data available
+          </Typography>
+        }
+      />
+    </ListItem >
+  ) : (
+    latestsystemconfig.extension?.map((ext: { url: string; valueString: any; }, index: React.Key | null | undefined) => (
+      <ListItem key={index} sx={{pl:2,pt:0,pb:0}}>
+        <ListItemText
+       
+          primary={
+            <Typography variant='subtitle2'>
+            {ext.valueString || "N/A"}
+            </Typography>
+          }
+        />
+      </ListItem>
+    ))
+  )}
+              </List>
 </Card>
-
-
-                <Card sx={{ p: 2,backgroundColor: darkTheme ? '#000000' : '#CACACA', flex: 1, mb: { xs: 2, md: 0 }, mr: { md: 1 }  }}>
-  <Box sx={{ textAlign: 'center' }}>
-    {/* <Typography sx={{ color: '#FFFFFF' }}>Test</Typography> */}
+{/* <Box sx={{ textAlign: 'center',padding:2 }}>
+    
     <Grid container spacing={2} justifyContent="center" alignItems="center">
+
   {['ProbeTest', 'SkinProbeTest', 'Speaker&LED', 'HeaterAreaTest', 'TemperatureUnit'].map((test) => {
-    const testResult = eventLogsData.find(metric => 
+    const testResult = systemtest.find(metric => 
       metric.extension?.some((ext: { valueQuantity: { system: string | string[]; }; }) => ext.valueQuantity?.system.includes(test))
     );
 
@@ -407,8 +612,8 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
       <Grid item xs={15} key={test} sx={{ textAlign: 'center' }}>
         <Box sx={{ 
           p: 1, 
-          backgroundColor: darkTheme ? '#1C1C1E' : '#505050', 
-          color: '#FFFFFF', 
+          backgroundColor: darkTheme ? '#1C1C1E' : '#FFFFFF', 
+          color: darkTheme ? '#FFFFFF' : '#1C1C1E', 
           borderRadius: 3, 
           border: testResult?.valueQuantity?.code === 'Failed' ? '1px solid red' : 'none' 
         }}>
@@ -421,8 +626,28 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
   })}
 </Grid>
 
-  </Box>
+  </Box> */}
+<Card sx={{ p:{xs:'1',md:'2'} ,borderRadius:'15px',backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  }}>
+<Box textAlign='center' sx={{padding:1,borderBottom:darkTheme?'1px solid #CACACA':'1px solid #124D81'}}><Typography variant='subtitle1' sx={{ color: darkTheme?'#CACACA':'#124D81' }}>Test</Typography></Box>
+<List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
+  {Object.entries(latestTestData).length === 0 ? (
+    <ListItem>
+      <ListItemText primary="No system info data available" />
+    </ListItem>
+  ) : (
+    Object.entries(latestTestData).map(([key, value], index) => (
+      <ListItem key={index}>
+        <ListItemText
+          primaryTypographyProps={{ sx: { fontSize: "0.8rem" } }}
+          primary={`${key}: ${value}`}
+        />
+      </ListItem>
+    ))
+  )}
+</List>   
 </Card>
+
+              
  </Box>
    {/* Calibration Details Section */}
              
@@ -433,7 +658,7 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
   component={Paper}
   style={{
     
-    backgroundColor: darkTheme ? '#000000' : '#CACACA',
+    backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
     
   }}
 >
@@ -441,12 +666,12 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
       <TableHead>
         <TableRow>
           
-          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Calibration</TableCell>
-          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Value</TableCell>
-          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>Date & Time</TableCell>
+          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Type</TableCell>
+          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Value</TableCell>
+          <TableCell style={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>Date & Time</TableCell>
         </TableRow>
       </TableHead>
-      <TableBody>
+      {/* <TableBody>
         {calibration.map((metric, index) => {
           // Find the relevant extension with calibration data
           const ext = metric.extension?.find(
@@ -468,18 +693,61 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
             </TableRow>
           );
         })}
-      </TableBody>
-    </Table>
-            </TableContainer>
-          </Stack>
-     
-      </Box>
-            </Box>
-          </Stack>
-        )}
-      </Stack>
-      
-    </Box> 
+      </TableBody> */}
+    <TableBody>
+  {calibration.map((metric, index) => {
+    // Find the relevant extensions for both calibration types
+    const touchExt = metric.extension?.find(
+      (e: { url: string; }) => e.url === 'http://terminology.hl7.org/fhir/Touch_calibration'
+    );
+    
+    const o2Ext = metric.extension?.find(
+      (e: { url: string; }) => e.url === 'http://terminology.hl7.org/fhir/O2_Cell_calibration'
+    );
+
+    // Split the valueString into separate items using the semicolon for Touch calibration and comma for O2 Cell calibration
+    const touchValueItems = touchExt?.valueString?.split(',') || [];
+    const o2ValueItems = o2Ext?.valueString?.split(',') || []; // Using comma delimiter for O2 Cell calibration
+
+    return (
+      <TableRow key={index}>
+        <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
+          {touchExt?.url?.split('/').pop()}
+          {o2Ext?.url?.split('/').pop() }
+        </TableCell>
+
+        <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
+          {/* Display the Touch calibration values */}
+          {touchValueItems.map((item: string, itemIndex: React.Key | null | undefined) => (
+            <div key={itemIndex}>
+              {item.trim()},
+            </div>
+          ))}
+
+          {/* Add the O2 calibration values under the Touch calibration */}
+          {o2ValueItems.length > 0 && (
+            <div>
+              
+              {o2ValueItems.map((item: string, itemIndex: React.Key | null | undefined) => (
+                <div key={itemIndex}>
+                  {item.trim()},
+                </div>
+              ))}
+            </div>
+          )}
+        </TableCell>
+
+        <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
+          {new Date(metric.calibration?.[0]?.time).toLocaleString() || 'N/A'}
+        </TableCell>
+      </TableRow>
+    );
+  })}
+</TableBody>
+ </Table>
+</TableContainer>
+</Stack>
+</Box></Box></Stack>)}</Stack> </Box> 
     </React.Fragment>
   );
 };

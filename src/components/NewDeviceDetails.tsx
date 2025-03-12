@@ -1827,6 +1827,31 @@ items.forEach((item) => {
                 
             )
         }
+        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-SVAAS" || props.observation_resource?.identifier[0]?.value?.toString()=="PMSsvaas"){
+
+            return (
+
+                <Stack width={'100%'} height={'100%'} direction={'row'} divider={
+                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%'}}/>
+                }>
+                    <Stack height={'100%'} width={'95%'} spacing={'5%'} sx={{backgroundColor:'transparent'}}  marginRight={'auto'} marginLeft={'2%'} marginTop={'2%'}>
+                        <Line ref={chartRef1} options={pressure1Option as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
+                        <div id="legend-container"></div>
+                        <Divider />
+                        <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions<'line'>} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
+                        <div id="legend-container2"></div>
+                        <Divider />
+                        <Line ref={chartRef3} options={pressure2Option as ChartOptions<'line'>} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
+                        <div id="legend-container3"></div>
+                    </Stack>
+
+                </Stack>
+
+
+
+                
+            )
+        }
         if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-HCM"){
             return (
                 <Stack width={'100%'} height={'100%'} direction={'row'} justifyContent={'center'} divider={

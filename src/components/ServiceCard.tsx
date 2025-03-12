@@ -66,17 +66,17 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           const metrics = deviceMetricData.entry || [];
 
           for (const metric of metrics) {
-            const isAlarmMetric = metric.resource.type.coding.some((coding: any) => coding.code === 'alarm');
+            const isAlarmMetric = metric.resource.type.coding.some((coding: any) => coding.display === 'Critical Alarm');
 
             if (isAlarmMetric) {
-              const criticalAlarm = metric.resource.extension?.some((ext: any) =>
-                [56, 46, 45, 27, 23, 10].includes(ext.valueQuantity?.value)
-              );
+              // const criticalAlarm = metric.resource.extension?.some((ext: any) =>
+              //   [56, 46, 45, 27, 23, 10].includes(ext.valueQuantity?.value)
+              // );
 
-              if (criticalAlarm) {
+              // if (criticalAlarm) {
                 criticalAlarmFound = true;
                 criticalCount += 1;
-              }
+              // }
             }
           }
         }

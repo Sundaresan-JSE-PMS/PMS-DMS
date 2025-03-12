@@ -43,7 +43,7 @@ export const Header: FC<HeaderProps> = (props) => {
   const {user, isLoading, isAuthenticated, logout, getIdTokenClaims} = useAuth0();
   const[UserRole, setUserRole] = useState("");
   const[UserOrganization, setUserOrganization] = useState("");
- 
+  
   const handleIconClick = (icon: string) => {
     props.setSelectedIcon(icon); // This should work correctly now
   };
@@ -70,17 +70,30 @@ export const Header: FC<HeaderProps> = (props) => {
   ]);
 
   const [room, setRoom] = useState(temproom.length > 0 ? String(temproom[0].resource.name) : '');
- const handleSetRoom = (event: SelectChangeEvent) => {
-    setRoom(event.target.value);
-    props.roomChange(
-      temproom[
-        temproom.findIndex(
-          (item) => item.resource.name.toString() === String(event.target.value)
-        )
-      ].resource.id
-    );
-  };
-  const [currentTime, setCurrentTime] = useState(new Date());
+//  const handleSetRoom = (event: SelectChangeEvent) => {
+//     setRoom(event.target.value);
+//     props.roomChange(
+//       temproom[
+//         temproom.findIndex(
+//           (item) => item.resource.name.toString() === String(event.target.value)
+//         )
+//       ].resource.id
+//     );
+//   };
+const handleSetRoom = (event: SelectChangeEvent) => {
+  setRoom(event.target.value);
+  const index = temproom.findIndex(
+    (item) => item.resource?.name?.toString() === String(event.target.value)
+  );
+  if (index !== -1) {
+    props.roomChange(temproom[index].resource.id);
+  } else {
+    console.warn("Room not found for selected value:", event.target.value);
+  }
+};
+
+  const [, setCurrentTime] = useState(new Date());
+
  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
@@ -149,7 +162,7 @@ useEffect(() => {
   
   if (UserRole === 'Hospital Technician' && 
       (location.pathname === '/patient-monitor' || location.pathname === '/organization')) {
-    navigate('/central-monitor');
+    navigate('/central-monitor-2');
   }
 
   if (UserRole === 'Phoenix' && location.pathname !== '/organization') {
@@ -172,7 +185,7 @@ const handleBackButtonClick = () => {
   setNotHome(true);
 
   if (UserRole === 'Hospital Technician') {
-      navigate('/central-monitor');
+      navigate('/central-monitor-2');
   } else if (UserRole === 'Service') {
       navigate('/service');
   } else {
@@ -237,19 +250,41 @@ const isOpen = Boolean(anchorElNotification);
         <Toolbar>
           {!isLoading && isAuthenticated && (
             <>
-              <div style={{ display: 'flex', marginRight: 'auto' }}>
+              {/* <div style={{ display: 'flex', marginRight: 'auto' }}>
               
                   <Box onClick={handleBackButtonClick} sx={{ cursor: 'pointer' }}>
                     <img src={pmsLogo} alt="Phoenix" style={{ maxWidth: '90%', height: 'auto' }} />
                   </Box>
-                  {/* Show Time */}
+                 
                   {!isMobile && (
                     <Typography style={{ color: darkTheme ? 'white' : '#124D81', marginLeft: '20px' }}>
                       {currentTime.toLocaleTimeString()} | {currentTime.toLocaleDateString()}
                     </Typography>
                   )}
+            </div> */}
+              <div style={{ marginRight: 'auto' }}>
+              <Box onClick={handleBackButtonClick} sx={{ cursor: 'pointer',width:'55%',maxWidth: '55%', }}>
+                    <img src={pmsLogo} alt="Phoenix" style={{ width:'100%',maxWidth: '100%', height: 'auto' ,objectFit: 'contain',}} />
+                    <Typography
+    variant="h2"
+    style={{
+      color: darkTheme ? 'white' : '#124D81',
+      
+      display: 'flex', // Use flexbox to separate colors for Neo and Life
+      
+      fontSize: '1.6rem', // Ensure the font size matches the logo
+      fontWeight: 400, // Bold text for emphasis
+    }}
+  >
+                    <span style={{ color: '#185284' }}>Ser</span>
+                    <span style={{ color: '#01AEEE' }}>vice</span>
+                    </Typography>
+                  </Box>
+                  
+                
+                  
+                 
             </div>
-             
 
                 {notHome && UserRole === 'Service' &&  (
                   <>
@@ -267,7 +302,7 @@ const isOpen = Boolean(anchorElNotification);
           }}
           sx={{
             backgroundcolor: '#FFFFFF',
-            width: isMobile ? '100px' : '200px',  // Adjust width for mobile
+            width: isMobile ? '100px' : '200px',  
             '& .MuiOutlinedInput-root': {
               borderRadius: '25px',  // Set border radius
               borderColor: '#F9F9F9',  // Set border color
@@ -433,7 +468,7 @@ const isOpen = Boolean(anchorElNotification);
                                  );
                               })}
                             
-              <MenuItem value="R&D" sx={{width: '250px',padding: '6%', paddingLeft:'20px',backgroundColor: '#F3F2F7', color: '#124D81',borderTop:'1px solid black'}} onClick={() => {navigate('/rooms');setNotHome(false);setPrevRoom(room);}}>Rooms & Device Settings <SettingsIcon sx={{ marginLeft: 'auto' }}/></MenuItem>
+              <MenuItem  sx={{width: '250px',padding: '6%', paddingLeft:'20px',backgroundColor: '#F3F2F7', color: '#124D81',borderTop:'1px solid black'}} onClick={() => {navigate('/rooms');setNotHome(false);setPrevRoom(room);}}>Rooms & Device Settings <SettingsIcon sx={{ marginLeft: 'auto' }}/></MenuItem>
             </Select> </FormControl>
                       </>
                     )}
