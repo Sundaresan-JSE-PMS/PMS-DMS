@@ -471,8 +471,10 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
 
 <Typography variant='h3' color={"#F60D4C"}>
     {(() => {
-        let data1 = findData("Measured Skin Temp 2");
-        let data2 = findData("Measured Skin Temp 1");
+        
+        //let data1 = findData("Measured Skin Temp 2");
+        let data1 = findData("MeasSkin1Temp");
+        let data2 = findData("MeasSkin2Temp");
         if (data1 && data1.data !== 0) {
             return data1.data;
         } else if (data2 && data2.data !== 0) {
@@ -531,7 +533,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
                                 <Box marginLeft={'10px'}  marginTop={'5px'}>
                                     <Typography variant="subtitle2" style={{fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
                                     {(() => {
-                                        let data = findData("MODE")
+                                        let data = findData("System Mode") //always changing the string data discuss with suman sir(13 mar 25)
                                         return (data.unit+" "+"MODE")
                                     })()}
                                     </Typography>

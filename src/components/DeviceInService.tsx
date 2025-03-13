@@ -239,9 +239,14 @@ export const DeviceInService: React.FC<DeviceInServiceProps> = ({
       .filter(device => device.resource?.owner?.reference === `Organization/${organizationId}`)
       .filter(device =>
         device.resource.identifier[0]?.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (device.resource.identifier[2]?.value &&
-          device.resource.identifier[2]?.value.toLowerCase().includes(searchQuery.toLowerCase()))
+        (device.resource.serialNumber &&
+          device.resource.serialNumber.toLowerCase().includes(searchQuery.toLowerCase()))
       );
+      // .filter(device =>
+      //   device.resource.identifier[0]?.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      //   (device.resource.identifier[2]?.value &&
+      //     device.resource.identifier[2]?.value.toLowerCase().includes(searchQuery.toLowerCase()))
+      // );
   }, [deviceList, organizationId, searchQuery]);
 
   const hasCriticalAlarm = (extensions: any[]) => {
@@ -416,7 +421,7 @@ export const DeviceInService: React.FC<DeviceInServiceProps> = ({
             >
               <Stack alignItems="center">
                 <Typography variant={isMobile ? "caption" : "h6"} sx={{ color: darkTheme ? '#FFFFFF' : '#124D81' }}>
-                  {`${device.resource.identifier[1]?.value || ''} (S.No:${device.resource.identifier[2]?.value || '--'})`}
+                  {`${device.resource.identifier[1]?.value || ''} (S.No:${device.resource.serialNumber || '--'})`}
                 </Typography>
                 <Typography variant={isMobile ? "caption" : "h6"} sx={{ color: darkTheme ? '#FFFFFF' : '#124D81', mt: 1 }}>
                   {`Last Ac: ${latestMetricTimestamp}`}

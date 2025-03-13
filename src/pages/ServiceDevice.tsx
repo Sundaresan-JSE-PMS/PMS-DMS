@@ -76,7 +76,8 @@ export const ServiceDevice: React.FC<ServiceDeviceProps> = ({ darkTheme, searchQ
       (identifier: { system: string }) => identifier.system === 'urn:ietf:rfc:3986'
     )?.value;
 
-    const serialNo = device.resource?.identifier?.[2]?.value;
+    const serialNo = device.resource.serialNumber;
+    //const serialNo = device.resource?.identifier?.[2]?.value;
 
     return (
       (macAddress && macAddress.toLowerCase().includes(searchQuery.toLowerCase())) ||

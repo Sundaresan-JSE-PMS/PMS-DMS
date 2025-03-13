@@ -84,11 +84,17 @@ const latestSystemInfo = systemInfoMetrics[0]; // Get the most recent entry
     (metric) => metric.type.coding[0].code === 'systemtest'
   );
 
-  const systemconfig = deviceMetricsHistory
-  .filter((metric) => metric.type?.coding?.[0]?.code === "systemconfig")
-  .sort((a, b) => new Date(b.meta?.lastUpdated || 0).getTime() - new Date(a.meta?.lastUpdated || 0).getTime());
 
-const latestsystemconfig = systemconfig[0];
+  const systemconfig = deviceMetricsHistory.filter(
+    (metric) => metric.type.coding[0].code === 'systemconfig'
+  );
+
+
+  // const systemconfig = deviceMetricsHistory
+  // .filter((metric) => metric.type?.coding?.[0]?.code === "systemconfig")
+  // .sort((a, b) => new Date(b.meta?.lastUpdated || 0).getTime() - new Date(a.meta?.lastUpdated || 0).getTime());
+
+// const latestsystemconfig = systemconfig[0];
   const alarmsData = deviceMetricsHistory.filter(
     (metric) => metric.type.coding[0].code === 'alarm'
   );
@@ -100,17 +106,36 @@ const latestsystemconfig = systemconfig[0];
   
   
   const latestData: Record<string, string> = {};
+  console.log("latestData for configuration",latestData);
 
 // Extract the latest values for each unique key
+// systemconfig.forEach((metric) => {
+//   metric.extension?.forEach((ext: { valueString: string }) => {
+//     if (ext.valueString) {
+//       const [key, value] = ext.valueString.split(":");
+//       latestData[key.trim()] = value.trim(); // Store the latest value for each key
+//     }
+//   });
+// });
+
+// systemconfig.forEach((metric) => {
+//   metric.extension?.forEach((ext: { valueString?: string }) => {
+//     if (typeof ext.valueString === "string" && ext.valueString.includes(":")) {
+//       const [key, value] = ext.valueString.split(":");
+//       latestData[key.trim()] = value.trim(); // Store the latest value for each key
+//     }
+//   });
+// });
+
 systemconfig.forEach((metric) => {
   metric.extension?.forEach((ext: { valueString: string }) => {
+    if (typeof ext.valueString === "string" && ext.valueString.includes(":")) {
     if (ext.valueString) {
       const [key, value] = ext.valueString.split(":");
-      latestData[key.trim()] = value.trim(); // Store the latest value for each key
-    }
+      latestData[key.trim()] = value.trim(); // Store latest value
+    }}
   });
 });
-
 
 const latestTestData: Record<string, string> = {};
 
@@ -208,7 +233,7 @@ systemtest.forEach((metric) => {
   </Typography>
   <Typography variant= {"subtitle1"} sx={{ color:  darkTheme ? '#FFFFFF' : '#124D81'  }}>
     {/* S.No:{selectedDevice.resource.identifier[2]?.value} */}
-    {`S.No: ${selectedDevice.resource.identifier[2]?.value || '--'}`}
+    {`S.No: ${selectedDevice.resource.serialNumber || '--'}`}
   </Typography>
  
 </Stack>
@@ -572,7 +597,7 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
               </Card>
             <Card sx={{ p:{xs:'1',md:'2'} ,borderRadius:'15px', backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  }}>
             <Box textAlign='center' sx={{padding:1,borderBottom:darkTheme?'1px solid #CACACA':'1px solid #124D81'}}><Typography variant='subtitle1' sx={{ color: darkTheme?'#CACACA':'#124D81' }}>Configuration</Typography></Box>
-            <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
+            {/* <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
   {!latestsystemconfig? (
     <ListItem>
       <ListItemText
@@ -597,7 +622,23 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
       </ListItem>
     ))
   )}
-              </List>
+              </List> */}
+              <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
+  {Object.entries(latestData).length === 0 ? (
+    <ListItem>
+      <ListItemText primary="No system config data available" />
+    </ListItem>
+  ) : (
+    Object.entries(latestData).map(([key, value], index) => (
+      <ListItem key={index}>
+        <ListItemText
+          primaryTypographyProps={{ sx: { fontSize: "0.8rem" } }}
+          primary={`${key}: ${value}`}
+        />
+      </ListItem>
+    ))
+  )}
+</List> 
 </Card>
 {/* <Box sx={{ textAlign: 'center',padding:2 }}>
     
@@ -705,15 +746,26 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
       (e: { url: string; }) => e.url === 'http://terminology.hl7.org/fhir/O2_Cell_calibration'
     );
 
+    const bwsExt = metric.extension?.find(
+      (e: { url: string; }) => e.url === 'http://terminology.hl7.org/fhir/BWS_calibration'
+    );
+    const tiltExt = metric.extension?.find(
+      (e: { url: string; }) => e.url === 'http://terminology.hl7.org/fhir/TILT_calibration'
+    );
     // Split the valueString into separate items using the semicolon for Touch calibration and comma for O2 Cell calibration
     const touchValueItems = touchExt?.valueString?.split(',') || [];
-    const o2ValueItems = o2Ext?.valueString?.split(',') || []; // Using comma delimiter for O2 Cell calibration
+    const o2ValueItems = o2Ext?.valueString?.split(',') || []; 
+    const tiltValueItems = tiltExt?.valueString?.split(',') || [];// Using comma delimiter for BWS calibration
+
+    const bwsValueItems = bwsExt?.valueString?.split(',') || [];// Using comma delimiter for BWS calibration
 
     return (
       <TableRow key={index}>
         <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
           {touchExt?.url?.split('/').pop()}
           {o2Ext?.url?.split('/').pop() }
+          {bwsExt?.url?.split('/').pop() }
+          {tiltExt?.url?.split('/').pop() }
         </TableCell>
 
         <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
@@ -729,6 +781,26 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
             <div>
               
               {o2ValueItems.map((item: string, itemIndex: React.Key | null | undefined) => (
+                <div key={itemIndex}>
+                  {item.trim()},
+                </div>
+              ))}
+            </div>
+          )}
+           {bwsValueItems.length > 0 && (
+            <div>
+              
+              {bwsValueItems.map((item: string, itemIndex: React.Key | null | undefined) => (
+                <div key={itemIndex}>
+                  {item.trim()},
+                </div>
+              ))}
+            </div>
+          )}
+           {tiltValueItems.length > 0 && (
+            <div>
+              
+              {tiltValueItems.map((item: string, itemIndex: React.Key | null | undefined) => (
                 <div key={itemIndex}>
                   {item.trim()},
                 </div>

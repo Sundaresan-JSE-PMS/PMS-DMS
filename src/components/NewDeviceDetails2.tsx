@@ -1426,54 +1426,108 @@ items.forEach((item) => {
     }, [props.communication_resource])
     
 
-    function getDataForGraph(page: number, when: string) {
+    // function getDataForGraph(page: number, when: string) {
 
-        const accumulatedData: any[] = []
-        var meta = 0;
-        function fetchData(when: string, times:number): Promise<void> {
-            return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${page}`,{
+    //     const accumulatedData: any[] = []
+    //     var meta = 0;
+    //     function fetchData(when: string, times:number): Promise<void> {
+    //         return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${page}`,{
+    //             credentials: "omit",
+    //             method: "GET",
+    //             headers: {
+    //                 Authorization: "Basic "+ btoa("fhiruser:change-password"),
+    //             },
+    //         })
+    //         .then((response) => response.json())
+    //         .then((data: any) => {
+                
+    //             if(data.total>0){
+                    
+    //                 var lastpage = Math.floor(data.total/10)+data.total%10
+    //                 return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${lastpage}`,{
+    //                     credentials: "omit",
+    //                     method: "GET",
+    //                     headers: {
+    //                         Authorization: "Basic "+ btoa("fhiruser:change-password"),
+    //                     },
+    //                 })
+    //                 .then((response) => response.json())
+    //                 .then((data: any) => {  
+    //                     if(data.entry[0].resource.meta.versionId!=meta){
+    //                         meta = data.entry[0].resource.meta.versionId
+    //                         accumulatedData.push(data.entry[0]); 
+    //                     }
+                        
+    //                     if (timeFrame==1?(times < 7):(times<14)) {
+    //                         const newWhen = subtractDaysFromDate(when, 1);
+    //                         return fetchData(newWhen,times+1); // Continue fetching recursively
+    //                     }
+                        
+    //                 })
+    //             }
+    //             if (timeFrame==1?(times < 7):(times<14)) {
+    //                 const newWhen = subtractDaysFromDate(when, 1);
+    //                 return fetchData(newWhen,times+1); // Continue fetching recursively
+    //             }
+    //         })
+    //     }
+    //     return fetchData(when,1).then(() => accumulatedData);
+    // }
+    function getDataForGraph(page: number, when: string) {
+        if (!props.observation_resource || !props.observation_resource.id) {
+            console.error("getDataForGraph: observation_resource is undefined or missing 'id'", props.observation_resource);
+            return Promise.reject(new Error("observation_resource is missing or invalid"));
+        }
+    
+        const accumulatedData: any[] = [];
+        let meta = 0;
+    
+        function fetchData(when: string, times: number): Promise<void> {
+            return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${page}`, {
                 credentials: "omit",
                 method: "GET",
                 headers: {
-                    Authorization: "Basic "+ btoa("fhiruser:change-password"),
+                    Authorization: "Basic " + btoa("fhiruser:change-password"),
                 },
             })
-            .then((response) => response.json())
-            .then((data: any) => {
-                
-                if(data.total>0){
-                    
-                    var lastpage = Math.floor(data.total/10)+data.total%10
-                    return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${lastpage}`,{
+                .then((response) => response.json())
+                .then((data: any) => {
+                    if (!data || !data.total) {
+                        console.warn("fetchData: No data received or total is zero", data);
+                        return;
+                    }
+    
+                    const lastpage = Math.floor(data.total / 10) + (data.total % 10);
+                    return fetch(`${import.meta.env.VITE_FHIRAPI_URL as string}/Observation/${props.observation_resource.id}/_history?_count=1&_since=${when}&_page=${lastpage}`, {
                         credentials: "omit",
                         method: "GET",
                         headers: {
-                            Authorization: "Basic "+ btoa("fhiruser:change-password"),
+                            Authorization: "Basic " + btoa("fhiruser:change-password"),
                         },
                     })
-                    .then((response) => response.json())
-                    .then((data: any) => {  
-                        if(data.entry[0].resource.meta.versionId!=meta){
-                            meta = data.entry[0].resource.meta.versionId
-                            accumulatedData.push(data.entry[0]); 
-                        }
-                        
-                        if (timeFrame==1?(times < 7):(times<14)) {
-                            const newWhen = subtractDaysFromDate(when, 1);
-                            return fetchData(newWhen,times+1); // Continue fetching recursively
-                        }
-                        
-                    })
-                }
-                if (timeFrame==1?(times < 7):(times<14)) {
-                    const newWhen = subtractDaysFromDate(when, 1);
-                    return fetchData(newWhen,times+1); // Continue fetching recursively
-                }
-            })
+                        .then((response) => response.json())
+                        .then((data: any) => {
+                            if (!data.entry || data.entry.length === 0 || !data.entry[0].resource.meta) {
+                                console.warn("fetchData: Missing entry or meta data", data);
+                                return;
+                            }
+    
+                            if (data.entry[0].resource.meta.versionId !== meta) {
+                                meta = data.entry[0].resource.meta.versionId;
+                                accumulatedData.push(data.entry[0]);
+                            }
+    
+                            if ((timeFrame == 1 ? times < 7 : times < 14)) {
+                                const newWhen = subtractDaysFromDate(when, 1);
+                                return fetchData(newWhen, times + 1); // Continue fetching recursively
+                            }
+                        });
+                });
         }
-        return fetchData(when,1).then(() => accumulatedData);
+    
+        return fetchData(when, 1).then(() => accumulatedData);
     }
-
+    
     function subtractDaysFromDate(dateString: string, days: number) {
         const date = new Date(dateString);
         date.setDate(date.getDate() - days);
@@ -1543,6 +1597,7 @@ items.forEach((item) => {
         }
     
     },[timeFrame])
+
     useEffect(() => {
         console.log(observation)
         if(observation[1]?.resource?.component?.length>1){
@@ -1770,8 +1825,10 @@ items.forEach((item) => {
         }
             // setLoading(false)
     },[observation])
+
     useEffect(() => {console.log(selectedLegends)},[selectedLegends])
     useEffect(() => {props.handleCloseDialog()},[varq])
+
     const graph = useMemo(() => {
        
         if (loading) {
@@ -1916,6 +1973,8 @@ items.forEach((item) => {
         }
         return <div></div>
     },[rendergraph,loading])
+
+    
     return (
         <React.Fragment>
            {props.selectedIcon === 'vertical' ? 

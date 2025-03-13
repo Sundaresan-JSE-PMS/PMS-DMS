@@ -300,7 +300,9 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
                                     <div style={{ display: 'flex', justifyContent: 'left' }}>
 
                                         <Typography variant='h3' color={"#FF6939"}>{(() => {
-                                            let data = findData("Measured Skin Temp 1");
+                                            // let data = findData("Measured Skin Temp 1 ");
+                                            let data = findData("MeasSkin1Temp");
+                                            
                                             return (data!.data);
                                         })()}</Typography>
 
