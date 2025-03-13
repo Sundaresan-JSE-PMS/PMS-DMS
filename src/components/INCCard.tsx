@@ -519,7 +519,8 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
 
                                         <Typography variant='h3' color={"#0BB1FA"}>
                                             {(() => {
-                                                let data = findData("SpO2");
+                                                // let data = findData("SpO2");
+                                                let data = findData("SPO2");
                                                 return (data!.data);
                                             })()}
                                         </Typography>
@@ -541,7 +542,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
 
                                 <Box marginRight={'10px'} marginTop={'5px'}>
                                     <Typography variant="subtitle2" style={{fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
-                                        incubator
+                                       INCUBATOR
                                     </Typography>
                                 </Box>
                             </Stack>
