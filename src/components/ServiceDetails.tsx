@@ -21,10 +21,12 @@ export const ServiceDetails: React.FC<ServiceDetailsProps> = ({
   const [deviceMetricsHistory, setDeviceMetricsHistory] = useState<any[]>([]);
   const [, setLoading] = useState(false); // Add loading state
   const [selectedFilter, setSelectedFilter] = useState("All");
+
+
  
   const filteredData = deviceMetricsHistory.filter((metric) => {
     const typeCode = metric.type.coding[0].code;
-    if (selectedFilter === "All") return ['systemaction', 'systemconfig', 'systemtest'].includes(typeCode);
+    if (selectedFilter === "All") return ['systemaction', 'systemconfig', 'systemtest','systeminfo'].includes(typeCode);
     return typeCode === selectedFilter;
   });
 
@@ -491,6 +493,7 @@ systemtest.forEach((metric) => {
           <MenuItem value="systemaction" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Action</MenuItem>
           <MenuItem value="systemconfig" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Configuration</MenuItem>
           <MenuItem value="systemtest" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Test</MenuItem>
+          <MenuItem value="systeminfo" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>System Information</MenuItem>
         </Select>
       </FormControl>
       <Button
@@ -541,13 +544,19 @@ systemtest.forEach((metric) => {
                         ? 'System Action'
                         : metric.type.coding[0].code === 'systemconfig'
                         ? 'System Configuration'
-                        : 'System Test'}
+                        : metric.type.coding[0].code === 'systemtest'
+                        ? 'System Test'
+                        : 'System Info'}
                     </TableCell>
       
                     {/* Extract and Display the Relevant Value */}
-                    <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
-                      {metric.extension?.[0]?.valueString || 'N/A'}
-                    </TableCell>
+                    <TableCell sx={{ color: darkTheme ? '#FFFFFF' : '#000000' }}>
+  {metric.extension.map((ext: any, index: number) => (
+    <Typography key={index} variant="subtitle2">
+      {ext.valueString}
+    </Typography>
+  ))}
+</TableCell>
       
                     {/* Last Updated Timestamp */}
                     <TableCell sx={{ fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000' }}>
@@ -565,26 +574,26 @@ systemtest.forEach((metric) => {
             <Box sx={{ width: '90%', marginTop: '3%' }}>
               {/* System Information Section */}
               <Box sx={{ display: 'flex',  flexDirection: { xs: 'column', md: 'row' }, // Stack on mobile, flex-row on larger screens
-color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
+                    color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
               <Card sx={{ p:{xs:'1',md:'2'} ,backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7', flex: 1,mb: { xs: 2, md: 0 }, mr: { md: 1 }  ,borderRadius:'15px'}}>
               <Box textAlign='center' sx={{padding:1,borderBottom:darkTheme?'1px solid #CACACA':'1px solid #124D81'}}><Typography variant='subtitle1' sx={{ color: darkTheme?'#CACACA':'#124D81' }}>Information</Typography></Box>
               <List sx={{ color: darkTheme ? "#FFFFFF" : "#000000" }}>
-  {!latestSystemInfo ? (
-    <ListItem>
-      <ListItemText
-        primary={
-          <Typography sx={{ fontSize: "0.5rem" }}>
-            No system info data available
-          </Typography>
-        }
-      />
-    </ListItem >
-  ) : (
-    latestSystemInfo.extension?.map((ext: { url: string; valueString: any; }, index: React.Key | null | undefined) => (
-      <ListItem key={index} sx={{pl:2,pt:0,pb:0}}>
-        <ListItemText
+                {!latestSystemInfo ? (
+              <ListItem>
+              <ListItemText
+                primary={
+                 <Typography sx={{ fontSize: "0.5rem" }}>
+                      No system info data available
+                   </Typography>
+                   }
+                   />
+               </ListItem >
+                ) : (
+                latestSystemInfo.extension?.map((ext: { url: string; valueString: any; }, index: React.Key | null | undefined) => (
+               <ListItem key={index} sx={{pl:2,pt:0,pb:0}}>
+                 <ListItemText
        
-          primary={
+                  primary={
             <Typography variant='subtitle2'>
               {ext.url.split("/").pop()?.replace(/_/g, " ")}: {ext.valueString || "N/A"}
             </Typography>
@@ -694,6 +703,48 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
              
               <Box sx={{ textAlign:'center',marginTop:'3%' }}>
         <Typography sx={{ color:darkTheme ? '#FFFFFF' : '#124D81' }}>Calibration Details</Typography>
+           {/* Filter Menu */}
+           <Stack direction="row" justifyContent="right" spacing={1} sx={{ mb:2,  mt: 2 }}>
+           {/* <Typography sx={{ color:darkTheme ? '#FFFFFF' : '#124D81' }}>Filter:</Typography> */}
+          <FormControl
+            variant="standard"
+            sx={{
+              width: '17%',
+              borderRadius: '8px',
+              color: '#124D81',
+              backgroundColor: darkTheme ? '#1C1C1E' : '#F3F2F7',
+            }}
+          >
+            
+            <Select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+              MenuProps={{
+                MenuListProps: { disablePadding: true },
+                sx: {'&& .Mui-selected': { backgroundColor: '#124D81', color: '#FFFFFF' } },
+              }}
+              sx={{  color: darkTheme ? '#FFFFFF' : '#124D81', textAlign: 'center' }}
+            >
+              <MenuItem value=" " sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>All</MenuItem>
+              <MenuItem value="" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>Touch calibration</MenuItem>
+              <MenuItem value="" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>O2 cell calibration</MenuItem>
+              <MenuItem value="" sx={{ backgroundColor: '#F3F2F7', color: '#124D81' }}>Tilt calibration</MenuItem>
+            </Select>
+          </FormControl>
+          {/* <Button
+           
+           // startIcon={<FileDownloadIcon />}
+           onClick={downloadCSV}
+           sx={{
+             backgroundColor:darkTheme ? '#1C1C1E' : '#F3F2F7',
+        
+             
+           }}
+         >
+       
+          <FontAwesomeIcon icon={faCircleDown } color={darkTheme ? '#FFFFFF' : '#124D81'} fontSize={'1.6rem'}/>
+         </Button> */}
+        </Stack>
         <Stack justifyContent="center" alignItems="center" sx={{ width: '100%' }}>
             <TableContainer
   component={Paper}
@@ -736,6 +787,7 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
         })}
       </TableBody> */}
     <TableBody>
+      
   {calibration.map((metric, index) => {
     // Find the relevant extensions for both calibration types
     const touchExt = metric.extension?.find(
@@ -775,7 +827,6 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
               {item.trim()},
             </div>
           ))}
-
           {/* Add the O2 calibration values under the Touch calibration */}
           {o2ValueItems.length > 0 && (
             <div>
@@ -807,6 +858,7 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
               ))}
             </div>
           )}
+
         </TableCell>
 
         <TableCell sx={{fontSize: { xs: '10px', sm: '14px' }, color: darkTheme ? '#FFFFFF' : '#000000'}}>
@@ -819,7 +871,7 @@ color: darkTheme?'#FFFFFF':"#000000", justifyContent: 'space-between', mb: 3 }}>
  </Table>
 </TableContainer>
 </Stack>
-</Box></Box></Stack>)}</Stack> </Box> 
+            </Box></Box></Stack>)}</Stack> </Box> 
     </React.Fragment>
   );
 };

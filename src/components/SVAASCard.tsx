@@ -295,14 +295,14 @@ const getCardWidth = () => {
                           </Stack>
 
 
-                           <Stack height={'40%'} width={'100%'} direction={'row'}>
+                           {/* <Stack height={'40%'} width={'100%'} direction={'row'}>
                               <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#62ECFF"} style={{ fontFamily: 'Helvetica' }}>P <span style={{ fontSize: '12px' }}>cmH2O</span></Typography></div>
                                 
                                   <div style={{ display: 'flex', justifyContent: 'left' }}>
 
                                       <Typography variant='h3' color={"#62ECFF"}> 
                                       {(() => {
-                                                       let data = findData("Measured Pressure") 
+                                                       let data = findData("CURRENT PRESSURE") 
                                                         return (data.data)
                                                  }
                                            )()}
@@ -317,7 +317,7 @@ const getCardWidth = () => {
                                       <Typography variant='h3' color={"#FF59BD"}>
                                         
                                             {(() => {
-                                                    let data = findData("Measured flow") //Current FiO2 Flow?? Check with SVAAS Team
+                                                    let data = findData("CURRENT FLOW") //Current FiO2 Flow?? Check with SVAAS Team
                                                       return (data.data)
                                               }
                                            )()}
@@ -331,7 +331,7 @@ const getCardWidth = () => {
 
                                       <Typography variant='h3' color={"#00D1FF"}>
                                       {(() => {
-                                                       let data = findData("Measured fio2") //Current FiO2 Flow?? Check with SVAAS Team
+                                                       let data = findData("CURRENT FIO2") //Current FiO2 Flow?? Check with SVAAS Team
                                                          return (data.data)
                                                  }
                                               )()}
@@ -346,21 +346,39 @@ const getCardWidth = () => {
                                       <Typography variant='h3' color={"#0BB1FA"}>
                                      
                                                 {(() => {
-                                              let data = findData("Masimo Current SpO2");
+                                              let data = findData("CURRENT SPO2");
                                               return (data!.data);
                                           })()}
                                       </Typography>
 
                                   </div></Box>
-                          </Stack>
-                      </Stack> 
+                          </Stack> */}
+                           <Stack  height="40%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
+                        {[
+                            { label: "P", color: "#62ECFF", key: "CURRENT PRESSURE" },
+                            { label: "Flow", color: "#FF59BD", key: "CURRENT FLOW" },
+                            { label: "Fio2", color: "#00D1FF", key: "CURRENT FIO2" },
+                            { label: "Spo2", color: "#0BB1FA", key: "CURRENT SPO2" }
+                           
+                        ].map(({ label, color, key }) => (
+                            <Box key={key} width="25%" textAlign="center">
+                                <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
+                                    {label} <Typography component="span" variant='caption'> ({findData(key)?.unit || "--"})</Typography>
+                                </Typography>
+                                <Typography variant="h3" sx={{ color }}>
+                                    {findData(key)?.data || "--"}
+                                </Typography>
+                            </Box>
+                        ))}
+                        
+                    </Stack></Stack> 
                      
 
                       <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.8px solid #444446'} height={'10%'} justifyContent={'space-between'}>
                               <Box marginLeft={'10px'} marginTop={'5px'}>
                                   <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
                                   {(() => {
-                                      let data = findData("System Mode")
+                                      let data = findData("SYSTEM MODE")
                                       return (data.unit)
                                   })()}
                                   </Typography>

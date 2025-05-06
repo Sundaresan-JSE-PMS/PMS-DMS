@@ -7,6 +7,8 @@ import { INCCard } from '../components/INCCard';
 import { SVAASCard } from '../components/SVAASCard';
 import { BrammiCard } from '../components/BrammiCard';
 import { NewDeviceDetails2 } from '../components/NewDeviceDetails2';
+import { BCPAPCard } from '../components/BCPAPCard';
+import { NWSCard } from '../components/NWSCard';
 
 interface CentralMonitorEDAProps {
     currentRoom: string;
@@ -75,8 +77,13 @@ export const CentralMonitorEDA: React.FC<CentralMonitorEDAProps> = ({ currentRoo
                 return <INCCard {...deviceProps} />;
             case 'SVAAS':
                 return <SVAASCard {...deviceProps} />;
-            case 'Heating Cooling Machine':
+                case 'Blower CPAP':
+                    return <BCPAPCard {...deviceProps} />;
+            //case 'Heating Cooling Machine':
+            case 'BRAMMI':
                 return <BrammiCard {...deviceProps} />;
+            case 'NEONATAL WARMER SYSTEM':
+                    return <NWSCard {...deviceProps} />;
             default:
                 return null;
         }

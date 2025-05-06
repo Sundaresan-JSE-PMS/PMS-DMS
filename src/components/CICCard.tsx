@@ -294,7 +294,7 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
                             </Stack>
 
 
-                             <Stack height={'40%'} width={'100%'} direction={'row'}>
+                             {/* <Stack height={'40%'} width={'100%'} direction={'row'}>
                                 <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FF6939"} style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
                                   
                                     <div style={{ display: 'flex', justifyContent: 'left' }}>
@@ -346,7 +346,27 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
                                         </Typography>
 
                                     </div></Box>
-                            </Stack>
+                            </Stack> */}
+                            <Stack  height="40%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
+                        {[
+                            { label: "B.Temp", color: "#FF6939", key: "CURRENT SKIN TEMPERATURE" },
+                            { label: "PR", color: "#FFD600", key: "CURRENT PULSE RATE" },
+                            { label: "PI", color: "#94FF37", key: "CURRENT PI" },
+                            { label: "Spo2", color: "#62ECFF", key: "CURRENT SPO2" }
+                           
+                        ].map(({ label, color, key }) => (
+                            <Box key={key} width="25%" textAlign="center">
+                                <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
+                                    {label} <Typography component="span" variant='caption'> ({findData(key)?.unit || "--"})</Typography>
+                                </Typography>
+                                <Typography variant="h3" sx={{ color }}>
+                                    {findData(key)?.data || "--"}
+                                </Typography>
+                            </Box>
+                        ))}
+                        
+                    </Stack>
+                            
                         </Stack> 
                         {/* <Stack height={'80%'} width={'100%'}>
                             <Stack height={'50%'} width={'100%'}  direction={'row'}>
@@ -465,7 +485,7 @@ export const CICCard: FC<DeviceDetails> = (props): JSX.Element => {
                                 <Box marginLeft={'10px'}marginTop={'5px'}>
                                 <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
                                   {(() => {
-                                      let data = findData("System Mode")
+                                      let data = findData("SYSTEM MODE")
                                       return (data.unit)
                                   })()}
                                   </Typography>

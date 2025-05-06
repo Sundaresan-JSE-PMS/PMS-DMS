@@ -136,7 +136,7 @@ export interface DeviceDetails {
 export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
 
     const [isOpen, setIsOpen] = useState(false);
-    const [alarmColor, setAlarmColor] = useState("#202020")
+    const [alarmColor, setAlarmColor] = useState("")
     const [newData, setNewData] = useState(false);
     const [alarm, setAlarm] = useState("")
     const [runNo, setRunNo] = useState(0)
@@ -155,10 +155,15 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
             setAlarmColor('red')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
             break
-        }else{
-            setAlarmColor('#F3AF00')
-            setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
-        }
+        }else if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='Medium Priority')
+            {
+           setAlarmColor('#F3AF00')
+           setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+       }
+       else {
+           setAlarmColor('')
+           setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+       }
     }
     setRequiredForTimer(!requiredForTimer)
     }
@@ -197,7 +202,7 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
     useEffect(() => {
         let timer: number | undefined;
         if(newData){
-            timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},15000)
+            timer = setInterval(() => {setNewData(false);clearInterval(timer)},15000)
 
         }
         return () => {
@@ -458,75 +463,25 @@ export const INCCard: FC<DeviceDetails> = (props): JSX.Element => {
                             
                             </Stack>
 
-
-                             <Stack height={'40%'} width={'100%'}  direction={'row'}>
-                                <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#F60D4C"} style={{ fontFamily: 'Helvetica' }}>B.Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
-                                  
-                                    <div style={{ display: 'flex', justifyContent: 'left' }}>
-
-                                        {/* <Typography variant='h3' color={"#F60D4C"}>{(() => {
-                                            let data = findData("Measured Skin Temp 2");
-                                            return (data!.data);
-                                        })()}</Typography> */}
-
-<Typography variant='h3' color={"#F60D4C"}>
-    {(() => {
-        
-        //let data1 = findData("Measured Skin Temp 2");
-        let data1 = findData("MeasSkin1Temp");
-        let data2 = findData("MeasSkin2Temp");
-        if (data1 && data1.data !== 0) {
-            return data1.data;
-        } else if (data2 && data2.data !== 0) {
-            return data2.data;
-        } else {
-            return "No Data Available";
-        }
-    })()}
-</Typography>
-
-                                    </div></Box>
-                               
-                                <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#FFC017"} style={{ fontFamily: 'Helvetica' }}>PR <span style={{ fontSize: '13px' }}>B/min</span></Typography></div>
-                                    
-                                    <div style={{ display: 'flex', justifyContent: 'left' }}>
-
-                                        <Typography variant='h3' color={"#FFC017"}>
-                                            {(() => {
-                                                let data = findData("Pulse Rate");
-                                                return (data!.data);
-                                            })()}
-                                        </Typography>
-
-                                    </div></Box>
-                              
-                                <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#94FF37"} style={{ fontFamily: 'Helvetica' }}>PI <span style={{ fontSize: '13px' }}>B/Min</span></Typography></div>
-                                   
-                                    <div style={{ display: 'flex',  justifyContent: 'left' }}>
-
-                                        <Typography variant='h3' color={"#94FF37"}>
-                                            {(() => {
-                                                let data = findData("PI");
-                                                return (data!.data);
-                                            })()}
-                                        </Typography>
-
-                                    </div></Box>
-                              
-                                <Box width={'22%'} sx={{ textAlign: 'left',paddingLeft: '10px'}}><div><Typography variant='subtitle1' color={"#0BB1FA"} style={{ fontFamily: 'Helvetica' }}>Spo2 <span style={{ fontSize: '13px' }}>%</span></Typography></div>
-                                    
-                                    <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
-
-                                        <Typography variant='h3' color={"#0BB1FA"}>
-                                            {(() => {
-                                                // let data = findData("SpO2");
-                                                let data = findData("SPO2");
-                                                return (data!.data);
-                                            })()}
-                                        </Typography>
-
-                                    </div></Box>
-                            </Stack>
+                            <Stack  height="40%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
+                        {[
+                            { label: "B.Temp", color: "#FF6939", key: "CURRENT SKIN TEMPERATURE" },
+                            { label: "PR", color: "#FFD600", key: "CURRENT PULSE RATE" },
+                            { label: "PI", color: "#94FF37", key: "CURRENT PI" },
+                            { label: "Spo2", color: "#62ECFF", key: "CURRENT SPO2" }
+                           
+                        ].map(({ label, color, key }) => (
+                            <Box key={key} width="25%" textAlign="center">
+                                <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
+                                    {label} <Typography component="span" variant='caption'> ({findData(key)?.unit || "--"})</Typography>
+                                </Typography>
+                                <Typography variant="h3" sx={{ color }}>
+                                    {findData(key)?.data || "--"}
+                                </Typography>
+                            </Box>
+                        ))}
+                        
+                    </Stack>
                         </Stack> 
 
 

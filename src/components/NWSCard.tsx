@@ -4,7 +4,7 @@ import { Box, Card, Stack, Typography  } from '@mui/material'
 import { FC, useEffect, useState } from 'react'
 // import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faArrowsUpToLine, faBell, faKeyboard, faPowerOff,faTemperatureHalf} from '@fortawesome/free-solid-svg-icons'
+import {  faBell, faPowerOff} from '@fortawesome/free-solid-svg-icons'
 // import { NewDeviceDetails } from './NewDeviceDetails';
 import { NewDeviceDetails2 } from './NewDeviceDetails2';
 
@@ -124,13 +124,18 @@ export interface DeviceDetails {
                 };
             }[];
       };
-    
+      pleth_resource: {
+        "device_id": string;
+        "patient_id": string;
+        "timestamp": string;
+        "data": number[];
+      };
       darkTheme:boolean;
       selectedIcon:string;
     
     }
 
-export const BrammiCard: FC<DeviceDetails> = (props): JSX.Element => {
+export const NWSCard: FC<DeviceDetails> = (props): JSX.Element => {
     const [isOpen, setIsOpen] = useState(false);
     const [alarmColor, setAlarmColor] = useState("")
     // const devicetimer = setInterval(timer, 10000)
@@ -213,7 +218,7 @@ export const BrammiCard: FC<DeviceDetails> = (props): JSX.Element => {
     useEffect(() => {
         let timer: number | undefined;
         if(newData){
-            timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},15000)
+            timer = setInterval(() => {setNewData(false);clearInterval(timer)},15000)
         }
         return () => {  
             clearInterval(timer); 
@@ -253,35 +258,6 @@ const getCardWidth = () => {
         return () => {setIsOpen(true)};
     }
 };
-const [systemMode, setSystemMode] = useState("UNKNOWN");
-
-// Effect to extract the system mode when observation_resource updates
-useEffect(() => {
-    if (!props.observation_resource || !props.observation_resource.component) return;
-
-    // Find "SYSTEM MODE" in the component array
-    const modeObj = props.observation_resource.component.find(
-        (item) => item?.code?.text === "SYSTEM MODE"
-    );
-
-    // Update the state with the mode value (unit), default to "UNKNOWN"
-    setSystemMode(modeObj?.valueQuantity?.unit || "UNKNOWN");
-}, [props.observation_resource]); // Runs when observation_resource changes
-
-// Function to determine the correct icon
-const getModeIcon = () => {
-    if (systemMode === "SERVO_COOLING_MODE" || systemMode === "COOLING_MODE") {
-        return faKeyboard; // Cooling mode 
-    } else if (systemMode === "SERVO_HEATING_MODE" || systemMode === "WARMING_MODE") {
-        return faArrowsUpToLine; // Heating mode 
-    }else if (systemMode === "MATTRESS_MODE") {
-        return faKeyboard; // Heating mode 
-    }
-    return null; // No icon for unknown modes
-};
-
-const modeIcon = getModeIcon();
-
   return (
     // <Box  width={{
     //     xs: "350px",
@@ -449,57 +425,40 @@ const modeIcon = getModeIcon();
     <Box width={getCardWidth()}  sx={{borderRadius:'18px'}} onClick={getOnClickHandler()}>
     <Card style={{ backgroundColor:props.darkTheme?'#1C1C1E':'#FFFFFF', borderRadius: "10px", height:"260px", border: `6px solid ${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}` }}>
     {newData ? (<>
-        <Stack width="100%" height="100%">
-            {/* Header */}
-            <Stack direction="row" width="100%" height="10%" borderBottom="0.8px solid #444446" 
-                sx={{ backgroundColor: isBlinking ? alarmColor : props.darkTheme ? "#1C1C1E" : "#FFFFFF" }}
-                justifyContent="space-between" alignItems="center">
-                <Typography variant="subtitle2" sx={{ fontFamily: 'Helvetica', color: props.darkTheme ? "#FFFFFF" : "#7E7E7E" }}>
-                    ({props.patient?.identifier?.[0]?.value}) - B/O: {props.patient?.extension?.[0]?.valueString}
-                </Typography>
-                <Typography variant="subtitle2" sx={{ fontFamily: 'Helvetica', color: props.darkTheme ? "#FFFFFF" : "#7E7E7E" }}>
-                    <FontAwesomeIcon icon={faBell} /> {alarm}
-                </Typography>
-            </Stack>
-            
-            {/* Main Content */}
-            <Stack height="80%" width="100%">
-        
-                    <Stack  height="50%" width="100%" direction="row" justifyContent="space-around"alignItems={'center'} px={0}>
+    <Stack width={'100%'} height={'100%'}>
+                  <Stack direction={'row'} display={'flex'} width={'100%'} height={'10%'} borderBottom={'0.8px solid #444446'} sx={{backgroundColor:`${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}`}} justifyContent={'space-between'}>
+                      <Box >
+                          <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica',paddingLeft:'8px'}}  color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
+                          ({props.patient?.identifier && props?.patient?.identifier[0]?.value}) - B/O: {props.patient?.extension[0]?.valueString}
+                          </Typography>
+              
+                      </Box>
+                      <Box marginRight={'20px'}>
+                          <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica'}}   color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
+                              {/* {props.patient_name} */}
+                              <FontAwesomeIcon icon={faBell } color={props.darkTheme?'#FFFFFF':'#7E7E7E'}/>  {alarm}
+                          </Typography> 
+                      </Box>                             
+                  </Stack>
+<Stack height={'80%'} width={'100%'}>
+                          <Stack height={'60%'} width={'100%'}  direction={'row'}>
+                             
+                              <Box width={'100%'} sx={{ padding: '10px' }}>
+                             
+                              </Box>
+                          
+                          </Stack>
+                          
+
+                          <Stack  height="40%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
                         {[
-                            { label: "C.Temp", color: "#62ECFF", key: "CURRENT RECTAL TEMPERATURE" },
-                            { label: "S.Temp", color: "#FF59BD", key: "CURRENT SKIN TEMPERATURE" },
-                            { label: "M.Temp", color: "#94FF37", key: "CURRENT MATTRESS TEMPERATURE" }
-                        ].map(({ label, color, key }) => (
-                            <Box key={key} textAlign="center">
-                                <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
-                                    {label} <Typography component="span" variant='subtitle2'> ({findData(key)?.unit || "--"})</Typography>
-                                </Typography>
-                                <Typography variant="h3" sx={{ color }}>
-                                    {findData(key)?.data || "--"}
-                                </Typography>
-                            </Box>
-                        ))}
-                        <Box textAlign="center" display="flex" justifyContent="center" alignItems="center" px={0}>
-                            <Stack direction="row" alignItems="center">
-                                <FontAwesomeIcon icon={faTemperatureHalf}  color={props.darkTheme?'#62ECFF':'#124D81'} style={{ fontSize: "350%" }} />
-                            </Stack>
-                            {modeIcon && (
-                                <Box mt={-2}>
-                                    <FontAwesomeIcon icon={modeIcon} color={props.darkTheme?'#62ECFF':'#124D81'} style={{ fontSize: "150%" }} />
-                                </Box>
-                            )}
-                        </Box>
-                    </Stack>
-                    <Stack  height="50%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
-                        {[
-                            { label: "Runtime", color: props.darkTheme?'#62ECFF':'#124D81', key: "CURRENT THERAPY RUNTIME" },
-                            { label: "W.Level", color: props.darkTheme?'#62ECFF':'#124D81', key: "CURRENT WATER LEVEL" },
-                            { label: "Flow",color: props.darkTheme?'#62ECFF':'#124D81', key: "CURRENT WATER FLOW" },
-                            { label: "Status", color: props.darkTheme?'#62ECFF':'#124D81', key: "THERAPY PAUSE STATUS" }
+                            { label: "B.Temp", color: "#FF6939", key: "CURRENT SKIN TEMPERATURE" },
+                            { label: "P.Temp", color: "#FFD600", key: "CURRENT PERIPHERAL TEMPERATURE" },
+                            { label: "H.Level", color: "#94FF37", key: "CURRENT HEATER LEVEL" },
+                            { label: "APGAR", color: "#62ECFF", key: "APGAR MINUTES" }
                            
                         ].map(({ label, color, key }) => (
-                            <Box key={key}  textAlign="center">
+                            <Box key={key} width="25%" textAlign="center">
                                 <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
                                     {label} <Typography component="span" variant='caption'> ({findData(key)?.unit || "--"})</Typography>
                                 </Typography>
@@ -510,104 +469,100 @@ const modeIcon = getModeIcon();
                         ))}
                         
                     </Stack>
-              
-            </Stack>
-            
-            {/* Footer */}
-            <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.8px solid #444446'} height={'10%'} justifyContent={'space-between'}>
+                      </Stack> 
+                     
+
+                      <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.8px solid #444446'} height={'10%'} justifyContent={'space-between'}>
                               <Box marginLeft={'10px'} marginTop={'5px'}>
-                                  <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
-                                  {systemMode}
+                                  <Typography variant="subtitle2" style={{fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
+                                  {(() => {
+                                      let data = findData("SYSTEM MODE")
+                                      return (data.unit)
+                                  })()}
                                   </Typography>
                               </Box>
 
-                              <Box marginRight={'10px'} marginTop={'5px'}>
-                                  <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
-                                      BRAMMI
+                              <Box marginRight={'10px'} marginTop={'5px'} >
+                                  <Typography variant="subtitle2" style={{fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
+                                      NWS
                                   </Typography>
                               </Box>
                           </Stack>
-            {/* <Stack direction="row" width="100%" height="10%" borderTop="0.8px solid #444446" justifyContent="space-between"  alignItems="center">
-                <Typography variant="subtitle2" sx={{ fontFamily: 'Helvetica', color: props.darkTheme ? "#FFFFFF" : "#7E7E7E" }}>
-                    {systemMode}
-                </Typography>
-                <Typography variant="subtitle2" sx={{ fontFamily: 'Helvetica', color: props.darkTheme ? "#FFFFFF" : "#7E7E7E" }}>
-                    Brammi
-                </Typography>
-            </Stack> */}
-        </Stack> </>):(
-              <><Stack height={'100%'} width={'100%'}>
-              <Stack direction={'row'} display={'flex'} width={'100%'} height={'10%'} borderBottom={'0.5px solid #444446'} sx={{backgroundColor:`${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}`}} justifyContent={'space-between'}>
-          <Box >
-              <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica',paddingLeft:'8px'}}  color={'#7E7E7E'}>
-              ({props.patient?.identifier && props?.patient?.identifier[0]?.value}) - B/O: {props.patient?.extension[0]?.valueString}
-              </Typography>
-  
-          </Box>
-          <Box marginRight={'20px'}>
-              <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica'}}   color={'#7E7E7E'}>
-                  {/* {props.patient_name} */}
-                 
-              </Typography> 
-          </Box>                             
-      </Stack>
-                  <Stack height={'60%'} width={'100%'} borderBottom={'0.8px solid #444446'} justifyContent={'center'} textAlign={'center'}>
-                  <FontAwesomeIcon icon={faPowerOff} style={{fontSize: 50, color:'#7E7E7E', marginLeft:'auto', marginRight:'auto', fontWeight:'lighter', paddingBottom:'3%'}} />
-    <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'#7E7E7E'}}>{props?.device_id}</Typography>
-    {/* <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'#7E7E7E'}}>Not Active/Connected</Typography> */}
+         
+          
+         </Stack> </>):(
+             <><Stack height={'100%'} width={'100%'}>
+             <Stack direction={'row'} display={'flex'} width={'100%'} height={'10%'} borderBottom={'0.5px solid #444446'} sx={{backgroundColor:`${isBlinking ? alarmColor : props.darkTheme?'#1C1C1E':'#FFFFFF'}`}} justifyContent={'space-between'}>
+         <Box >
+             <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica',paddingLeft:'8px'}}  color={'#7E7E7E'}>
+             ({props.patient?.identifier && props?.patient?.identifier[0]?.value}) - B/O: {props.patient?.extension[0]?.valueString}
+             </Typography>
+ 
+         </Box>
+         <Box marginRight={'20px'}>
+             <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica'}}   color={'#7E7E7E'}>
+                 {/* {props.patient_name} */}
+                
+             </Typography> 
+         </Box>                             
+     </Stack>
+                 <Stack height={'60%'} width={'100%'} borderBottom={'0.8px solid #444446'} justifyContent={'center'} textAlign={'center'}>
+                 <FontAwesomeIcon icon={faPowerOff} style={{fontSize: 50, color:'#7E7E7E', marginLeft:'auto', marginRight:'auto', fontWeight:'lighter', paddingBottom:'3%'}} />
+   <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'#7E7E7E'}}>{props?.device_id}</Typography>
+   {/* <Typography variant='subtitle1' sx={{marginLeft:'auto', marginRight:'auto', marginBottom:'auto', color:'#7E7E7E'}}>Not Active/Connected</Typography> */}
 
-                  </Stack>
-                  <Stack height={'40%'} width={'100%'} direction={'row'} textAlign={'center'} justifyContent={'center'}>
-                  <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>Core Temp <span style={{ fontSize: '12px' }}>℃</span></Typography></div>
-                      {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
-                      <div style={{ display: 'flex', justifyContent: 'left' }}>
+                 </Stack>
+                 <Stack height={'40%'} width={'100%'} direction={'row'} textAlign={'center'} justifyContent={'center'}>
+                 <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>B.Temp</Typography></div>
+                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
+                     <div style={{ display: 'flex', justifyContent: 'left' }}>
 
-                          <Typography variant='h3' color={"#7E7E7E"}>--</Typography>
+                         <Typography variant='h3' color={"#7E7E7E"}>--</Typography>
 
-                      </div></Box>
-                      <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>S.Temp <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
-                      {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
-                      <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
+                     </div></Box>
+                     <Box width={'22%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>P.Temp</Typography></div>
+                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
+                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
 
-                          <Typography variant='h3' color={"#7E7E7E"}>
+                         <Typography variant='h3' color={"#7E7E7E"}>
+                            --
+                         </Typography>
+
+                     </div></Box>
+                     <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>H.Level</Typography></div>
+                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
+                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
+
+                         <Typography variant='h3' color={"#7E7E7E"}>
                              --
-                          </Typography>
+                         </Typography>
 
-                      </div></Box>
-                      <Box width={'28%'} sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>M.Temp <span style={{ fontSize: '13px' }}>℃</span></Typography></div>
-                      {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
-                      <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
+                     </div></Box>
+                     <Box width={'22%'} sx={{ textAlign: 'left' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>APGAR</Typography></div>
+                     {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
+                     <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
 
-                          <Typography variant='h3' color={"#7E7E7E"}>
-                              --
-                          </Typography>
+                         <Typography variant='h3' color={"#7E7E7E"}>
+                             --
+                         </Typography>
 
-                      </div></Box>
-                      <Box width={'22%'} sx={{ textAlign: 'left' }}><div><Typography variant='subtitle1' color={"#7E7E7E"} style={{ fontFamily: 'Helvetica' }}>H/C<span style={{ fontSize: '13px' }}>Icon</span></Typography></div>
-                      {/* <Typography variant='subtitle2' color={"#A8C5D4"} marginTop={'10px'} paddingTop={'4%'}>Heater Temp %</Typography> */}
-                      <div style={{ display: 'flex', textAlign: 'left', justifyContent: 'left' }}>
+                     </div></Box>
+                 </Stack>
+                 <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.5px solid #444446'} height={'10%'} justifyContent={'space-between'}>
+                 <Box marginLeft={'5px'} marginTop={'5px'}>
+                     <Typography variant="subtitle2" style={{  fontFamily: 'Helvetica' }} color={'#7E7E7E'}>
+                     Not Active/No Data
+                     </Typography>
+                 </Box>
 
-                          <Typography variant='h3' color={"#7E7E7E"}>
-                              --
-                          </Typography>
-
-                      </div></Box>
-                  </Stack>
-                  <Stack direction={'row'} display={'flex'} width={'100%'} borderTop={'0.5px solid #444446'} height={'10%'} justifyContent={'space-between'}>
-                  <Box marginLeft={'5px'} marginTop={'5px'}>
-                      <Typography variant="subtitle2" style={{  fontFamily: 'Helvetica' }} color={'#7E7E7E'}>
-                      Not Active/No Data
-                      </Typography>
-                  </Box>
-
-                  <Box marginRight={'5px'} marginTop={'5px'}>
-                      <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={'#7E7E7E'}>
-                          Brammi
-                      </Typography>
-                  </Box>
-              </Stack>
-              </Stack>
-              </>
+                 <Box marginRight={'5px'} marginTop={'5px'}>
+                     <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={'#7E7E7E'}>
+                         NWS
+                     </Typography>
+                 </Box>
+             </Stack>
+             </Stack>
+             </>
       )}
           </Card>
           {props.selectedIcon !== 'vertical' && (

@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button,  Box, Stack, Typography, Divider, IconButton, ToggleButtonGroup, ToggleButton, Tooltip, CircularProgress } from '@mui/material'
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button,  Box, Stack, Typography, Divider, IconButton, ToggleButtonGroup, ToggleButton, Tooltip, CircularProgress, Paper, Grid } from '@mui/material'
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react'
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -14,6 +14,7 @@ import { ChartOptions, LegendItem, Plugin } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { Chart, CategoryScale } from 'chart.js';
+
 // import { color } from 'chart.js/helpers';
 
 
@@ -1610,7 +1611,7 @@ items.forEach((item) => {
                 let third: {}[] = []
 
                 observation[1].resource.component.map((data, index) => {
-                    if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="Set Heater" || data.code.text.toString()=="Heater Level"){
+                    if(data.valueQuantity.unit.toString() == "C" || data.valueQuantity.unit.toString()=="C°" || data.valueQuantity.unit.toString() == "C°" || data.code.text.toString()=="SET HEATER" || data.code.text.toString()=="CURRENT HEATER LEVEL"){
                         let unit = data.valueQuantity.unit.toString() as keyof typeof heaterYaxis;
                         zeroth.push({
                             label: data.code.text.toString(),
@@ -1625,7 +1626,7 @@ items.forEach((item) => {
                             yAxisID: heaterYaxis[unit] || "y"
                         })
                     }
-                    else if(data.code.text.toString() == "Pulse Rate" || data.code.text.toString() == "SpO2" || data.code.text.toString() == "SPO2"){
+                    else if(data.code.text.toString() == "CURRENT PULSE RATE" || data.code.text.toString() == "CURRENT SPO2" || data.code.text.toString() == "SPO2"){
                         let unit2 = data.valueQuantity.unit.toString() as keyof typeof pulseoximeterYaxis;
                         first.push({
                             label: data.code.text.toString() ,
@@ -1652,7 +1653,7 @@ items.forEach((item) => {
                             yAxisID: "y"
                         })
                     }
-                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "Set FiO2")
+                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "SET FIO2")
                     {
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure1OptionYaxis;
                         zeroth.push({
@@ -1667,7 +1668,7 @@ items.forEach((item) => {
                             yAxisID: pressure1OptionYaxis[unit] || "y"
                         })
                     }
-                    else if(data.valueQuantity.unit.toString() == "CmH2O" || data.valueQuantity.unit.toString() == "Bar"){
+                    else if(data.valueQuantity.unit.toString() == "cmH2O" || data.valueQuantity.unit.toString() == "Bar"){
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure2OptionYaxis;
                         second.push({
                             label: data.code.text.toString(),
@@ -1729,7 +1730,7 @@ items.forEach((item) => {
                             yAxisID: heaterYaxis[unit] || "y"
                         })
                     }
-                    else if(data.code.text.toString() == "Pulse Rate" || data.code.text.toString() == "SpO2" || data.code.text.toString() == "SPO2"){
+                    else if(data.code.text.toString() == "CURRENT PULSE RATE" || data.code.text.toString() == "CURRENT SPO2" || data.code.text.toString() == "SPO2"){
                         let unit2 = data.valueQuantity.unit.toString() as keyof typeof pulseoximeterYaxis;
                         first.push({
                             label: data.code.text.toString() ,
@@ -1756,7 +1757,7 @@ items.forEach((item) => {
                             yAxisID: "y"
                         })
                     }
-                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "Set FiO2")
+                    else if(data.valueQuantity.unit.toString() == "LPM" || data.code.text.toString() == "SET FIO2")
                     {
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure1OptionYaxis;
                         zeroth.push({
@@ -1771,7 +1772,7 @@ items.forEach((item) => {
                             yAxisID: pressure1OptionYaxis[unit] || "y"
                         })
                     }
-                    else if(data.valueQuantity.unit.toString() == "CmH2O" || data.valueQuantity.unit.toString() == "Bar"){
+                    else if(data.valueQuantity.unit.toString() == "cmH2O" || data.valueQuantity.unit.toString() == "Bar"){
                         let unit = data.valueQuantity.unit.toString() as keyof typeof pressure2OptionYaxis;
                         second.push({
                             label: data.code.text.toString(),
@@ -1971,10 +1972,48 @@ items.forEach((item) => {
                 </Stack>
             )
         }
+        if(props.observation_resource?.identifier[0]?.value?.toString()=="PMS-NWS"){
+            return (
+                <Stack width={'100%'} height={'100%'}  direction={'row'} justifyContent={'center'} divider={
+                    <Divider orientation='vertical' flexItem sx={{marginLeft:'1%',backgroundColor:'#505050', color:'#505050'}}/>
+                }>
+                    <Stack height={'100%'} width={'95%'} sx={{backgroundColor:'transparent'}} spacing={'5%'} marginRight={'auto'}  marginLeft={'2%'} marginTop={'2%'}>
+                        {/* <MyChart height={'100%'} forwardedRef={chartRef1} options={temperatureOption as ChartOptions} data={temperatureData} plugins={temperatureLegendPlugin} /> */}
+                        <Line ref={chartRef1} options={temperatureOption as ChartOptions<'line'>} data={temperatureData} height={"100%"} plugins={[temperatureLegendPlugin]} ></Line>
+                        <div id="legend-container"></div>
+                        <Divider />
+                        {/* <MyChart height={'100%'} forwardedRef={chartRef2} options={pulseoximeterOption as ChartOptions} data={pulseoximeterData} plugins={temperatureLegendPlugin} /> */}
+                        {/* <Line ref={chartRef2} options={pulseoximeterOption as ChartOptions<'line'>} data={pulseoximeterData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
+                        <div id="legend-container2"></div>
+                        <Divider /> */}
+                        {/* <MyChart height={'100%'} forwardedRef={chartRef3} options={weightOption as ChartOptions} data={weightData} plugins={temperatureLegendPlugin} />                                             */}
+                        {/* <Line ref={chartRef3} options={weightOption as ChartOptions<'line'>} data={weightData} height={'100%'} plugins={[temperatureLegendPlugin]}></Line>
+                        <div id="legend-container3"></div> */}
+                    </Stack>
+                    {/* <Box width={'35%'} justifyContent={'center'} textAlign={'center'} sx={{borderRadius:'20px', marginTop:'-50px'}}>
+                        <Stack spacing={'10px'} sx={{marginLeft:'7%', width:'100%', justifyContent:'center', marginTop:'60px', textAlign:'center' }} className="legendBox">
+                        
+                        
+                        
+                        </Stack>
+
+                        <Button color="primary"  startIcon={<FileDownloadIcon />} variant="contained" sx={{marginTop:'70%', borderRadius:'25px', width:'200px'}} onClick={() => {
+                            setDownloadConfirmation(true)
+                        }}>
+                            Download
+                        </Button>
+                        
+                    </Box> */}
+
+                </Stack>
+            )
+        }
+        
         return <div></div>
     },[rendergraph,loading])
+    const primaryColor = darkTheme ? "#FFFFFF" : "#124D81";
 
-    
+  // Helper function to format unit values
     return (
         <React.Fragment>
            {props.selectedIcon === 'vertical' ? 
@@ -2026,6 +2065,9 @@ items.forEach((item) => {
                                     }
                                     else if(props.observation_resource.identifier[0].value.toString()=="PMS-SYRINGE"){
                                         q = "Syringe | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-NWS"){
+                                        q = "NWS | "
                                     }
                                     else if(props.observation_resource.identifier[0].value.toString()=="PMS-SVAAS"){
                                         q = "SVAAS | "
@@ -2443,7 +2485,7 @@ items.forEach((item) => {
                     sm: '90%',
                     md: '70%',
                     lg: '70%',
-                },minHeight:'90%',borderRadius:'25px', boxShadow: `0px 0px 40px 1px #404040`, border:'0.4px solid #505050', backgroundColor: darkTheme?'#000000': '#FFFFFF'}}}
+                },minHeight:'90%',borderRadius:'25px',  border:'0.4px solid #505050', backgroundColor: darkTheme?'#000000': '#FFFFFF'}}}
                 >
                 <DialogTitle
                     sx={{
@@ -2472,6 +2514,9 @@ items.forEach((item) => {
                                     }
                                     else if(props.observation_resource.identifier[0].value.toString()=="PMS-SYRINGE"){
                                         q = "Syringe | "
+                                    }
+                                    else if(props.observation_resource.identifier[0].value.toString()=="PMS-NWS"){
+                                        q = "NWS | "
                                     }
                                     else if(props.observation_resource.identifier[0].value.toString()=="PMS-SVAAS"){
                                         q = "SVAAS | "
@@ -2533,7 +2578,7 @@ items.forEach((item) => {
                     </Stack>
                     {selectedTab === 'overview' && (
                     <>
-                    <Stack
+                    {/* <Stack
                     direction={'row'}
                     divider={<Divider orientation='vertical' flexItem/>}
                     sx={{display: "flex",flexWrap: "wrap",gap: { xs: "2rem",sm: "2rem",md: "4rem",lg: "4rem",xl: "4rem"},
@@ -2597,7 +2642,7 @@ items.forEach((item) => {
                                     <Typography variant='h4'>
                                         {Math.round((props.observation_resource?.component[index]?.valueQuantity?.value + Number.EPSILON) * 100) / 100}&nbsp;
                                     </Typography>
-                                    <Typography variant='h5'>
+                                    <Typography variant='h6'>
                                         {props.observation_resource?.component[index]?.valueQuantity?.unit}
                                     </Typography>
                                 </>
@@ -2608,16 +2653,11 @@ items.forEach((item) => {
                     )
                     }
                     })}
-                    </Stack>
-
-                    {props.newData && (
-                        <Divider sx={{marginTop:'20px'}} />
-                    )}
-                    
-                    {props.newData?
+                    </Stack> */}
+                     {props.newData?
                     (
                     <>
-                        <Typography variant='h5'  color={darkTheme?'#FFFFFF':'#124D81'} paddingLeft={'2%'} paddingTop={'3%'}>Pulse Oximeter</Typography>
+                        {/* <Typography variant='h5'  color={darkTheme?'#FFFFFF':'#124D81'} >Pulse Oximeter</Typography> */}
                         <Stack
                             direction={'row'}
                             divider={
@@ -2634,18 +2674,18 @@ items.forEach((item) => {
                             {(() => {
                             var x = false
                             var items =  ( props.newData && props.observation_resource?.component.map((_obs: any, index: number) => {
-                                    if(props.observation_resource?.component[index]?.code.text=="SIQ"|| props.observation_resource?.component[index]?.code.text=="PVI" || props.observation_resource?.component[index]?.code.text=="PI"|| props.observation_resource?.component[index]?.code.text=="SPO2" || props.observation_resource?.component[index]?.code.text=="Pulse Rate"){
+                                    if(props.observation_resource?.component[index]?.code.text=="CURRENT SIQ"|| props.observation_resource?.component[index]?.code.text=="CURRENT PVI" || props.observation_resource?.component[index]?.code.text=="CURRENT PI"|| props.observation_resource?.component[index]?.code.text=="CURRENT SPO2" || props.observation_resource?.component[index]?.code.text=="CURRENT PULSE RATE"){
                                         x = true
                                         var temp = false
-                                        if(props.observation_resource?.component[index]?.code.text=="SIQ"){
-                                            temp = true
-                                        }
+                                        // if(props.observation_resource?.component[index]?.code.text=="CURRENT SIQ"){
+                                        //     temp = true
+                                        // }
                                         return (
                                             <Stack alignItems={'center'} spacing={'10px'} justifyContent={'center'}>
                                             <Typography variant="subtitle1" >
                                                 {props.newData && props.observation_resource?.component[index]?.code.text}
                                             </Typography>
-                                            {temp && <Box width={'130px'} height={'45px'} sx={{backgroundColor:'white', borderRadius:'10px'}}>
+                                            {temp && <Box width={'130px'} height={'45px'} sx={{backgroundColor:darkTheme?'#FFFFFF': '#2F3D4A', borderRadius:'10px'}}>
                                             <Box width={String(props.observation_resource?.component[index]?.valueQuantity?.value)+'%'} height={'100%'} sx={{backgroundColor:'blue', borderRadius:'10px'}}></Box>
                                             </Box>}
                                             {!temp && 
@@ -2677,7 +2717,7 @@ items.forEach((item) => {
     })()}
                             {}
                             
-                        </Stack>
+                        </Stack>        
                     </>
                     ):
                     
@@ -2688,6 +2728,173 @@ items.forEach((item) => {
                     color:darkTheme?'#FFFFFF':'#124D81',
                     justifyContent: "center"}}><Typography variant='h6' sx={{fontWeight:'bold', paddingTop:'1%', opacity:'0.5'}}>{props.newData && 'Oximeter Not connected'}{!props.newData && ''}</Typography>
                     </Box>}
+                    {props.newData && (
+                        <Divider sx={{marginTop:'20px',backgroundColor:darkTheme?'#FFFFFF': '#2F3D4A'}} />
+                    )}
+                    <Grid container spacing={3} justifyContent="center" sx={{ mt: 2, mb: 2 }}>
+            {/* Main Observation */}
+            <Grid item xs={12} sm={6} md={4}>
+            <Paper elevation={3} sx={{ p: 3, textAlign: 'center', bgcolor: darkTheme ? "#444" : "#fff" }}>
+            <Typography variant="subtitle1" color={primaryColor}>
+              {props.newData && props.observation_resource?.component[0]?.code.text}
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: "bold", color: primaryColor }}>
+          --
+            </Typography>
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: primaryColor }}>
+              {props.newData
+                ? props.observation_resource?.component[0]?.valueQuantity?.unit === "1"
+                  ? "1"
+                  : props.observation_resource?.component[0]?.valueQuantity?.unit
+                : "Device Not Active"}
+            </Typography>
+           
+            </Paper>
+            </Grid> 
+            {/* <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Card sx={{ bgcolor: bgColor, p: 2, boxShadow: 3 }}>
+          <CardContent sx={{ textAlign: "center" }}>
+            <Typography variant="subtitle1" color={primaryColor}>
+              {props.newData && props.observation_resource?.component[0]?.code.text}
+            </Typography>
+            <Divider sx={{ my: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: primaryColor }}>
+              {props.newData
+                ? props.observation_resource?.component[0]?.valueQuantity?.unit === "1"
+                  ? "1"
+                  : props.observation_resource?.component[0]?.valueQuantity?.unit
+                : "Device Not Active"}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid> */}
+            
+
+            {/* Additional Observations */}
+            {props.newData && props.observation_resource?.component.map((obs: any,index: number) => {
+                if (index === 0 || ["CURRENT SIQ", "CURRENT PVI", "CURRENT PI", "CURRENT SPO2", "CURRENT PULSE RATE"].includes(obs.code.text)) return null;
+
+                return (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                        <Paper elevation={3} sx={{ p: 3, textAlign: 'center', bgcolor: darkTheme ? "#444" : "#fff" }}>
+                            {/* <Tooltip title={obs.code.text} arrow> */}
+                                <Typography variant="subtitle1" color={darkTheme ? '#FFF' : '#124D81'}>
+                                    {obs.code.text}
+                                </Typography>
+                                <Typography variant="subtitle1" color={darkTheme ? '#FFF' : '#124D81'}>
+                                ({obs.valueQuantity?.unit})
+                                </Typography>
+                            {/* </Tooltip> */}
+
+                            
+                                <Box display="flex" justifyContent="center" alignItems="center">
+                                   
+                                    <Typography color={darkTheme ? '#FFF' : '#124D81'} variant="h4">
+                                        {Math.round((obs.valueQuantity?.value + Number.EPSILON) * 100) / 100}&nbsp;
+                                    </Typography>
+                                    {/* <Typography color={darkTheme ? '#FFF' : '#124D81'} variant="subtitle1"></Typography> */}
+                                </Box>
+                          
+                        </Paper>
+                    </Grid>
+                );
+            })}
+        </Grid>
+                      {/* <Grid 
+      container 
+      spacing={3} 
+      justifyContent="center" 
+      sx={{ mt: 5, mb: 5 }}
+    >
+    
+      <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Card sx={{ bgcolor: bgColor, p: 2, boxShadow: 3 }}>
+          <CardContent sx={{ textAlign: "center" }}>
+            <Typography variant="subtitle1" color={primaryColor}>
+              {props.newData && props.observation_resource?.component[0]?.code.text}
+            </Typography>
+            <Divider sx={{ my: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: primaryColor }}>
+              {props.newData
+                ? props.observation_resource?.component[0]?.valueQuantity?.unit === "1"
+                  ? "1"
+                  : props.observation_resource?.component[0]?.valueQuantity?.unit
+                : "Device Not Active"}
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grid>
+
+     
+      {props.newData &&
+        props.observation_resource?.component.map((obs: any, index: number) => {
+          if (!["SIQ", "PVI", "PI", "SPO2", "Pulse Rate"].includes(obs?.code?.text) && index !== 0) {
+            return (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                <Card sx={{ bgcolor: bgColor, p: 2, boxShadow: 3 }}>
+                  <CardContent sx={{ textAlign: "center" }}>
+                    <Typography variant="subtitle1" color={primaryColor}>
+                      {obs?.code?.text}
+                    </Typography>
+                    <Divider sx={{ my: 1 }} />
+                    {obs?.valueQuantity && formatValueWithUnit(obs?.valueQuantity?.value, obs?.valueQuantity?.unit)}
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          }
+          return null;
+        })}
+    </Grid> */}
+    {/* <TableContainer component={Paper} sx={{ bgcolor: bgColor, p: 2, boxShadow: 3 }}>
+      <Typography variant="h5" sx={{ p: 2, textAlign: "center", color: primaryColor }}>
+        Observation Data
+      </Typography>
+     
+        <TableHead>
+          <TableRow sx={{ bgcolor: darkTheme ? "#444" : "#f0f0f0" }}>
+            <TableCell sx={{ color: primaryColor, fontWeight: "bold" }}>Parameter</TableCell>
+            <TableCell sx={{ color: primaryColor, fontWeight: "bold" }}>Value</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+        
+          <TableRow>
+            <TableCell sx={{ color: primaryColor }}>
+              {props.newData && props.observation_resource?.component[0]?.code.text}
+            </TableCell>
+            <TableCell sx={{ color: primaryColor }}>
+              {props.newData
+                ? props.observation_resource?.component[0]?.valueQuantity?.unit === "1"
+                  ? "1"
+                  : props.observation_resource?.component[0]?.valueQuantity?.unit
+                : "Device Not Active"}
+            </TableCell>
+          </TableRow>
+
+          {props.newData &&
+            props.observation_resource?.component.map((obs: any, index: number) => {
+              if (
+                !["SIQ", "PVI", "PI", "SPO2", "Pulse Rate"].includes(obs?.code?.text) &&
+                index !== 0
+              ) {
+                return (
+                  <TableRow key={index}>
+                    <TableCell sx={{ color: primaryColor }}>{obs?.code?.text}</TableCell>
+                    <TableCell sx={{ color: primaryColor }}>
+                      {obs?.valueQuantity && formatValueWithUnit(obs?.valueQuantity?.value, obs?.valueQuantity?.unit)}
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+              return null;
+            })}
+        </TableBody>
+     
+    </TableContainer> */}
+                  
+                    
+                   
                     </> )}
  
                 {selectedTab === 'trends' && (

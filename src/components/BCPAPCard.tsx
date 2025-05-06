@@ -135,7 +135,7 @@ onClick: () => void;
 
 export const BCPAPCard: FC<DeviceDetails> = (props): JSX.Element => {
 
-    const [alarmColor, setAlarmColor] = useState("#202020")
+    const [alarmColor, setAlarmColor] = useState("")
     // const devicetimer = setInterval(timer, 10000)
     const [isOpen, setIsOpen] = useState(false);
 
@@ -189,10 +189,15 @@ export const BCPAPCard: FC<DeviceDetails> = (props): JSX.Element => {
             setAlarmColor('red')
             setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
             break
-        }else{
-            setAlarmColor('#F3AF00')
-            setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
-        }
+        }else if(props.communication_resource?.extension[1]?.valueCodeableConcept?.coding[i]?.code=='Medium Priority')
+            {
+           setAlarmColor('#F3AF00')
+           setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+       }
+       else {
+           setAlarmColor('')
+           setAlarm(props.communication_resource.extension[0].valueCodeableConcept.coding[i].display)
+       }
     }
     setRequiredForTimer(!requiredForTimer)
     }
@@ -209,12 +214,27 @@ export const BCPAPCard: FC<DeviceDetails> = (props): JSX.Element => {
         let unit = props.observation_resource.component[index].valueQuantity.unit
         return ({data:data, unit:unit})
     }
-
+    useEffect(() => {
+        let intervalId: number | undefined;
+    
+        if (newData) {
+           const interval = alarmColor === 'red' ? 300 : 600;
+          intervalId = setInterval(() => {
+            setIsBlinking((prevIsBlinking) => !prevIsBlinking);
+          }, interval); // Adjust the blinking interval (in milliseconds) as needed
+        } else {
+          clearInterval(intervalId);
+          setIsBlinking(false);
+        }
+     return () => {
+          clearInterval(intervalId);
+        };
+      }, [alarmColor]);
     useEffect(() => {
         let timer: number | undefined;
         
         if(newData){
-            timer = setInterval(() => {setNewData(false);setAlarmColor("#202020");clearInterval(timer)},15000)
+            timer = setInterval(() => {setNewData(false);clearInterval(timer)},15000)
 
         }
         return () => {
@@ -289,14 +309,15 @@ const getCardWidth = () => {
                           </Stack>
 
 
-                           <Stack height={'40%'} width={'100%'} direction={'row'} justifyContent={'space-around'}>
+                           {/* <Stack height={'40%'} width={'100%'} direction={'row'} justifyContent={'space-around'}>
                               <Box  sx={{ textAlign: 'left', paddingLeft: '10px' }}><div><Typography variant='subtitle1' color={"#62ECFF"} style={{ fontFamily: 'Helvetica' }}>P <span style={{ fontSize: '12px' }}>cmH2O</span></Typography></div>
                                 
                                   <div style={{ display: 'flex', justifyContent: 'left' }}>
 
                                       <Typography variant='h3' color={"#62ECFF"}> 
                                       {(() => {
-                                                       let data = findData("Current Proximal Pressure") 
+                                                       let data = findData("CURRENT PRESSURE") 
+                                                       //let data = findData("Current Proximal Pressure") 
                                                         return (data.data)
                                                  }
                                            )()}
@@ -311,7 +332,8 @@ const getCardWidth = () => {
                                       <Typography variant='h3' color={"#FF59BD"}>
                                         
                                             {(() => {
-                                                    let data = findData("Current Total Flow") //Current FiO2 Flow?? Check with SVAAS Team
+                                                    //let data = findData("Current Total Flow")
+                                                    let data = findData("CURRENT FLOW") //Current FiO2 Flow?? Check with SVAAS Team
                                                     return (data!.data);
                                               }
                                            )()}
@@ -325,7 +347,8 @@ const getCardWidth = () => {
 
                                       <Typography variant='h3' color={"#00D1FF"}>
                                       {(() => {
-                                                    let data = findData("Current FiO2") //Current FiO2 Flow?? Check with SVAAS Team
+                                                    //let data = findData("Current FiO2")
+                                                    let data = findData("CURRENT FIO2") //Current FiO2 Flow?? Check with SVAAS Team
                                                     return (data!.data);
                                               }
                                            )()}
@@ -340,7 +363,8 @@ const getCardWidth = () => {
                                       <Typography variant='h3' color={"#0BB1FA"}>
                                      
                                                 {(() => {
-                                              let data = findData("Current SpO2");
+                                              //let data = findData("Current SpO2");
+                                              let data = findData("CURRENT SPO2");
                                               return (data!.data);
                                           })()}
                                       </Typography>
@@ -353,13 +377,33 @@ const getCardWidth = () => {
                                       <Typography variant='h3' color={"#F9C153"}>
                                      
                                                 {(() => {
-                                              let data = findData("Current Pulse Rate");
+                                              //let data = findData("Current Pulse Rate");
+                                              let data = findData("CURRENT PULSE RATE");
                                               return (data!.data);
                                           })()}
                                       </Typography>
 
                                   </div></Box>
-                          </Stack>
+                          </Stack> */}
+                          <Stack  height="40%" width="100%" direction="row" justifyContent="space-between"alignItems={'center'} >
+                        {[
+                            { label: "P", color: "#62ECFF", key: "CURRENT PRESSURE" },
+                            { label: "Flow", color: "#FF59BD", key: "CURRENT FLOW" },
+                            { label: "Fio2", color: "#00D1FF", key: "CURRENT FIO2" },
+                            { label: "Spo2", color: "#0BB1FA", key: "CURRENT SPO2" }
+                           
+                        ].map(({ label, color, key }) => (
+                            <Box key={key} width="25%" textAlign="center">
+                                <Typography variant="subtitle1" sx={{ fontFamily: 'Helvetica', color }}>
+                                    {label} <Typography component="span" variant='caption'> ({findData(key)?.unit || "--"})</Typography>
+                                </Typography>
+                                <Typography variant="h3" sx={{ color }}>
+                                    {findData(key)?.data || "--"}
+                                </Typography>
+                            </Box>
+                        ))}
+                        
+                    </Stack>
                       </Stack> 
 
 
@@ -370,7 +414,8 @@ const getCardWidth = () => {
                               <Box marginLeft={'10px'} marginTop={'5px'}>
                                   <Typography variant="subtitle2" style={{ fontFamily: 'Helvetica' }} color={props.darkTheme?'#FFFFFF':'#7E7E7E'}>
                                   {(() => {
-                                      let data = findData("System Mode")
+                                      //let data = findData("System Mode")
+                                      let data = findData("SYSTEM MODE")
                                       return (data.unit+" "+"MODE")
                                   })()}
                                   </Typography>
